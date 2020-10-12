@@ -1,0 +1,8 @@
+﻿  main.cpp
+C:\Users\minht\OneDrive\Desktop\Nhập môn Game\SupperMario\SupperMario\debug.h(13,1): warning C4005: '_W': macro redefinition
+C:\Users\minht\OneDrive\Desktop\Nhập môn Game\SupperMario\SupperMario\debug.h(12): message : see previous definition of '_W'
+  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  mario.cpp
+  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  Generating Code...
+  SupperMario.vcxproj -> C:\Users\minht\OneDrive\Desktop\Nhập môn Game\SupperMario\Debug\SupperMario.exe
