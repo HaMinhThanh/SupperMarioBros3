@@ -30,7 +30,7 @@ struct CollisionEvent
 
 class GameObject
 {	
-protected:
+public:
 	float x;
 	float y;
 
