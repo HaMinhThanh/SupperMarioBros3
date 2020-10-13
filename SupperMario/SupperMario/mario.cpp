@@ -2,13 +2,15 @@
 #include "Mario.h"
 #include "Sprites.h"
 
+#include "Goomba.h"
+
 //Mario::Mario(float x, float y, float vx) :GameObject(x, y)
 //{
 //	this->vx = vx;
 //};
 
 
-void Mario::Update(DWORD dt)
+void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	GameObject::Update(dt);
 
@@ -53,16 +55,35 @@ void Mario::Render()
 	//ani->Render(x, y);
 	
 	int ani;
-	if (vx == 0)
-	{
-		if (nx > 0)ani = MARIO_ANI_IDLE_RIGHT;
-		else ani = MARIO_ANI_IDLE_LEFT;
+	if (state == MARIO_STATE_DIE)
+		ani = MARIO_ANI_DIE;
+	else if (level == MARIO_LEVEL_BIG) {
+		if (vx == 0)
+		{
+			if (nx > 0)ani = MARIO_ANI_BIG_IDLE_RIGHT;
+			else ani = MARIO_ANI_BIG_IDLE_LEFT;
+		}
+		else if (vx > 0)
+			ani = MARIO_ANI_BIG_WALKING_RIGHT;
+		else ani = MARIO_ANI_BIG_WALKING_LEFT;
 	}
-	else if (vx > 0)
-		ani = MARIO_ANI_WALKING_RIGHT;
-	else ani = MARIO_ANI_WALKING_LEFT;
+	else if (level == MARIO_LEVEL_SMALL)
+	{
+		if (vx == 0)
+		{
+			if (nx > 0)ani = MARIO_ANI_SMALL_IDLE_RIGHT;
+			else ani = MARIO_ANI_SMALL_IDLE_LEFT;
+		}
+		else if (vx > 0)
+			ani = MARIO_ANI_SMALL_WALKING_RIGHT;
+		else ani = MARIO_ANI_SMALL_WALKING_LEFT;
+	}
+	int alpha = 255;
+	if (untouchable) alpha = 128;
 
 	animations[ani]->Render(x, y);
+
+	RenderBoundingBox();
 }
 
 void Mario::SetState(int  state)

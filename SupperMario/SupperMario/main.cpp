@@ -9,6 +9,8 @@
 #include "Mario.h"
 #include "Textures.h"
 #include "Sprites.h"
+#include "Brick.h"
+#include "Goomba.h"
 
 using namespace std;
 
@@ -19,7 +21,7 @@ using namespace std;
 #define BRICK_TEXTURE_PATH L"brick.png"
 #define MARIO_TEXTURE_PATH L"mario.png"
 
-#define BACKGROUND_COLOR D3DCOLOR_XRGB(200,200,255)
+#define BACKGROUND_COLOR D3DCOLOR_XRGB(255,255,200)
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
@@ -33,9 +35,8 @@ Game* game;
 Mario* mario;
 
 GameObject* brick;
-#define BRICK_X 10.0f
-#define BRICK_Y 160.0f
 
+vector<LPGAMEOBJECT> objects;
 LPDIRECT3DTEXTURE9 texMario = NULL;
 LPDIRECT3DTEXTURE9 texBrick = NULL;
 // class example
@@ -56,6 +57,12 @@ void SampleKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_SPACE:
 		mario->SetState(MARIO_STATE_JUMP);
 		break;
+	case DIK_A:
+		mario->SetState(MARIO_STATE_IDLE);
+		mario->SetLevel(MARIO_LEVEL_BIG);
+		mario->SetPosition(50.0f, 0.0f);
+		mario->SetSpeed(0, 0);
+		break;
 	}
 }
 
@@ -66,6 +73,7 @@ void SampleKeyHandler::OnKeyUp(int KeyCode)
 
 void SampleKeyHandler::KeyState(BYTE* states)
 {
+	if (mario->GetState() == MARIO_STATE_DIE) return;
 	if (game->IsKeyDown(DIK_RIGHT))
 		mario->SetState(MARIO_STATE_WALKING_RIGHT);
 	else if (game->IsKeyDown(DIK_LEFT))
@@ -106,6 +114,7 @@ void LoadResources()
 
 	LPDIRECT3DTEXTURE9 texMario = textures->Get(ID_TEX_MARIO);
 
+	// big mario
 	sprites->AddSprite(10001, 246, 154, 259, 181, texMario);
 	sprites->AddSprite(10002, 275, 154, 290, 181, texMario);
 	sprites->AddSprite(10003, 304, 154, 321, 181, texMario);
@@ -114,58 +123,140 @@ void LoadResources()
 	sprites->AddSprite(10012, 155, 154, 170, 181, texMario);
 	sprites->AddSprite(10013, 125, 154, 140, 181, texMario);
 
+	// die
+	sprites->AddSprite(10099, 215, 120, 231, 135, texMario);
 	
+	// small mario
+	sprites->AddSprite(10021, 247, 0, 259, 15, texMario);
+	sprites->AddSprite(10022, 275, 0, 291, 15, texMario);
+	sprites->AddSprite(10023, 306, 0, 320, 15, texMario);
+
+	sprites->AddSprite(10031, 187, 0, 198, 15, texMario);
+	sprites->AddSprite(10032, 155, 0, 170, 15, texMario);
+	sprites->AddSprite(10033, 125, 0, 139, 15, texMario);
+	
+	LPDIRECT3DTEXTURE9 texMisc = textures->Get(ID_TEX_MISC);
+	// Brick
+	sprites->AddSprite(20001, 408, 255, 424, 241, texMisc);
+
+	LPDIRECT3DTEXTURE9 texEnemy = textures->Get(ID_TEX_ENEMY);
+	// Goomba
+	sprites->AddSprite(30001, 5, 14, 21, 29, texEnemy);
+	sprites->AddSprite(30002, 25, 14, 41, 29, texEnemy);
+	sprites->AddSprite(30003, 45, 21, 61, 29, texEnemy);
+
 	LPANIMATION ani;
 
-	ani = new Animation(100);
+	ani = new Animation(100);		// idle big right
 	ani->AddAnimation(10001);
 	animations->AddAnimations(400, ani);
 
-	ani = new Animation(100);
+	ani = new Animation(100);		// idle big left
 	ani->AddAnimation(10011);
 	animations->AddAnimations(401, ani);
 
-	ani = new Animation(100);
+	ani = new Animation(100);		// idle small right
+	ani->AddAnimation(10021);
+	animations->AddAnimations(402, ani);
+
+	ani = new Animation(100);		// idle small left
+	ani->AddAnimation(10031);
+	animations->AddAnimations(403, ani);
+
+	ani = new Animation(100);		// walk right big
 	ani->AddAnimation(10001);
 	ani->AddAnimation(10002);
 	ani->AddAnimation(10003);
 	animations->AddAnimations(500, ani);
 
-	ani = new Animation(100);
+	ani = new Animation(100);		// walk left big
 	ani->AddAnimation(10011);
 	ani->AddAnimation(10012);
 	ani->AddAnimation(10013);
 	animations->AddAnimations(501, ani);
+
+	ani = new Animation(100);		// walk right small
+	ani->AddAnimation(10021);
+	ani->AddAnimation(10022);
+	ani->AddAnimation(10023);
+	animations->AddAnimations(502, ani);
+
+	ani = new Animation(100);		// walk left small
+	ani->AddAnimation(10031);
+	ani->AddAnimation(10032);
+	ani->AddAnimation(10033);
+	animations->AddAnimations(503, ani);
+
+	ani = new Animation(100);		// Mario die
+	ani->AddAnimation(10099);
+	animations->AddAnimations(599, ani);
 	
-	//Brick
-	LPDIRECT3DTEXTURE9 texMisc = textures->Get(ID_TEX_MISC);
+	ani = new Animation(100);		// Brick
+	ani->AddAnimation(20001);
+	animations->AddAnimations(601, ani);
+
+	ani = new Animation(300);		// Goomba walk
+	ani->AddAnimation(30001);
+	ani->AddAnimation(30002);
+	animations->AddAnimations(701, ani);
+
+	ani = new Animation(1000);		// Goomba dead
+	ani->AddAnimation(30003);
+	animations->AddAnimations(702, ani);
+
+	mario = new Mario();
+	mario->AddAni(400);		// idle right big
+	mario->AddAni(401);		// idle left big
+	mario->AddAni(402);		// idle right small
+	mario->AddAni(403);		// idle left small;
+
+	mario->AddAni(500);		// walk right big
+	mario->AddAni(501);		// walk left big
+	mario->AddAni(502);		// walk right small
+	mario->AddAni(503);		// walk left small
+
+	mario->AddAni(599);		// die
+
+	mario->SetPosition(50.0f, 0);
+	objects.push_back(mario);
+
+	/* Brick move
 	sprites->AddSprite(20001, 300, 117, 315, 132, texMisc);
 	sprites->AddSprite(20002, 318, 117, 333, 132, texMisc);
 	sprites->AddSprite(20003, 336, 117, 351, 132, texMisc);
 	sprites->AddSprite(20004, 354, 117, 369, 132, texMisc);
+	
 
 	ani = new Animation(100);
 	ani->AddAnimation(20001, 1000);
 	ani->AddAnimation(20002);
 	ani->AddAnimation(20003);
 	ani->AddAnimation(20004);
-	animations->AddAnimations(510, ani);
-
-	mario = new Mario();
-	Mario::AddAni(400);
-	Mario::AddAni(401);
-	Mario::AddAni(500);
-	Mario::AddAni(501);
-
-	mario->SetPosition(0.0f, 100.0f);
+	animations->AddAnimations(510, ani);*/
 }
 
 void Update(DWORD dt)
 {
-	mario->Update(dt);
-	
+	vector <LPGAMEOBJECT> coObjects;
 
-	//DebugOutTitle(L"01 - Skeleton %0.1f, %0.1f", mario->GetX(), mario->GetY());
+	for (int i = 1; i < objects.size(); i++)
+	{
+		coObjects.push_back(objects[i]);
+	}
+
+	for (int i = 0; i < objects.size(); i++)
+	{
+		coObjects[i]->Update(dt, &coObjects);
+	}
+
+	float cx, cy;
+	mario->GetPosition(cx, cy);
+
+	cx -= SCREEN_WIDTH / 2;
+	cy -= SCREEN_HEIGHT / 2;
+
+	Game::GetInstance()->SetCamPosition(cx, 0.0f);
+	
 }
 
 void Render()
@@ -181,7 +272,10 @@ void Render()
 
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
-		mario->Render();		
+		for (int i = 0; i < objects.size(); i++)
+		{
+			objects[i]->Render();
+		}
 
 		spriteHandler->End();
 		d3ddv->EndScene();
@@ -285,6 +379,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreInstance, LPSTR lpCmdLine,
 	game->InitKeyBoard(keyHandler);
 
 	LoadResources();
+
+	SetWindowPos(hWnd, 0, 0, 0, SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 
 	Run();
 

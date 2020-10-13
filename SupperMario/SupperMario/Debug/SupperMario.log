@@ -1,21 +1,10 @@
-﻿  Brick.cpp
-  GameObject.cpp
+﻿  main.cpp
 C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\debug.h(13,1): warning C4005: '_W': macro redefinition
 C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\debug.h(12): message : see previous definition of '_W'
   C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  Goomba.cpp
-  main.cpp
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\debug.h(13,1): warning C4005: '_W': macro redefinition
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\debug.h(12): message : see previous definition of '_W'
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(155,9): error C2352: 'GameObject::AddAni': illegal call of non-static member function
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\GameObject.h(64): message : see declaration of 'GameObject::AddAni'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(156,9): error C2352: 'GameObject::AddAni': illegal call of non-static member function
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\GameObject.h(64): message : see declaration of 'GameObject::AddAni'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(157,9): error C2352: 'GameObject::AddAni': illegal call of non-static member function
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\GameObject.h(64): message : see declaration of 'GameObject::AddAni'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(158,9): error C2352: 'GameObject::AddAni': illegal call of non-static member function
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\GameObject.h(64): message : see declaration of 'GameObject::AddAni'
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(242,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(247,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(275,21): warning C4018: '<': signed/unsigned mismatch
   mario.cpp
   C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
 C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(12,1): error C2511: 'void Mario::Update(DWORD)': overloaded member function not found in 'Mario'
