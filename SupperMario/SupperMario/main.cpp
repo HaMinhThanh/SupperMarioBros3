@@ -11,6 +11,7 @@
 #include "Sprites.h"
 #include "Brick.h"
 #include "Goomba.h"
+#include "Koopas.h"
 
 using namespace std;
 
@@ -22,19 +23,22 @@ using namespace std;
 #define MARIO_TEXTURE_PATH L"mario.png"
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(255,255,200)
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
 
 #define MAX_FRAME_RATE 90
 
 #define ID_TEX_MARIO 0
 #define ID_TEX_ENEMY 10
 #define ID_TEX_MISC 20
+#define ID_TEX_ENEMY_2 30
 
 Game* game;
-Mario* mario;
 
-GameObject* brick;
+Mario *mario;
+GameObject *brick;
+Goomba* goomba;
+Koopas* koopas;
 
 vector<LPGAMEOBJECT> objects;
 LPDIRECT3DTEXTURE9 texMario = NULL;
@@ -108,6 +112,7 @@ void LoadResources()
 	textures->AddTexture(ID_TEX_MARIO, L"textures\\mario.png", D3DCOLOR_XRGB(176, 224, 248));
 	textures->AddTexture(ID_TEX_ENEMY, L"textures\\enemies.png", D3DCOLOR_XRGB(155, 219, 239));
 	textures->AddTexture(ID_TEX_MISC, L"textures\\misc.png", D3DCOLOR_XRGB(156, 219, 239));
+	textures->AddTexture(ID_TEX_ENEMY_2, L"textures\\enemies-2.png", D3DCOLOR_XRGB(156, 219, 239));
 
 	Sprites* sprites = Sprites::GetInstance();
 	Animations* animations = Animations::GetInstance();
@@ -137,13 +142,22 @@ void LoadResources()
 	
 	LPDIRECT3DTEXTURE9 texMisc = textures->Get(ID_TEX_MISC);
 	// Brick
-	sprites->AddSprite(20001, 408, 255, 424, 241, texMisc);
+	sprites->AddSprite(20001, 408, 225, 424, 241, texMisc);
 
 	LPDIRECT3DTEXTURE9 texEnemy = textures->Get(ID_TEX_ENEMY);
 	// Goomba
 	sprites->AddSprite(30001, 5, 14, 21, 29, texEnemy);
 	sprites->AddSprite(30002, 25, 14, 41, 29, texEnemy);
 	sprites->AddSprite(30003, 45, 21, 61, 29, texEnemy);
+
+	LPDIRECT3DTEXTURE9 texEnemy_2 = textures->Get(ID_TEX_ENEMY_2);
+	// Koopas
+	sprites->AddSprite(40001,170,192,185,217, texEnemy_2 );
+	sprites->AddSprite(40002, 187, 192, 200, 217, texEnemy_2);
+
+	sprites->AddSprite(40011,222 , 192, 237, 217, texEnemy_2);
+	sprites->AddSprite(40012, 205, 192, 220, 217, texEnemy_2);
+
 
 	LPANIMATION ani;
 
@@ -204,6 +218,16 @@ void LoadResources()
 	ani->AddAnimation(30003);
 	animations->AddAnimations(702, ani);
 
+	ani = new Animation(300);		// Koopa walk right
+	ani->AddAnimation(40001);
+	ani->AddAnimation(40002);
+	animations->AddAnimations(801, ani);
+
+	ani = new Animation(300);		// Koopa walk left
+	ani->AddAnimation(40011);
+	ani->AddAnimation(40012);
+	animations->AddAnimations(802, ani);
+
 	mario = new Mario();
 	mario->AddAni(400);		// idle right big
 	mario->AddAni(401);		// idle left big
@@ -233,6 +257,44 @@ void LoadResources()
 	ani->AddAnimation(20003);
 	ani->AddAnimation(20004);
 	animations->AddAnimations(510, ani);*/
+
+	// Brick
+	for (int i = 0; i < 30; i++)
+	{
+		Brick* brick = new Brick();
+		brick->AddAni(601);
+		brick->SetPosition(0 + i * 16.0f, 150);
+		objects.push_back(brick);
+	}
+	for (int i = 0; i < 10; i++)
+	{
+		Brick* brick = new Brick();
+		brick->AddAni(601);
+		brick->SetPosition(50 + i * 16.0f, 100);
+		objects.push_back(brick);
+	}
+
+	// Goomba
+	for (int i = 0; i < 4; i++)
+	{
+		goomba = new Goomba();
+		goomba->AddAni(701);
+		goomba->AddAni(702);
+		goomba->SetPosition(200 + i * 60, 135);
+		goomba->SetState(GOOMBA_STATE_WALKING);
+		objects.push_back(goomba);
+	}
+
+	// Koopas
+	for (int i = 0; i < 4; i++)
+	{
+		koopas = new Koopas();
+		koopas->AddAni(802);
+		koopas->AddAni(801);
+		koopas->SetPosition(200+ i*60, 85);
+		koopas->SetState(KOOPAS_STATE_WALKING);
+		objects.push_back(koopas);
+	}
 }
 
 void Update(DWORD dt)
@@ -246,7 +308,7 @@ void Update(DWORD dt)
 
 	for (int i = 0; i < objects.size(); i++)
 	{
-		coObjects[i]->Update(dt, &coObjects);
+		objects[i]->Update(dt, &coObjects);
 	}
 
 	float cx, cy;

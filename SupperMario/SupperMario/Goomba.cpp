@@ -24,7 +24,7 @@ void Goomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x = 0;
 		vx = -vx;
 	}
-	if (vx > 0 && x > 640)
+	if (vx > 0 && x > 290)
 	{
 		x = 290;
 		vx = -vx;

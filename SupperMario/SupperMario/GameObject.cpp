@@ -24,8 +24,8 @@ void GameObject::Render()
 void GameObject::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	this->dt = dt;
-	x += vx * dt;
-	y += vy * dt;
+	dx = vx * dt;
+	dy = vy * dt;
 }
 
 LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT coO)
@@ -62,10 +62,10 @@ void GameObject::CalcPotentialCollisions(
 	vector<LPGAMEOBJECT>* coObjects,
 	vector<LPCOLLISIONEVENT>& coEvents)
 {
-	for (UINT i = 0; i, coObjects->size(); i++)
+	for (UINT i = 0; i< coObjects->size(); i++)
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
-
+		
 		if (e->t > 0 && e->t < 1.0f)
 			coEvents.push_back(e);
 		else
@@ -116,8 +116,7 @@ void GameObject::FilterCollision(
 
 GameObject::~GameObject()
 {
-	if (texture != NULL)
-		texture->Release();
+	
 }
 
 void GameObject::AddAni(int aniId)

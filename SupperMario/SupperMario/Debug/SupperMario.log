@@ -1,50 +1,12 @@
-﻿  main.cpp
+﻿  Koopas.cpp
+  main.cpp
 C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\debug.h(13,1): warning C4005: '_W': macro redefinition
 C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\debug.h(12): message : see previous definition of '_W'
   C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(242,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(247,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(275,21): warning C4018: '<': signed/unsigned mismatch
-  mario.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(12,1): error C2511: 'void Mario::Update(DWORD)': overloaded member function not found in 'Mario'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\Mario.h(45): message : see declaration of 'Mario'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(13,14): error C2352: 'GameObject::Update': illegal call of non-static member function
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\GameObject.h(80): message : see declaration of 'GameObject::Update'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(15,2): error C2597: illegal reference to non-static member 'GameObject::vy'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\GameObject.h(38): message : see declaration of 'GameObject::vy'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(16,13): error C2597: illegal reference to non-static member 'GameObject::y'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(16,13): error C3867: 'GameObject::y': non-standard syntax; use '&' to create a pointer to member
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(18,3): error C2597: illegal reference to non-static member 'GameObject::vy'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\GameObject.h(38): message : see declaration of 'GameObject::vy'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(19,3): error C2597: illegal reference to non-static member 'GameObject::y'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\GameObject.h(35): message : see declaration of 'GameObject::y'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(22,5): error C2597: illegal reference to non-static member 'GameObject::vx'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(22,5): error C3867: 'GameObject::vx': non-standard syntax; use '&' to create a pointer to member
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(22,23): error C2597: illegal reference to non-static member 'GameObject::x'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(22,23): error C3867: 'GameObject::x': non-standard syntax; use '&' to create a pointer to member
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(22,25): error C2597: illegal reference to non-static member 'GameObject::x'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\GameObject.h(34): message : see declaration of 'GameObject::x'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(23,5): error C2597: illegal reference to non-static member 'GameObject::vx'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(23,5): error C3867: 'GameObject::vx': non-standard syntax; use '&' to create a pointer to member
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(23,21): error C2597: illegal reference to non-static member 'GameObject::x'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(23,21): error C3867: 'GameObject::x': non-standard syntax; use '&' to create a pointer to member
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(23,22): error C2597: illegal reference to non-static member 'GameObject::x'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\GameObject.h(34): message : see declaration of 'GameObject::x'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(58,20): error C2065: 'MARIO_ANI_IDLE_RIGHT': undeclared identifier
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(59,14): error C2065: 'MARIO_ANI_IDLE_LEFT': undeclared identifier
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(62,9): error C2065: 'MARIO_ANI_WALKING_RIGHT': undeclared identifier
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(63,13): error C2065: 'MARIO_ANI_WALKING_LEFT': undeclared identifier
-  Sprites.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\debug.h(13,1): warning C4005: '_W': macro redefinition
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\debug.h(12): message : see previous definition of '_W'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\Sprites.cpp(26,52): error C2668: 'Game::Draw': ambiguous call to overloaded function
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\Game.h(51,7): message : could be 'void Game::Draw(float,float,LPDIRECT3DTEXTURE9,int,int,int,int,int)'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\Game.h(50,7): message : or       'void Game::Draw(float,float,LPDIRECT3DTEXTURE9,int,int,int,int)'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\Sprites.cpp(26,52): message : while trying to match the argument list '(float, float, LPDIRECT3DTEXTURE9, int, int, int, int)'
-  Textures.cpp
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\debug.h(13,1): warning C4005: '_W': macro redefinition
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\debug.h(12): message : see previous definition of '_W'
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(283,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(294,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(304,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(309,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(337,21): warning C4018: '<': signed/unsigned mismatch
   Generating Code...
+  SupperMario.vcxproj -> C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\Debug\SupperMario.exe

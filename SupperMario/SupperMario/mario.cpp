@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "Game.h"
 #include "Mario.h"
 #include "Sprites.h"
@@ -14,31 +15,77 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	GameObject::Update(dt);
 
-	vy += MARIO_GRAVITY;
-	if (y > 100)
+	vy += MARIO_GRAVITY * dt;
+
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+
+	coEvents.clear();
+
+	if (state != MARIO_STATE_DIE)
+		CalcPotentialCollisions(coObjects, coEvents);
+
+	if (GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
 	{
-		vy = 0;
-		y = 100.0f;
+		untouchable_start = 0;
+		untouchable = 0;
 	}
 
-	if (vx > 0 && x > 640) x = 640;
-	if (vx < 0 && x < 0)x = 0;
-	/*x += vx * dt;
+	if (coEvents.size() == 0)
+	{
+		x += dx;
+		y += dy;
+	}
+	else
+	{
+		float min_tx, min_ty, nx = 0, ny;
 
-	int BackBufferWidth = Game::GetInstance()->GetBackBufferWidth();
-	if (x <= 0 || x >= BackBufferWidth - MARIO_WIDTH) {
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-		vx = -vx;
+		x += min_tx * dx + nx * 0.04f;
+		y += min_ty * dy + ny * 0.04f;
 
-		if (x <= 0)
+		if (nx != 0) vx = 0;
+		if (ny != 0) vy = 0;
+
+		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
-			x = 0;
+			LPCOLLISIONEVENT e = coEventsResult[i];
+
+			if (dynamic_cast<Goomba*>(e->obj)) // e is goomba
+			{
+				Goomba* goomba = dynamic_cast<Goomba*>(e->obj);
+
+				if (e->ny < 0)
+				{
+					if (goomba->GetState() != GOOMBA_STATE_DIE)
+					{
+						goomba->SetState(GOOMBA_STATE_DIE);
+						vy = -MARIO_JUMP_DEFLECT_SPEED;
+					}
+				}
+				else if (e->nx != 0)
+				{
+					if (untouchable == 0)
+					{
+						if (goomba->GetState() != GOOMBA_STATE_DIE)
+						{
+							if (level > MARIO_LEVEL_SMALL)
+							{
+								level = MARIO_LEVEL_SMALL;
+								StartUntouchable();
+							}
+							else
+								SetState(MARIO_STATE_DIE);
+						}
+					}
+				}
+			}
 		}
-		else if (x >= BackBufferWidth - MARIO_WIDTH)
-		{
-			x = (float)(BackBufferWidth - MARIO_WIDTH);
-		}
-	}*/
+	}
+
+	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+	
 }
 
 void Mario::Render()
@@ -100,11 +147,29 @@ void Mario::SetState(int  state)
 		nx = -1;
 		break;
 	case MARIO_STATE_JUMP:
-		if (y == 100)
-			vy = -MARIO_JUMP_SPEED_Y;
+		vy = -MARIO_JUMP_SPEED_Y;
 	case MARIO_STATE_IDLE:
 		vx = 0;
+		break;
+	case MARIO_STATE_DIE:
+		vy = -MARIO_DIE_DEFLECT_SPEED;
 		break;
 	}
 }
 
+void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
+{
+	left = x;
+	top = y;
+
+	if (level == MARIO_LEVEL_BIG)
+	{
+		right = x + MARIO_BIG_BBOX_WIDTH;
+		bottom = y + MARIO_BIG_BBOX_HEIGHT;
+	}
+	else
+	{
+		right = x + MARIO_SMALL_BBOX_WIDTH;
+		bottom = y + MARIO_SMALL_BBOX_HEIGHT;
+	}
+}

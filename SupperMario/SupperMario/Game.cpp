@@ -240,6 +240,8 @@ void Game::SweptAABB(
 
 	if (br<sl || bl>sr || bb<st | bt>sb)return;
 
+	if (dx == 0 && dy == 0) return;
+
 	if (dx > 0)
 	{
 		dx_entry = sl - mr;
