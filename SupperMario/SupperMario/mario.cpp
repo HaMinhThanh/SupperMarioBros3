@@ -72,7 +72,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						{
 							if (level > MARIO_LEVEL_SMALL)
 							{
-								level = MARIO_LEVEL_SMALL;
+								level -= 1;
 								StartUntouchable();
 							}
 							else
@@ -104,11 +104,25 @@ void Mario::Render()
 	int ani;
 	if (state == MARIO_STATE_DIE)
 		ani = MARIO_ANI_DIE;
+	else if (level == MARIO_LEVEL_TAIL) {
+		if (vx == 0)
+		{
+			if (nx > 0)ani = MARIO_ANI_TAIL_IDLE_RIGHT;
+			//else if (nx < 0) ani = MARIO_ANI_BIG_JUMP_LEFT;
+			else
+				ani = MARIO_ANI_TAIL_IDLE_LEFT;
+		}
+		else if (vx > 0)
+			ani = MARIO_ANI_TAIL_WALKING_RIGHT;
+		else ani = MARIO_ANI_TAIL_WALKING_LEFT;
+	}
 	else if (level == MARIO_LEVEL_BIG) {
 		if (vx == 0)
 		{
 			if (nx > 0)ani = MARIO_ANI_BIG_IDLE_RIGHT;
-			else ani = MARIO_ANI_BIG_IDLE_LEFT;
+			//else if (nx < 0) ani = MARIO_ANI_BIG_JUMP_LEFT;
+			else
+				ani = MARIO_ANI_BIG_IDLE_LEFT;
 		}
 		else if (vx > 0)
 			ani = MARIO_ANI_BIG_WALKING_RIGHT;
@@ -119,6 +133,7 @@ void Mario::Render()
 		if (vx == 0)
 		{
 			if (nx > 0)ani = MARIO_ANI_SMALL_IDLE_RIGHT;
+			//else if (nx < 0) ani = MARIO_ANI_BIG_JUMP_RIGHT;
 			else ani = MARIO_ANI_SMALL_IDLE_LEFT;
 		}
 		else if (vx > 0)
@@ -151,6 +166,15 @@ void Mario::SetState(int  state)
 	case MARIO_STATE_IDLE:
 		vx = 0;
 		break;
+	case MARIO_STATE_FLY:
+		//vy = -MARIO_FLY_SPEED_Y;
+		break;
+	case MARIO_STATE_HOLD:
+		break;
+	case MARIO_STATE_KICK:
+		break;
+	case MARIO_STATE_RUN:
+		break;
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
 		break;
@@ -162,6 +186,11 @@ void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 	left = x;
 	top = y;
 
+	if (level == MARIO_LEVEL_TAIL)
+	{
+		right = x + MARIO_TAIL_BBOX_WIDTH;
+		bottom = y + MARIO_TAIL_BBOX_HEIGHT;
+	}
 	if (level == MARIO_LEVEL_BIG)
 	{
 		right = x + MARIO_BIG_BBOX_WIDTH;

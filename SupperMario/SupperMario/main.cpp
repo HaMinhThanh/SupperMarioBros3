@@ -63,7 +63,7 @@ void SampleKeyHandler::OnKeyDown(int KeyCode)
 		break;
 	case DIK_A:
 		mario->SetState(MARIO_STATE_IDLE);
-		mario->SetLevel(MARIO_LEVEL_BIG);
+		mario->SetLevel(MARIO_LEVEL_TAIL);
 		mario->SetPosition(50.0f, 0.0f);
 		mario->SetSpeed(0, 0);
 		break;
@@ -139,6 +139,28 @@ void LoadResources()
 	sprites->AddSprite(10031, 187, 0, 198, 15, texMario);
 	sprites->AddSprite(10032, 155, 0, 170, 15, texMario);
 	sprites->AddSprite(10033, 125, 0, 139, 15, texMario);
+
+	// Mario jump small
+	sprites->AddSprite(10041, 35, 79, 50, 95, texMario);		// left
+	sprites->AddSprite(10042, 395, 79, 409, 95, texMario);	// right
+
+	// Mario jump big
+	sprites->AddSprite(10043, 35, 275, 50, 300, texMario);		// left
+	sprites->AddSprite(10044, 395, 275, 410, 300, texMario);	// right
+
+	// Mario jump tail
+	sprites->AddSprite(10045, 30, 754, 53, 780, texMario);		// left
+	sprites->AddSprite(10046, 392, 754, 414, 780, texMario);	// right
+
+	// tail mario
+	sprites->AddSprite(10051, 242, 634,261, 661, texMario);
+	sprites->AddSprite(10052, 272, 634, 292, 661, texMario);
+	sprites->AddSprite(10053, 303, 634, 323, 661, texMario);
+
+	sprites->AddSprite(10061, 182, 634, 202, 661, texMario);
+	sprites->AddSprite(10062, 152, 634, 173, 661, texMario);
+	sprites->AddSprite(10063, 122, 634, 142, 661, texMario);
+
 	
 	LPDIRECT3DTEXTURE9 texMisc = textures->Get(ID_TEX_MISC);
 	// Brick
@@ -177,6 +199,14 @@ void LoadResources()
 	ani->AddAnimation(10031);
 	animations->AddAnimations(403, ani);
 
+	ani = new Animation(100);		// idle tail right
+	ani->AddAnimation(10051);
+	animations->AddAnimations(404, ani);
+
+	ani = new Animation(100);		// idle tail left
+	ani->AddAnimation(10061);
+	animations->AddAnimations(405, ani);
+
 	ani = new Animation(100);		// walk right big
 	ani->AddAnimation(10001);
 	ani->AddAnimation(10002);
@@ -200,6 +230,42 @@ void LoadResources()
 	ani->AddAnimation(10032);
 	ani->AddAnimation(10033);
 	animations->AddAnimations(503, ani);
+
+	ani = new Animation(100);		// jump left small
+	ani->AddAnimation(10041);
+	animations->AddAnimations(541, ani);
+
+	ani = new Animation(100);		// jump right small
+	ani->AddAnimation(10042);
+	animations->AddAnimations(542, ani);
+
+	ani = new Animation(100);		// jump left big
+	ani->AddAnimation(10043);
+	animations->AddAnimations(543, ani);
+
+	ani = new Animation(100);		// jump right big
+	ani->AddAnimation(10044);
+	animations->AddAnimations(544, ani);
+
+	ani = new Animation(100);		// jump left tail
+	ani->AddAnimation(10045);
+	animations->AddAnimations(545, ani);
+
+	ani = new Animation(100);		// jump right tail
+	ani->AddAnimation(10046);
+	animations->AddAnimations(546, ani);
+
+	ani = new Animation(100);		// walk right tail
+	ani->AddAnimation(10051);
+	ani->AddAnimation(10052);
+	ani->AddAnimation(10053);
+	animations->AddAnimations(504, ani);
+
+	ani = new Animation(100);		// walk left tail
+	ani->AddAnimation(10061);
+	ani->AddAnimation(10062);
+	ani->AddAnimation(10063);
+	animations->AddAnimations(505, ani);
 
 	ani = new Animation(100);		// Mario die
 	ani->AddAnimation(10099);
@@ -233,11 +299,15 @@ void LoadResources()
 	mario->AddAni(401);		// idle left big
 	mario->AddAni(402);		// idle right small
 	mario->AddAni(403);		// idle left small;
+	mario->AddAni(451);		// idle right tail
+	mario->AddAni(461);		// idle left tail
 
 	mario->AddAni(500);		// walk right big
 	mario->AddAni(501);		// walk left big
 	mario->AddAni(502);		// walk right small
 	mario->AddAni(503);		// walk left small
+	mario->AddAni(504);		// walk right tail
+	mario->AddAni(505);		// walk left tail
 
 	mario->AddAni(599);		// die
 
@@ -291,7 +361,7 @@ void LoadResources()
 		koopas = new Koopas();
 		koopas->AddAni(802);
 		koopas->AddAni(801);
-		koopas->SetPosition(200+ i*60, 85);
+		koopas->SetPosition(200+ i*60, 75);
 		koopas->SetState(KOOPAS_STATE_WALKING);
 		objects.push_back(koopas);
 	}
