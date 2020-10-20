@@ -1,4 +1,5 @@
 #include "Koopas.h"
+#include "Brick.h"
 
 Koopas::Koopas() 
 {
@@ -22,8 +23,39 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	GameObject::Update(dt, coObjects);
 
-	x += dx;
-	y += dy;
+	vy += KOOPAS_GRAVITY * dt;	
+
+	vector<LPGAMEOBJECT> Bricks;
+	Bricks.clear();
+
+	for (UINT i = 0; i < coObjects->size(); i++)
+		if (dynamic_cast<Brick*>(coObjects->at(i)))
+			Bricks.push_back(coObjects->at(i));
+
+	vector<LPCOLLISIONEVENT>  coEvents;
+	vector<LPCOLLISIONEVENT>  coEventsResult;
+	coEvents.clear();
+
+	CalcPotentialCollisions(&Bricks, coEvents);
+
+	if (coEvents.size() == 0)
+	{
+		x += dx;
+		y += dy;
+	}
+	else
+	{
+		float min_tx, min_ty, nx = 0, ny;
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
+		x += min_tx * dx + nx * 0.4f;
+		y += min_ty * dy + ny * 0.4f;
+
+		if (nx != 0)
+			vx = -vx;
+
+		if (ny != 0)
+			vy = 0;
+	}
 
 	if (vx < 0 && x < 0)
 	{
@@ -35,6 +67,9 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x = 290;
 		vx = -vx;
 	}
+
+	for (UINT i = 0; i < coEvents.size(); i++)
+		delete coEvents[i];
 }
 
 void Koopas::Render()

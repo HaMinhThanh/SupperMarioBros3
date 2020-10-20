@@ -8,12 +8,13 @@
 class Scene
 {
 public:
-	virtual void Update(DWORD dt);
-	virtual void LoadContent();
-	virtual void Draw();
+	virtual void Update(DWORD dt) = 0;
+	virtual void LoadContent() = 0;
+	virtual void Render() = 0;
 
 	virtual void OnKeyDown(int keyCode);
 	virtual void OnKeyUp(int keyUp);
+	virtual void KeyState(BYTE* state) = 0;
 	
 	D3DCOLOR GetBackColor();
 

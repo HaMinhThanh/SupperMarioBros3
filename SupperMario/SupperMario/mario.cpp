@@ -10,6 +10,11 @@
 //	this->vx = vx;
 //};
 
+Mario::Mario(Camera* camera)
+{
+	this->camera = camera;
+
+}
 
 void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -143,7 +148,7 @@ void Mario::Render()
 	int alpha = 255;
 	if (untouchable) alpha = 128;
 
-	animations[ani]->Render(x, y);
+	animation_set->at(ani)->Render(x, y);
 
 	RenderBoundingBox();
 }
@@ -201,4 +206,63 @@ void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 		right = x + MARIO_SMALL_BBOX_WIDTH;
 		bottom = y + MARIO_SMALL_BBOX_HEIGHT;
 	}
+}
+
+void Mario::Reset()
+{
+	SetState(MARIO_STATE_IDLE);
+	SetState(MARIO_LEVEL_BIG);
+	SetPosition(start_x, start_y);
+	SetSpeed(0, 0);
+
+	isWalking = 0;
+	isRunning = 0;
+	isJumping = 0;
+	isFlying = 0;
+	isFalling = 0;
+	isKicking = 0;
+	isHolding = 0;
+}
+
+void Mario::CollisionWidthBrick(vector<LPGAMEOBJECT>* coObjects)
+{
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+	
+	coEvents.clear();
+
+	vector<LPGAMEOBJECT>  Bricks;
+	Bricks.clear();
+
+	for (UINT i = 0; i < coObjects->size(); i++)
+		if (dynamic_cast<Goomba*>(coObjects->at(i)))
+			Bricks.push_back(coObjects->at(i));
+
+	CalcPotentialCollisions(&Bricks, coEvents);
+
+	if (coEvents.size() == 0)
+	{
+		x += dx;
+		y += dy;
+		isCollisionOnAxisY = false;
+	}
+	else
+	{
+		float min_tx, min_ty, nx = 0, ny;
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
+
+		x += min_tx * dx + nx * 0.4f;
+		if (ny == -1)
+			y += min_ty * dy + ny * 0.4f;
+		else
+			y += dy;
+
+		if (ny != 0)
+			isCollisionOnAxisY = true;
+		else
+			isCollisionOnAxisY = false;
+	}
+
+	for (UINT i = 0; i < coEvents.size(); i++)
+		delete coEvents[i];
 }

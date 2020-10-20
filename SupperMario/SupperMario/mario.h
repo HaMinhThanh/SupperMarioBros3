@@ -79,18 +79,52 @@ class Mario: public GameObject
 	int level;
 	int untouchable;
 	DWORD untouchable_start;
+
+	float start_x;
+	float start_y;
+	
+	Camera* camera;
+
 public:
-	//Mario(float x, float y, float vx);
+
+	bool isIdle;
+	bool isWalking;
+	bool isRunning;
+	bool isJumping;
+	bool isFalling;
+	bool isFlying;
+	bool isKicking;
+	bool isHolding;
+
+	bool isCollisionOnAxisY;
+
+	//Mario(float x = 0.0f, float y = 0.0f);
 	Mario():GameObject()
 	{
 		level = MARIO_LEVEL_TAIL;
 		untouchable = 0;
 	}	
+	Mario(Camera* camera);
+
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	virtual void Render();
+
+	void Idle();
+	void Walk();
+	void Run();
+	void Jump();
+	void Fly();
+	void Fall();
+	void Hold();
+	void Kick();
+
 	void SetState(int state);
 	void SetLevel(int lev) { level = lev; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
+
+	void CollisionWidthBrick(vector<LPGAMEOBJECT>* coObjects = NULL);
+
+	void Reset();
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 };

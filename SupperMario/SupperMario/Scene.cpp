@@ -15,10 +15,6 @@ void Scene::LoadContent()
 
 }
 
-void Scene::Draw()
-{
-
-}
 
 void Scene::OnKeyDown(int keyCode)
 {
