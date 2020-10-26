@@ -24,16 +24,18 @@ class Animation
 	int currentFrame;
 	vector<LPANIMATION_FRAME> frames;
 public:
-	Animation(int defaultTime) { this->defaultTime = defaultTime, lastFrameTime = -1, currentFrame = -1; }
+	
+	Animation(int defaultTime = 100) { this->defaultTime = defaultTime, lastFrameTime = -1, currentFrame = -1; }
 	void AddAnimation(int spriteId, DWORD time = 0);
-	void Render(float x, float y);
+
+	void Render(float x, float y, int alpha = 255);
 };
 
 typedef Animation* LPANIMATION;
 
 class Animations
 {
-	static Animations* _instance;
+	static Animations* instance;
 
 	unordered_map<int, LPANIMATION> animations;
 

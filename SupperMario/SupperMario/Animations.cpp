@@ -1,5 +1,7 @@
 #include "Animations.h"
 
+AnimationSets* AnimationSets::instance = NULL;
+
 void  Animation::AddAnimation(int spriteId, DWORD time)
 {
 	int t = time;
@@ -10,7 +12,7 @@ void  Animation::AddAnimation(int spriteId, DWORD time)
 	frames.push_back(frame);
 }
 
-void Animation::Render(float x, float y)
+void Animation::Render(float x, float y, int alpha)
 {
 	DWORD now = GetTickCount();
 	if (currentFrame == -1)
@@ -28,15 +30,15 @@ void Animation::Render(float x, float y)
 			if (currentFrame == frames.size()) currentFrame = 0;
 		}
 	}
-	frames[currentFrame]->GetSprite()->Draw(x, y);
+	frames[currentFrame]->GetSprite()->Draw(x, y, alpha);
 }
 
-Animations* Animations::_instance = NULL;
+Animations* Animations::instance = NULL;
 
 Animations* Animations::GetInstance()
 {
-	if (_instance == NULL) _instance = new Animations();
-	return _instance;
+	if (instance == NULL) instance = new Animations();
+	return instance;
 }
 
 void Animations::AddAnimations(int id, LPANIMATION ani)

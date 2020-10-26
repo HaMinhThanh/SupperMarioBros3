@@ -3,7 +3,6 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 
-#include "debug.h"
 #include "Game.h"
 #include "Textures.h"
 
@@ -28,4 +27,15 @@ void Textures::AddTexture(int id, LPCWSTR filePath, D3DCOLOR transparentColor)
 LPDIRECT3DTEXTURE9 Textures::Get(unsigned int i)
 {
 	return textures[i];
+}
+
+void Textures::Clear()
+{
+	for (auto x : textures)
+	{
+		LPDIRECT3DTEXTURE9 tex = x.second;
+		if (tex != NULL) tex->Release();
+	}
+
+	textures.clear();
 }

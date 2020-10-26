@@ -21,19 +21,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="debug.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="MarioState.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Sprites.cpp">
@@ -63,27 +51,21 @@
     <ClCompile Include="mario.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Map.cpp">
+    <ClCompile Include="Animations.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
-    <ClCompile Include="Animations.cpp">
+    <ClCompile Include="PlayScene.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyEventHandler.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="debug.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="MarioState.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneManager.h">
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Sprites.h">
@@ -110,10 +92,16 @@
     <ClInclude Include="mario.h">
       <Filter>Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Map.h">
+    <ClInclude Include="Animations.h">
       <Filter>Framework</Filter>
     </ClInclude>
-    <ClInclude Include="Animations.h">
+    <ClInclude Include="PlayScene.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyEventHandler.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
       <Filter>Framework</Filter>
     </ClInclude>
   </ItemGroup>

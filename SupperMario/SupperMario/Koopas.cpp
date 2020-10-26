@@ -83,7 +83,7 @@ void Koopas::Render()
 	else if (vx > 0) ani = KOOPAS_ANI_WALKING_RIGHT;
 	else if (vx < 0) ani = KOOPAS_ANI_WALKING_LEFT;
 
-	animations[ani]->Render(x, y);
+	animation_set->at(ani)->Render(x, y);
 
 	RenderBoundingBox();
 }

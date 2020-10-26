@@ -1,7 +1,6 @@
 #include <d3dx9.h>
 #include <algorithm>
 
-#include "debug.h"
 #include "Game.h"
 #include "GameObject.h"
 #include "Textures.h"
@@ -14,11 +13,6 @@ GameObject::GameObject()
 	x = y = 0;
 	vx = vy = 0;
 	nx = 1;
-}
-
-void GameObject::Render()
-{
-	//Game::GetInstance()->Draw(x, y, texture);
 }
 
 void GameObject::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -42,19 +36,19 @@ LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT coO)
 	float sdx = svx * dt;
 	float sdy = svy * dt;
 
-	float dx = this->dx - sdx;
-	float dy = this->dy - sdy;
+	float rdx = this->dx - sdx;
+	float rdy = this->dy - sdy;
 
 	GetBoundingBox(ml, mt, mr, mb);
 
 	Game::SweptAABB(
 		ml, mt, mr, mb,
-		dx, dy,
+		rdx, rdy,
 		sl, st, sr, sb,
 		t, nx, ny
 	);
 
-	CollisionEvent* e = new CollisionEvent(t, nx, ny, coO);
+	CollisionEvent* e = new CollisionEvent(t, nx, ny,rdx, rdy, coO);
 	return e;
 }
 
@@ -119,12 +113,6 @@ GameObject::~GameObject()
 	
 }
 
-void GameObject::AddAni(int aniId)
-{
-	LPANIMATION ani = Animations::GetInstance()->Get(aniId);
-	animations.push_back(ani);
-}
-
 void GameObject::RenderBoundingBox()
 {
 	D3DXVECTOR3 p(x, y, 0);
@@ -142,4 +130,66 @@ void GameObject::RenderBoundingBox()
 
 	Game::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
 }
+
+void GameObject::SetId(int ID)
+{
+	this->id = ID;
+}
+
+int GameObject::GetId()
+{
+	return id;
+}
+
+float GameObject::GetX()
+{
+	return x;
+}
+
+float GameObject::GetY()
+{
+	return y;
+}
+
+float GameObject::GetVx()
+{
+	return vx;
+}
+
+float GameObject::GetVy()
+{
+	return vy;
+}
+
+void GameObject::SetX(float X)
+{
+	x = X;
+}
+
+void GameObject::SetY(float Y)
+{
+	y = Y;
+}
+
+void GameObject::SetVx(float VX)
+{
+	vx = VX;
+}
+
+void GameObject::SetVy(float VY)
+{
+	vy = VY;
+}
+
+int GameObject::GetHeight()
+{
+	return 0;
+}
+
+int GameObject::GetWidth()
+{
+	return 0;
+}
+
+
 

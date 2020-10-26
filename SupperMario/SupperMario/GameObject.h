@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "Sprites.h"
-#include "Camera.h"
 #include "Animations.h"
 
 using namespace std;
@@ -41,6 +40,13 @@ struct CollisionEvent
 	}
 };
 
+enum TypeObject
+{
+	MARIO = 0,
+	GOOMBA = 1,
+	KOOPAS = 2
+};
+
 class GameObject
 {	
 public:
@@ -57,11 +63,12 @@ public:
 
 	int state;
 
+	int id;
+
 	DWORD dt;
 
 	LPANIMATION_SET animation_set;
 
-	LPDIRECT3DTEXTURE9 texture;
 public:
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
@@ -71,12 +78,23 @@ public:
 
 	int GetState() { return this->state; }
 
-	float GetX() { return x; }
-	float GetY() { return y; }
+	void SetId(int ID);
+	int GetId();
 
-	void AddAni(int aniId);
+	float GetX();
+	float GetY();
+	float GetVx();
+	float GetVy();
+	void SetX(float x);
+	void SetY(float y);
+	void SetVx(float vx);
+	void SetVy(float vy);
+	int GetHeight();
+	int GetWidth();	
 
 	void RenderBoundingBox();
+
+	void SetAnimationSet(LPANIMATION_SET ani_set) { animation_set = ani_set; }
 
 	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coO);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObject, vector<LPCOLLISIONEVENT>& coEvents);
@@ -98,7 +116,7 @@ public:
 	~GameObject();
 };
 
-typedef GameObject* LPGAMEOBJECT;
+
 
 
 

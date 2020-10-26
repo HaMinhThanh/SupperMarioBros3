@@ -3,25 +3,43 @@
 #include <d3dx9.h>
 #include <d3d9.h>
 
-#include "Game.h"
+#include "KeyEventHandler.h"
 
 class Scene
 {
-public:
-	virtual void Update(DWORD dt) = 0;
-	virtual void LoadContent() = 0;
-	virtual void Render() = 0;
-
-	virtual void OnKeyDown(int keyCode);
-	virtual void OnKeyUp(int keyUp);
-	virtual void KeyState(BYTE* state) = 0;
-	
-	D3DCOLOR GetBackColor();
-
-	~Scene();
 protected:
-	Scene();
+	int id;	
+	KeyEventHandler* keyHandler;
+	LPCWSTR sceneFilePath;
 
 	D3DCOLOR  backColor;
+
+public:	
+
+	Scene(int id, LPCWSTR filePath);
+
+	KeyEventHandler* GetKeyEventHandler() { return keyHandler; }
+
+	virtual void Update(DWORD dt) = 0;
+	virtual void Load() = 0;
+	virtual void Render() = 0;
+	virtual void Unload() = 0;
+	
+	D3DCOLOR GetBackColor();
+	
+};
+
+typedef Scene* LPSCENE;
+
+class ScenceKeyHandler : public KeyEventHandler
+{
+protected:
+	Scene* scence;
+
+public:
+	virtual void KeyState(BYTE* states) = 0;
+	virtual void OnKeyDown(int KeyCode) = 0;
+	virtual void OnKeyUp(int KeyCode) = 0;
+	ScenceKeyHandler(Scene* s) :KeyEventHandler() { scence = s; }
 };
 

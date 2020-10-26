@@ -1,29 +1,9 @@
 #include "Scene.h"
 
-
-Scene::Scene()
+Scene::Scene(int id, LPCWSTR filePath)
 {
-	LoadContent();
-}
-void Scene::Update(DWORD dt)
-{
-
-}
-
-void Scene::LoadContent()
-{
-
-}
-
-
-void Scene::OnKeyDown(int keyCode)
-{
-
-}
-
-void Scene::OnKeyUp(int keyUp)
-{
-
+	this->id = id;
+	this->sceneFilePath = filePath;
 }
 
 D3DCOLOR Scene::GetBackColor()

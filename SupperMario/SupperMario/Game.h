@@ -1,4 +1,7 @@
 #pragma once
+
+#include <unordered_map>
+
 #include <Windows.h>
 #include <d3d9.h>
 #include <d3dx9.h>
@@ -6,17 +9,11 @@
 #define DIRECTINOUT_VERSION 0X0800
 #include <dinput.h>
 
+#include "Scene.h"
+
 #define KEYBOARD_BUFFER_SIZE 1024
 
-class KeyEventHandler
-{
-public:
-	virtual void KeyState(BYTE* state) = 0;
-	virtual void OnKeyDown(int KeyCode) = 0;
-	virtual void OnKeyUp(int KeyCode) = 0;
-};
-
-typedef KeyEventHandler* LPKEYEVENTHANDLER;
+using namespace std;
 
 class Game
 {
@@ -40,11 +37,18 @@ class Game
 	float cam_x = 0.0f;
 	float cam_y = 0.0f;
 
-	/*int backBufferWidth = 0;
-	int backBufferHeight = 0;*/
+	int ScreenWidth;
+	int ScreenHeight;
+
+	unordered_map<int, LPSCENE> scenes;
+	int currentScene;
+
+	void ParseSection_Setting(string line);
+	void ParseSection_Scenes(string line);
 
 public:
-	void InitKeyBoard(LPKEYEVENTHANDLER handler);
+	void InitKeyBoard();
+	void SetKeyHandler(LPKEYEVENTHANDLER handler) { keyHandler = handler; }
 	void Init(HWND hWnd);
 	void Draw(float x, float y, LPDIRECT3DTEXTURE9 texture);
 	void Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom);
@@ -54,6 +58,14 @@ public:
 
 	int IsKeyDown(int KeyCode);
 	void ProcessKeyBoard();
+
+	void Load(LPCWSTR gameFile);
+	LPSCENE GetCurrentScene();
+	
+	void SwitchScene(int scene_id);
+
+	int GetScreenWidth() { return ScreenWidth; }
+	int GetScreenHeight() { return ScreenHeight; }
 
 	LPDIRECT3DDEVICE9 GetDirect3DDevice() { return this->d3ddv; }
 	LPDIRECT3DSURFACE9 GetBackBuffer() { return backBuffer; };

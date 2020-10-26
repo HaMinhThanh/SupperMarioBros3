@@ -1,21 +1,9 @@
-﻿  Camera.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winnt.h(173,1): fatal error C1189: #error:  "No Target Architecture"
-  GameObject.cpp
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\debug.h(13,1): warning C4005: '_W': macro redefinition
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\debug.h(12): message : see previous definition of '_W'
+﻿  PlayScene.cpp
   C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\GameObject.cpp(125,22): error C2228: left of '.push_back' must have class/struct/union
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\GameObject.cpp(125,22): message : type is 'LPANIMATION *'
-  Koopas.cpp
-  main.cpp
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\debug.h(13,1): warning C4005: '_W': macro redefinition
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\debug.h(12): message : see previous definition of '_W'
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(353,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(364,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(374,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(379,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\main.cpp(407,21): warning C4018: '<': signed/unsigned mismatch
-  SceneManager.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-  Generating Code...
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(81,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(103,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(126,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(127,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(250,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(259,20): warning C4018: '<': signed/unsigned mismatch
+  SupperMario.vcxproj -> C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\Debug\SupperMario.exe

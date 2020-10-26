@@ -1,5 +1,17 @@
+#include <iostream>
+#include <fstream>
+
 #include "Game.h"
-#include "debug.h"
+#include "Utils.h"
+
+#include "PlayScene.h"
+
+#define MAX_GAME_LINE 1024
+
+
+#define GAME_FILE_SECTION_UNKNOWN -1
+#define GAME_FILE_SECTION_SETTINGS 1
+#define GAME_FILE_SECTION_SCENES 2
 
 Game* Game::_instance = NULL;
 
@@ -34,7 +46,7 @@ void Game::Init(HWND hWnd)
 
 	if (d3ddv == NULL)
 	{
-		DebugOut(L"[ERROR] CreateDevice failed\n");
+		//DebugOut(L"[ERROR] CreateDevice failed\n");
 		return;
 	}
 
@@ -42,7 +54,7 @@ void Game::Init(HWND hWnd)
 
 	D3DXCreateSprite(d3ddv, &spriteHandler);
 
-	DebugOut(L"[INFO] InitGame done;\n");
+	//DebugOut(L"[INFO] InitGame done;\n");
 
 }
 
@@ -98,11 +110,11 @@ LPDIRECT3DTEXTURE9 Game::LoadTexture(LPCWSTR texturePath)
 
 	if (result != D3D_OK)
 	{
-		DebugOut(L"[ERROR] CreateTextureFromFile failed. File: %s\n", texturePath);
+		//DebugOut(L"[ERROR] CreateTextureFromFile failed. File: %s\n", texturePath);
 		return NULL;
 	}
 
-	DebugOut(L"[INFO] Texture loaded ok from file: %s \n", texture);
+	//DebugOut(L"[INFO] Texture loaded ok from file: %s \n", texture);
 	return texture;
 }
 
@@ -126,7 +138,7 @@ int Game::IsKeyDown(int KeyCode)
 	return(keyStates[KeyCode] & 0x80) > 0;
 }
 
-void Game::InitKeyBoard(LPKEYEVENTHANDLER handler)
+void Game::InitKeyBoard()
 {
 	HRESULT
 		hr = DirectInput8Create(
@@ -137,7 +149,7 @@ void Game::InitKeyBoard(LPKEYEVENTHANDLER handler)
 			NULL);
 	if (hr != DI_OK)
 	{
-		DebugOut(L"[ERROR] DirectInput8Create failed!\n");
+		//DebugOut(L"[ERROR] DirectInput8Create failed!\n");
 		return;
 	}
 
@@ -145,7 +157,7 @@ void Game::InitKeyBoard(LPKEYEVENTHANDLER handler)
 
 	if (hr != DI_OK)
 	{
-		DebugOut(L"[ERROR] CreateDevice failed!\n");
+		//DebugOut(L"[ERROR] CreateDevice failed!\n");
 		return;
 	}
 
@@ -166,47 +178,52 @@ void Game::InitKeyBoard(LPKEYEVENTHANDLER handler)
 	hr = didv->Acquire();
 	if (hr != DI_OK)
 	{
-		DebugOut(L"[ERROR] DINPUT8::Acquire failed!\n");
+		//DebugOut(L"[ERROR] DINPUT8::Acquire failed!\n");
 		return;
 	}
 
-	this->keyHandler = handler;
-
-	DebugOut(L"[INFO] Keyboard has been initialized succcessfully\n");
+	//DebugOut(L"[INFO] Keyboard has been initialized succcessfully\n");
 }
 
 void Game::ProcessKeyBoard()
 {
 	HRESULT hr;
 
+	// Collect all key states first
 	hr = didv->GetDeviceState(sizeof(keyStates), keyStates);
 	if (FAILED(hr))
 	{
-
+		// If the keyboard lost focus or was not acquired then try to get control back.
 		if ((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
 		{
 			HRESULT h = didv->Acquire();
 			if (h == DI_OK)
 			{
-				DebugOut(L"[INFO] Keyboard re-acquired!\n");
+				//DebugOut(L"[INFO] Keyboard re-acquired!\n");
 			}
 			else return;
 		}
 		else
 		{
+			//DebugOut(L"[ERROR] DINPUT::GetDeviceState failed. Error: %d\n", hr);
 			return;
 		}
 	}
 
 	keyHandler->KeyState((BYTE*)&keyStates);
 
+
+
+	// Collect all buffered events
 	DWORD dwElements = KEYBOARD_BUFFER_SIZE;
 	hr = didv->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), keyEvents, &dwElements, 0);
 	if (FAILED(hr))
 	{
+		//DebugOut(L"[ERROR] DINPUT::GetDeviceData failed. Error: %d\n", hr);
 		return;
 	}
 
+	// Scan through all buffered events, check if the key is pressed or released
 	for (DWORD i = 0; i < dwElements; i++)
 	{
 		int KeyCode = keyEvents[i].dwOfs;
@@ -305,4 +322,87 @@ void Game::SweptAABB(
 		nx = 0.0f;
 		dy > 0 ? ny = -1.0f : ny = 1.0f;
 	}
+}
+
+void Game::ParseSection_Setting(string line)
+{
+	vector<string> tokens = split(line);
+
+	if (tokens.size() < 2) return;
+	if (tokens[0] == "start")
+		currentScene = atoi(tokens[1].c_str());
+	else;
+		//DebugOut(L"[ERROR] Unknown game setting %s\n", ToWSTR(tokens[0]).c_str());
+}
+
+void Game::ParseSection_Scenes(string line)
+{
+	vector<string> tokens = split(line);
+
+	if (tokens.size() < 2) return;
+	int id = atoi(tokens[0].c_str());
+	LPCWSTR path = ToLPCWSTR(tokens[1]);
+
+	LPSCENE scene = new PlayScene(id, path);
+	scenes[id] = scene;
+}
+
+/*
+	Load game campaign file and load/initiate first scene
+*/
+void Game::Load(LPCWSTR gameFile)
+{
+	//DebugOut(L"[INFO] Start loading game file : %s\n", gameFile);
+
+	ifstream f;
+	f.open(gameFile);
+	char str[MAX_GAME_LINE];
+
+	// current resource section flag
+	int section = GAME_FILE_SECTION_UNKNOWN;
+
+	while (f.getline(str, MAX_GAME_LINE))
+	{
+		string line(str);
+
+		if (line[0] == '#') continue;	// skip comment lines	
+
+		if (line == "[SETTINGS]") { section = GAME_FILE_SECTION_SETTINGS; continue; }
+		if (line == "[SCENES]") { section = GAME_FILE_SECTION_SCENES; continue; }
+
+		//
+		// data section
+		//
+		switch (section)
+		{
+		case GAME_FILE_SECTION_SETTINGS: ParseSection_Setting(line); break;
+		case GAME_FILE_SECTION_SCENES: ParseSection_Scenes(line); break;
+		}
+	}
+	f.close();
+
+	//DebugOut(L"[INFO] Loading game file : %s has been loaded successfully\n", gameFile);
+
+	SwitchScene(currentScene);
+}
+
+void Game::SwitchScene(int scene_id)
+{
+	//DebugOut(L"[INFO] Switching to scene %d\n", scene_id);
+
+	scenes[currentScene]->Unload();;
+
+	Textures::GetInstance()->Clear();
+	Sprites::GetInstance()->Clear();
+	Animations::GetInstance()->Clear();
+
+	currentScene = scene_id;
+	LPSCENE s = scenes[scene_id];
+	Game::GetInstance()->SetKeyHandler(s->GetKeyEventHandler());
+	s->Load();
+}
+
+LPSCENE Game::GetCurrentScene()
+{
+	return scenes[currentScene];
 }
