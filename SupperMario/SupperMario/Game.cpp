@@ -36,6 +36,9 @@ void Game::Init(HWND hWnd)
 	d3dpp.BackBufferHeight = r.bottom + 1;
 	d3dpp.BackBufferWidth = r.right + 1;
 
+	ScreenHeight = r.bottom + 1;
+	ScreenWidth = r.right + 1;
+
 	d3d->CreateDevice(
 		D3DADAPTER_DEFAULT,
 		D3DDEVTYPE_HAL,
@@ -405,4 +408,24 @@ void Game::SwitchScene(int scene_id)
 LPSCENE Game::GetCurrentScene()
 {
 	return scenes[currentScene];
+}
+
+void Game::SetScreenWidth(int width)
+{
+	ScreenWidth = width;
+}
+
+void Game::SetScreenHeight(int height)
+{
+	ScreenHeight = height;
+}
+
+int Game::GetScreenWidth()
+{
+	return ScreenWidth;
+}
+
+int Game::GetScreenHeight()
+{
+	return ScreenHeight;
 }

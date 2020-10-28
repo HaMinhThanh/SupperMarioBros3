@@ -88,9 +88,7 @@ public:
 	void SetX(float x);
 	void SetY(float y);
 	void SetVx(float vx);
-	void SetVy(float vy);
-	int GetHeight();
-	int GetWidth();	
+	void SetVy(float vy);	
 
 	void RenderBoundingBox();
 

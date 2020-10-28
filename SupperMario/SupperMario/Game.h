@@ -64,8 +64,11 @@ public:
 	
 	void SwitchScene(int scene_id);
 
-	int GetScreenWidth() { return ScreenWidth; }
-	int GetScreenHeight() { return ScreenHeight; }
+	void SetScreenWidth(int width);
+	void SetScreenHeight(int height);
+
+	int GetScreenWidth();
+	int GetScreenHeight();
 
 	LPDIRECT3DDEVICE9 GetDirect3DDevice() { return this->d3ddv; }
 	LPDIRECT3DSURFACE9 GetBackBuffer() { return backBuffer; };

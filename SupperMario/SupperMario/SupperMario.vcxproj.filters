@@ -33,9 +33,6 @@
     <ClCompile Include="Brick.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
@@ -63,6 +60,30 @@
     <ClCompile Include="Utils.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioData.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioFalling.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioIdle.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioJumping.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioState.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioWalking.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -75,9 +96,6 @@
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Brick.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
@@ -103,6 +121,30 @@
     </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioWalking.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioState.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioJumping.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioIdle.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioFalling.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioData.h">
+      <Filter>Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

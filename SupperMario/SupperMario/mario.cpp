@@ -181,12 +181,34 @@ void Mario::Reset()
 	SetLevel(MARIO_LEVEL_BIG);
 	SetPosition(start_x, start_y);
 	SetSpeed(0, 0);
+}
 
-	/*isWalking = 0;
-	isRunning = 0;
-	isJumping = 0;
-	isFlying = 0;
-	isFalling = 0;
-	isKicking = 0;
-	isHolding = 0;*/
+int Mario::GetLevel()
+{
+	return level;
+}
+
+void Mario::SetStateName(MarioState* newState)
+{
+
+	delete this->marioData->state;
+
+	this->marioData->state = newState;
+
+	this->changeAnimation(newState->GetState());
+}
+
+void Mario::changeAnimation(MarioState::StateName state)
+{
+	this->marioData->state->changeAnimation();
+}
+
+int Mario::GetAni()
+{
+	return currentAni;
+}
+
+void Mario::SetAni(int ani)
+{
+	currentAni = ani;
 }

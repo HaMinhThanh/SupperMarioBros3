@@ -163,33 +163,22 @@ float GameObject::GetVy()
 
 void GameObject::SetX(float X)
 {
-	x = X;
+	this->x = X;
 }
 
 void GameObject::SetY(float Y)
 {
-	y = Y;
+	this->y = Y;
 }
 
 void GameObject::SetVx(float VX)
 {
-	vx = VX;
+	this->vx = VX;
 }
 
 void GameObject::SetVy(float VY)
 {
-	vy = VY;
+	this->vy = VY;
 }
-
-int GameObject::GetHeight()
-{
-	return 0;
-}
-
-int GameObject::GetWidth()
-{
-	return 0;
-}
-
 
 

@@ -242,7 +242,7 @@ void PlayScene::Update(DWORD dt)
 	cx -= game->GetScreenWidth() / 2;
 	cy -= game->GetScreenHeight() / 2;
 
-	Game::GetInstance()->SetCamPosition(cx, 0);
+	Game::GetInstance()->SetCamPosition(cx, 432- game->GetScreenHeight());
 }
 
 void PlayScene::Render()

@@ -2,7 +2,8 @@
 [TEXTURES]
 0	textures\mario.png	255	255	255
 20	textures\misc.png	176	224	248
-
+40 	textures\map.png	255	255	255
+							
 
 # id	left	top	right	bottom	texture_id
 [SPRITES]

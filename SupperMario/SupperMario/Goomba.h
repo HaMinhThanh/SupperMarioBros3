@@ -20,6 +20,8 @@ class Goomba: public GameObject
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
 public:
+
+	Goomba();
 	virtual void SetState(int state);
 };
 

@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Brick.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Goomba.cpp" />
@@ -153,6 +154,12 @@
     <ClCompile Include="Koopas.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mario.cpp" />
+    <ClCompile Include="MarioData.cpp" />
+    <ClCompile Include="MarioFalling.cpp" />
+    <ClCompile Include="MarioIdle.cpp" />
+    <ClCompile Include="MarioJumping.cpp" />
+    <ClCompile Include="MarioState.cpp" />
+    <ClCompile Include="MarioWalking.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sprites.cpp" />
@@ -162,12 +169,19 @@
   <ItemGroup>
     <ClInclude Include="Animations.h" />
     <ClInclude Include="Brick.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Goomba.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Koopas.h" />
     <ClInclude Include="mario.h" />
+    <ClInclude Include="MarioData.h" />
+    <ClInclude Include="MarioFalling.h" />
+    <ClInclude Include="MarioIdle.h" />
+    <ClInclude Include="MarioJumping.h" />
+    <ClInclude Include="MarioState.h" />
+    <ClInclude Include="MarioWalking.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Sprites.h" />

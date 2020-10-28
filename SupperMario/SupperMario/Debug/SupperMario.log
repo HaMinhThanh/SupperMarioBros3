@@ -1,9 +1,26 @@
-﻿  PlayScene.cpp
+﻿  Game.cpp
+  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\Game.cpp(261,37): warning C4554: '|': check operator precedence for possible error; use parentheses to clarify precedence
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\Game.cpp(289,25): warning C4305: '=': truncation from '__int64' to 'float'
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\Game.cpp(290,23): warning C4305: '=': truncation from '__int64' to 'float'
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\Game.cpp(300,25): warning C4305: '=': truncation from '__int64' to 'float'
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\Game.cpp(301,23): warning C4305: '=': truncation from '__int64' to 'float'
+  MarioFalling.cpp
+  MarioIdle.cpp
+  MarioJumping.cpp
+  MarioWalking.cpp
+  PlayScene.cpp
   C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
 C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(81,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(103,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(126,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(127,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(245,45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(250,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(259,20): warning C4018: '<': signed/unsigned mismatch
+  main.cpp
+  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  mario.cpp
+  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  Generating Code...
   SupperMario.vcxproj -> C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\Debug\SupperMario.exe

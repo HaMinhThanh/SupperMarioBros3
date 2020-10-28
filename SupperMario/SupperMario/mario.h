@@ -1,5 +1,11 @@
 #pragma once
+#include <d3dx9.h>
 #include "GameObject.h"
+#include "Animations.h"
+#include "Camera.h"
+#include "MarioData.h"
+#include "MarioState.h"
+#include "MarioWalking.h"
 
 #define MARIO_WALKING_SPEED		0.15f 
 //0.1f
@@ -64,21 +70,35 @@ public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	virtual void Render();
 
-	void Idle();
-	void Walk();
-	void Run();
-	void Jump();
-	void Fly();
-	void Fall();
-	void Hold();
-	void Kick();
-
 	void SetState(int state);
+
+	void SetStateName(MarioState* newState);
+
 	void SetLevel(int lev) { level = lev; }
+	int GetLevel();
+
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 
 	void Reset();
 
+	int GetAni();
+	void SetAni(int ani);
+
+	
+
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
+
+	void changeAnimation(MarioState::StateName state);
+protected:
+	MarioData* marioData;
+
+	MarioState::StateName CurrentState;
+
+	bool allowJump;
+
+	int currentAni;
+
+	
+
 };
 
