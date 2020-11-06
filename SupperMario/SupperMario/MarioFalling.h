@@ -10,14 +10,20 @@ public:
 
 	void Update(DWORD dt);
 
-	void HandleKeyboard(std::map<int, bool> keys);
+	void HandleKeyboard(int keys);
 
-	void changeAnimation();
+	virtual void changeAnimation();
 
-	StateName GetState();
+	virtual StateName GetState();
 
 protected:
+	float acceleratorY;
+	float acceleratorX;
+
+	//neu nhu van toc ban dau = khong thi se khong cho giam toc do
 	bool allowMoveX;
+
+	bool isLeftOrRightKeyPressed;
 
 };
 

@@ -2,10 +2,15 @@
 #include "Mario.h"
 #include "MarioFalling.h"
 #include "MarioIdle.h"
+#include "MarioDie.h"
+#include <dinput.h>
 
 MarioWalking::MarioWalking(MarioData* marioData)
 {
 	this->mMarioData = marioData;
+
+	this->mMarioData->mario->allowMoveLeft = true;
+	this->mMarioData->mario->allowMoveRight = true;
 }
 
 MarioWalking::~MarioWalking()
@@ -13,21 +18,28 @@ MarioWalking::~MarioWalking()
 
 }
 
-void MarioWalking::HandleKeyboard(std::map<int, bool> keys)
+void MarioWalking::HandleKeyboard(int keys)
 {
-	if (keys[VK_RIGHT])
-	{
-		this->mMarioData->mario->SetVx(MARIO_WALKING_SPEED);
-	}
-	else if (keys[VK_LEFT])
-	{
-		this->mMarioData->mario->SetVx(-MARIO_WALKING_SPEED);
-	}
-	else
-	{
-		this->mMarioData->mario->SetStateName(new MarioIdle(this->mMarioData));
-		return;
-	}
+    Game* game = Game::GetInstance();
+    if (game->IsKeyDown(DIK_RIGHT))
+    {
+        if (mMarioData->mario->allowMoveRight)
+        {            
+			this->mMarioData->mario->SetVx(PLAYER_MAX_RUNNING_SPEED);
+        }
+    }
+    else if (game->IsKeyDown(DIK_LEFT))
+    {
+        if (mMarioData->mario->allowMoveLeft)
+        {           
+            this->mMarioData->mario->SetVx(-PLAYER_MAX_RUNNING_SPEED);     
+        }
+    }
+    else
+    {
+        this->mMarioData->mario->SetStateName(new MarioIdle(this->mMarioData));
+        return;
+    }
 }
 
 MarioState::StateName MarioWalking::GetState()
@@ -37,23 +49,26 @@ MarioState::StateName MarioWalking::GetState()
 
 void MarioWalking::changeAnimation()
 {
+
 	if (this->mMarioData->mario->GetLevel() == MARIO_LEVEL_BIG)
-		if (this->mMarioData->mario->GetVx() == 0)
-			if (this->mMarioData->mario->nx > 0)
-				this->mMarioData->mario->SetAni(MARIO_ANI_BIG_IDLE_RIGHT);
-			else
-				this->mMarioData->mario->SetAni(MARIO_ANI_BIG_IDLE_LEFT);
-
-
-		/*if (level == MARIO_LEVEL_BIG)
-		{
-			if (vx == 0)
-			{
-				if (nx > 0) ani = MARIO_ANI_BIG_IDLE_RIGHT;
-				else ani = MARIO_ANI_BIG_IDLE_LEFT;
-			}
-			else if (vx > 0)
-				ani = MARIO_ANI_BIG_WALKING_RIGHT;
-			else ani = MARIO_ANI_BIG_WALKING_LEFT;
-		}*/
+	{
+		if (mMarioData->mario->GetVx() > 0)
+			mMarioData->mario->SetAni(MARIO_ANI_BIG_WALKING_RIGHT);
+		else 
+			mMarioData->mario->SetAni(MARIO_ANI_BIG_WALKING_LEFT);
+	}
+	else if (this->mMarioData->mario->GetLevel() == MARIO_LEVEL_SMALL)
+	{
+		if (mMarioData->mario->GetVx() > 0)
+			mMarioData->mario->SetAni(MARIO_ANI_SMALL_WALKING_RIGHT);
+		else
+			mMarioData->mario->SetAni(MARIO_ANI_SMALL_WALKING_LEFT);
+	}
+	else if (this->mMarioData->mario->GetLevel() == MARIO_LEVEL_TAIL)
+	{
+		if (mMarioData->mario->GetVx() > 0)
+			mMarioData->mario->SetAni(MARIO_ANI_TAIL_WALKING_RIGHT);
+		else
+			mMarioData->mario->SetAni(MARIO_ANI_TAIL_WALKING_LEFT);
+	}
 }

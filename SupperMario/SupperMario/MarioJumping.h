@@ -9,16 +9,18 @@ public:
 	MarioJumping(MarioData* marioData);
 	~MarioJumping();
 
-	void Update(float dt);
+	void Update(DWORD dt);
 
-	void HandleKeyboard(std::map<int, bool> keys);
+	virtual void HandleKeyboard(int keys);
 
-	StateName GetState();
+	virtual StateName GetState();
 
-	void changeAnimation();
+	virtual void changeAnimation();
 
 protected:
 	float acceleratorY;
 	float acceleratorX;
+	bool noPressed;
+	bool allowMoveRight, allowMoveLeft;
 };
 

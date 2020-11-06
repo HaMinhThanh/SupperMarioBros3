@@ -9,11 +9,11 @@ public:
 	MarioWalking(MarioData* marioData);
 	~MarioWalking();
 
-	void HandleKeyboard(std::map<int, bool> keys);
+	void HandleKeyboard(int keys);
 
-	StateName GetState();
+	virtual StateName GetState();
 
-	void changeAnimation();
+	virtual void changeAnimation();
 
 protected:
 	float acceleratorX;

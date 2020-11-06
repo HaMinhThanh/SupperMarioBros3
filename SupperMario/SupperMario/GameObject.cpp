@@ -73,7 +73,7 @@ void GameObject::FilterCollision(
 	vector<LPCOLLISIONEVENT>& coEvents,
 	vector<LPCOLLISIONEVENT>& coEventsResult,
 	float& min_tx, float& min_ty,
-	float& nx, float& ny)
+	float& nx, float& ny, float& rdx, float& rdy)
 {
 	min_tx = 1.0f;
 	min_ty = 1.0f;
@@ -95,12 +95,14 @@ void GameObject::FilterCollision(
 			min_tx = c->t;
 			nx = c->nx;
 			min_ix = i;
+			rdx = c->dx;
 		}
 		if (c->t < min_ty && c->ny != 0)
 		{
 			min_ty = c->t;
 			ny = c->ny;
 			min_iy = i;
+			rdy = c->dy;
 		}
 	}
 
@@ -161,6 +163,11 @@ float GameObject::GetVy()
 	return vy;
 }
 
+float GameObject::GetNx()
+{
+	return nx;
+}
+
 void GameObject::SetX(float X)
 {
 	this->x = X;
@@ -180,5 +187,27 @@ void GameObject::SetVy(float VY)
 {
 	this->vy = VY;
 }
+
+void GameObject::AddVx(float vx)
+{
+	this->vx += vx;
+}
+
+void GameObject::AddVy(float vy)
+{
+	this->vy += vy;
+}
+
+void GameObject::ReSetAnimationSet(int re)
+{
+	AnimationSets* animation_sets = AnimationSets::GetInstance();
+
+	LPANIMATION_SET ani_set = animation_sets->Get(re);
+
+	delete this->animation_set;
+
+	this->SetAnimationSet(ani_set);
+}
+
 
 

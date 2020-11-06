@@ -19,6 +19,18 @@
     <Filter Include="Objects">
       <UniqueIdentifier>{5e0d8b88-aab2-4c13-8201-8246256ce4d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\Enemy">
+      <UniqueIdentifier>{b73a5816-93e2-42de-80d7-af9a8c0e9caa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Brick">
+      <UniqueIdentifier>{721433f6-e714-4e47-bb71-4dba543e7d8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\State">
+      <UniqueIdentifier>{ad06b461-ed19-442f-ad92-4ae4f3b2c5dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Item">
+      <UniqueIdentifier>{56ca6e67-ae05-4864-805d-acaa92410c2b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -30,16 +42,7 @@
     <ClCompile Include="Textures.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
-    <ClCompile Include="Brick.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Goomba.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Koopas.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
@@ -69,20 +72,59 @@
     <ClCompile Include="MarioData.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Koopas.cpp">
+      <Filter>Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Goomba.cpp">
+      <Filter>Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Venus.cpp">
+      <Filter>Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Brick.cpp">
+      <Filter>Objects\Brick</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioDie.cpp">
+      <Filter>Objects\State</Filter>
+    </ClCompile>
     <ClCompile Include="MarioFalling.cpp">
-      <Filter>Objects</Filter>
+      <Filter>Objects\State</Filter>
     </ClCompile>
     <ClCompile Include="MarioIdle.cpp">
-      <Filter>Objects</Filter>
+      <Filter>Objects\State</Filter>
     </ClCompile>
     <ClCompile Include="MarioJumping.cpp">
-      <Filter>Objects</Filter>
+      <Filter>Objects\State</Filter>
     </ClCompile>
     <ClCompile Include="MarioState.cpp">
-      <Filter>Objects</Filter>
+      <Filter>Objects\State</Filter>
     </ClCompile>
     <ClCompile Include="MarioWalking.cpp">
-      <Filter>Objects</Filter>
+      <Filter>Objects\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Coin.cpp">
+      <Filter>Objects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Leaf.cpp">
+      <Filter>Objects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="BrickColor.cpp">
+      <Filter>Objects\Brick</Filter>
+    </ClCompile>
+    <ClCompile Include="BrickGold.cpp">
+      <Filter>Objects\Brick</Filter>
+    </ClCompile>
+    <ClCompile Include="BrickQuesion.cpp">
+      <Filter>Objects\Brick</Filter>
+    </ClCompile>
+    <ClCompile Include="Mushroom.cpp">
+      <Filter>Objects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="HidenWall.cpp">
+      <Filter>Objects\Brick</Filter>
+    </ClCompile>
+    <ClCompile Include="Star.cpp">
+      <Filter>Objects\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,16 +137,7 @@
     <ClInclude Include="Textures.h">
       <Filter>Framework</Filter>
     </ClInclude>
-    <ClInclude Include="Brick.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Goomba.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Koopas.h">
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="mario.h">
@@ -128,23 +161,62 @@
     <ClInclude Include="Game.h">
       <Filter>Framework</Filter>
     </ClInclude>
-    <ClInclude Include="MarioWalking.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="MarioState.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="MarioJumping.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="MarioIdle.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="MarioFalling.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
     <ClInclude Include="MarioData.h">
       <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Koopas.h">
+      <Filter>Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Goomba.h">
+      <Filter>Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Venus.h">
+      <Filter>Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Brick.h">
+      <Filter>Objects\Brick</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioDie.h">
+      <Filter>Objects\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioFalling.h">
+      <Filter>Objects\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioIdle.h">
+      <Filter>Objects\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioJumping.h">
+      <Filter>Objects\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioState.h">
+      <Filter>Objects\State</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioWalking.h">
+      <Filter>Objects\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Leaf.h">
+      <Filter>Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Coin.h">
+      <Filter>Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="BrickColor.h">
+      <Filter>Objects\Brick</Filter>
+    </ClInclude>
+    <ClInclude Include="BrickGold.h">
+      <Filter>Objects\Brick</Filter>
+    </ClInclude>
+    <ClInclude Include="BrickQuesion.h">
+      <Filter>Objects\Brick</Filter>
+    </ClInclude>
+    <ClInclude Include="Mushroom.h">
+      <Filter>Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="HidenWall.h">
+      <Filter>Objects\Brick</Filter>
+    </ClInclude>
+    <ClInclude Include="Star.h">
+      <Filter>Objects\Item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

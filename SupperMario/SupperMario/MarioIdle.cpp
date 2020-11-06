@@ -3,6 +3,7 @@
 #include "MarioFalling.h"
 #include "MarioWalking.h"
 #include "MarioData.h"
+#include <dinput.h>
 
 MarioIdle::MarioIdle(MarioData* marioData)
 {
@@ -16,14 +17,20 @@ MarioIdle::~MarioIdle()
 
 }
 
-void MarioIdle::HandleKeyboard(std::map<int, bool> keys)
+void MarioIdle::HandleKeyboard(int keys)
 {
-	if (keys[VK_LEFT] || keys[VK_RIGHT]) 
-	{
-		//this->mMarioData->mario->SetStateName(new MarioWalking(this->mMarioData));
-		return;
-	}
+	Game* game = Game::GetInstance();
 
+	if (game->IsKeyDown(DIK_RIGHT) ) 
+	{
+		this->mMarioData->mario->SetStateName(new MarioWalking(this->mMarioData));
+		this->mMarioData->mario->SetVx(PLAYER_MAX_RUNNING_SPEED);
+	}
+	else if (game->IsKeyDown(DIK_LEFT))
+	{
+		this->mMarioData->mario->SetStateName(new MarioWalking(this->mMarioData));
+		this->mMarioData->mario->SetVx(-PLAYER_MAX_RUNNING_SPEED);
+	}
 }
 
 MarioState::StateName MarioIdle::GetState()
@@ -33,5 +40,25 @@ MarioState::StateName MarioIdle::GetState()
 
 void MarioIdle::changeAnimation()
 {
-
+	if (this->mMarioData->mario->GetLevel() == MARIO_LEVEL_BIG)
+	{
+		if (mMarioData->mario->GetNx() > 0)
+			mMarioData->mario->SetAni(MARIO_ANI_BIG_IDLE_RIGHT);
+		else
+			mMarioData->mario->SetAni(MARIO_ANI_BIG_IDLE_LEFT);
+	}
+	else if (this->mMarioData->mario->GetLevel() == MARIO_LEVEL_SMALL)
+	{
+		if (mMarioData->mario->GetNx() > 0)
+			mMarioData->mario->SetAni(MARIO_ANI_SMALL_IDLE_RIGHT);
+		else
+			mMarioData->mario->SetAni(MARIO_ANI_SMALL_IDLE_LEFT);
+	}
+	else if (this->mMarioData->mario->GetLevel() == MARIO_LEVEL_TAIL)
+	{
+		if (mMarioData->mario->GetNx() > 0)
+			mMarioData->mario->SetAni(MARIO_ANI_TAIL_IDLE_RIGHT);
+		else
+			mMarioData->mario->SetAni(MARIO_ANI_TAIL_IDLE_LEFT);
+	}
 }

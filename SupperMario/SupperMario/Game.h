@@ -91,6 +91,8 @@ public:
 		float& nx,
 		float& ny);
 
+	bool checkAABB(float b1left, float b1top, float b1right, float b1bottom, float b2left, float b2top, float b2right, float b2bottom);
+
 	void SetCamPosition(float x, float y) { cam_x = x; cam_y = y; }
 
 	static Game* GetInstance();

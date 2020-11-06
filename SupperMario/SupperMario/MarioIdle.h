@@ -8,11 +8,11 @@ public:
 	MarioIdle(MarioData* marioData);
 	~MarioIdle();
 
-	void HandleKeyboard(std::map<int, bool> keys);
+	void HandleKeyboard(int keys);
 
-	StateName GetState();	
+	virtual StateName GetState();	
 
-	void changeAnimation();
+	virtual void changeAnimation();
 
 protected:
 

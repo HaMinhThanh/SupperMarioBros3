@@ -20,7 +20,7 @@ void MarioState::Update(DWORD dt)
 
 }
 
-void MarioState::HandleKeyboard(std::map<int, bool> keys)
+void MarioState::HandleKeyboard(int keys)
 {
 
 }

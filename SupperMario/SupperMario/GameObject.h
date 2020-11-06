@@ -65,6 +65,8 @@ public:
 
 	int id;
 
+	bool isFinish;
+
 	DWORD dt;
 
 	LPANIMATION_SET animation_set;
@@ -85,14 +87,22 @@ public:
 	float GetY();
 	float GetVx();
 	float GetVy();
+	float GetNx();
+
 	void SetX(float x);
 	void SetY(float y);
 	void SetVx(float vx);
 	void SetVy(float vy);	
 
+	void AddVx(float vx);
+	void AddVy(float vy);
+
+	bool GetFinish() { return isFinish; }
+
 	void RenderBoundingBox();
 
 	void SetAnimationSet(LPANIMATION_SET ani_set) { animation_set = ani_set; }
+	void ReSetAnimationSet(int re);
 
 	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coO);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObject, vector<LPCOLLISIONEVENT>& coEvents);
@@ -102,7 +112,9 @@ public:
 		float &min_tx,
 		float &min_ty,
 		float &nx,
-		float &ny);
+		float &ny,
+		float& rdx, 
+		float& rdy);
 	
 	GameObject();
 

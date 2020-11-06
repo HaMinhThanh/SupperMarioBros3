@@ -33,7 +33,7 @@ typedef Scene* LPSCENE;
 
 class ScenceKeyHandler : public KeyEventHandler
 {
-protected:
+public:
 	Scene* scence;
 
 public:
