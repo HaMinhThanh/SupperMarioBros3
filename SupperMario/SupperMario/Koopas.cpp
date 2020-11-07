@@ -22,10 +22,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	GameObject::Update(dt, coObjects);
 
-	if (KOOPAS_STATE_BE_FOLLOW_MARIO) {}
-	else {
-		vy += KOOPAS_GRAVITY * dt;
-	}
+	vy += KOOPAS_GRAVITY * dt;
 
 	vector<LPGAMEOBJECT> Bricks;
 	Bricks.clear();
@@ -85,8 +82,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		else
 			SetState(KOOPAS_STATE_WALKING_LEFT);
-	}
-
+	}	
 }
 
 void Koopas::Render()

@@ -71,6 +71,9 @@
 #define MARIO_ANI_WALKING_TAIL_HOLD_RIGHT	43
 #define MARIO_ANI_WALKING_TAIL_HOLD_LEFT	44
 
+#define MARIO_ANI_SWING_RIGHT				45
+#define MARIO_ANI_SWING_LEFT				46	
+
 
 #define	MARIO_LEVEL_SMALL	1
 #define	MARIO_LEVEL_BIG		2
@@ -85,7 +88,7 @@
 #define MARIO_SMALL_BBOX_WIDTH  13
 #define MARIO_SMALL_BBOX_HEIGHT 15
 
-#define MARIO_TAIL_BBOX_WIDTH  22
+#define MARIO_TAIL_BBOX_WIDTH  23
 #define MARIO_TAIL_BBOX_HEIGHT 27
 
 #define MARIO_UNTOUCHABLE_TIME 5000
@@ -114,14 +117,15 @@ public:
 	bool isTurnToTail;
 
 	bool isPressed;
-
 	bool isAllowKick;
-
 	bool isCollisionOnAxisY;
-
 	bool isAllowHold;
-
 	bool isHoldingItem;
+	bool isAllowSwing;
+	bool isAutoGo;
+	bool isUseFire;
+	bool isSwing;
+
 
 	Mario(float x = 0.0f, float y = 0.0f);
 

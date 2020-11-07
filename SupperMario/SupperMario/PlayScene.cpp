@@ -32,14 +32,16 @@ using namespace std;
 // OBJECT
 #define OBJECT_TYPE_MARIO	0
 #define OBJECT_TYPE_BRICK	1
-#define OBJECT_TYPE_GOOMBA	2
-#define OBJECT_TYPE_KOOPAS	3
+#define OBJECT_TYPE_BRICKQUESION	2
+#define OBJECT_TYPE_BRICKGOLD	3
 #define OBJECT_TYPE_VENUS	4
 #define OBJECT_TYPE_COLORBRICK	5
 
 // ITEMS
 #define ITEM_TYPE_COIN		1
 #define ITEM_TYPE_LEAF		2	
+#define ITEM_TYPE_MUSHROOM	3
+#define ITEM_TYPE_STAR		4
 
 // ENEMY
 #define ENEMY_TYPE_GOOMBA 1
@@ -142,6 +144,8 @@ void PlayScene::ParseSection_Animation_Sets(string line)
 */
 void PlayScene::ParseSection_Objects(string line)
 {
+	bool hd = false;
+	int ani;
 	vector<string> tokens = split(line);
 
 	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
@@ -157,6 +161,7 @@ void PlayScene::ParseSection_Objects(string line)
 	AnimationSets* animation_sets = AnimationSets::GetInstance();
 
 	GameObject* obj = NULL;
+	GameObject* item = NULL;
 
 	switch (object_type)
 	{
@@ -174,6 +179,30 @@ void PlayScene::ParseSection_Objects(string line)
 	case OBJECT_TYPE_BRICK:
 		obj = new Brick();
 		break;
+	case OBJECT_TYPE_BRICKQUESION:
+		obj = new BrickQuesion();
+		if (x == 240 && y == 304) {
+			item = new Mushroom();
+			ani = 37;
+		}else if(x == 704 && y == 352) {
+			item = new Leaf();
+			ani = 36;
+		}
+		else {
+			item = new Coin();
+			ani = 32;
+		}
+		
+		hd = true;
+		break;
+	case OBJECT_TYPE_BRICKGOLD:
+		obj = new BrickGold();
+
+		item = new Coin();
+
+		ani = 32;
+		hd = true;
+		break;
 
 	default:
 		//DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
@@ -182,11 +211,19 @@ void PlayScene::ParseSection_Objects(string line)
 
 	// General object setup
 	obj->SetPosition(x, y);
+	if (hd == true) {
+		item->SetPosition(x, y);
+		LPANIMATION_SET ani_set1 = animation_sets->Get(ani);
+		item->SetAnimationSet(ani_set1);
+		Items.push_back(item);
+	}	
 
-	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);	
 
-	obj->SetAnimationSet(ani_set);
+	obj->SetAnimationSet(ani_set);	
+
 	Objects.push_back(obj);
+	
 }
 
 void PlayScene::ParseSection_Items(string line)
@@ -215,6 +252,10 @@ void PlayScene::ParseSection_Items(string line)
 
 	case ITEM_TYPE_LEAF:
 		item = new Leaf();
+		break;
+
+	case ITEM_TYPE_STAR:
+		item = new Star();
 		break;
 	
 	default:
@@ -379,6 +420,7 @@ void PlayScene::Load()
 
 void PlayScene::Update(DWORD dt)
 {
+
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
 
@@ -398,6 +440,12 @@ void PlayScene::Update(DWORD dt)
 	for (size_t i = 0; i < Objects.size(); i++)
 	{
 		Objects[i]->Update(dt, &coObjects);
+	}
+	useFireBall();
+
+	for (size_t i = 0; i < Weapon.size(); i++)
+	{
+		Weapon[i]->Update(dt, &coObjects);
 	}
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
@@ -422,14 +470,16 @@ void PlayScene::Update(DWORD dt)
 		cy = 432 - game->GetScreenHeight();
 
 	Game::GetInstance()->SetCamPosition(cx, cy);
-
+	
 	checkCollisionWithEnemy();
+	checkCollisionWithBrick();
 	checkCollisionWithColorBlock();
 	checkCollisionWithItem();
 }
 
 void PlayScene::Render()
-{
+{	
+
 	Sprites::GetInstance()->Get(1)->Draw(0, 0);
 
 	for (int i = 0; i < Items.size(); i++)
@@ -440,6 +490,11 @@ void PlayScene::Render()
 
 	for (int i = 0; i < ColorBlock.size(); i++)
 		ColorBlock[i]->Render();
+
+	for (size_t i = 0; i < Weapon.size(); i++)
+	{
+		Weapon[i]->Render();
+	}
 
 	for (int i = 0; i < Objects.size(); i++)
 		Objects[i]->Render();
@@ -463,10 +518,14 @@ void PlayScene::Unload()
 	for (int i = 0; i < ColorBlock.size(); i++)
 		delete ColorBlock[i];
 
+	for (int i = 0; i < Weapon.size(); i++)
+		delete Weapon[i];
+
 	Objects.clear();
 	Items.clear();
 	Enemy.clear();
 	ColorBlock.clear();
+	Weapon.clear();
 
 	mario = NULL;
 
@@ -523,10 +582,25 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 
 	case DIK_H:
 		mario->isAllowHold = true;
+		break;
 
 	case DIK_D:
 		mario->isHoldingItem = false;
+		break;
+
+	case DIK_X:
+		if (mario->level == MARIO_LEVEL_TAIL)
+			mario->isAllowSwing = true;
+		break;
+	case DIK_F:
+		mario->isUseFire = true;
+		break;
 	}
+}
+
+void PlayScenceKeyHandler::useWeapon()
+{
+	
 }
 
 void PlayScenceKeyHandler::KeyState(BYTE* states)
@@ -564,6 +638,18 @@ void PlayScene::checkCollisionWithItem()
 			if (mario->isCollisionWithItem(Items[i]) == true) // có va chạm
 			{
 				Items[i]->isFinish = true;
+				GameObject* obj = dynamic_cast<GameObject*> (Items[i]);
+				if (dynamic_cast<Star*>(obj)) {
+					mario->isAutoGo = true;
+				}
+				else if (dynamic_cast<Leaf*>(obj)) {
+					if (mario->level != MARIO_LEVEL_TAIL)
+						mario->level = MARIO_LEVEL_TAIL;
+				}
+				else if (dynamic_cast<Mushroom*>(obj)) {
+					if (mario->level != MARIO_LEVEL_BIG)
+						mario->level = MARIO_LEVEL_BIG;
+				}
 			}
 		}
 	}
@@ -698,5 +784,77 @@ void PlayScene::checkCollisionWithColorBlock()
 		}
 		else
 			mario->isCollisionOnAxisY = false;
+	}
+}
+
+void PlayScene::useFireBall()
+{
+	if (mario->isUseFire) {
+		float x = mario->GetX();
+		float y = mario->GetY();
+
+		GameObject* weapon = NULL;
+		weapon = new FireBall();
+
+		weapon->SetPosition(x, y);
+
+
+		AnimationSets* animation_sets = AnimationSets::GetInstance();
+		LPANIMATION_SET ani_set = animation_sets->Get(35);
+
+		weapon->SetAnimationSet(ani_set);
+
+		Weapon.push_back(weapon);
+
+		if (mario->vx > 0 || mario->nx > 0)
+			weapon->SetState(FIREBALL_GOING_RIGHT);
+		else
+			weapon->SetState(FIREBALL_GOING_LEFT);
+
+		mario->isUseFire = false;
+	}
+}
+
+void PlayScene::checkCollisionWithBrick()
+{
+	for (UINT i = 0; i < Objects.size(); i++) {
+
+		GameObject* obj = dynamic_cast<GameObject*> (Objects[i]);
+
+		if (dynamic_cast<BrickGold*>(obj)) {
+
+			LPCOLLISIONEVENT e = mario->SweptAABBEx(obj);
+			if (e->t > 0 && e->t <= 1)	{
+				
+
+				if (obj->GetFinish() == false && mario->isAllowSwing == true) {
+					
+					mario->isSwing = true;
+				}
+
+				if (mario->isSwing) {
+					obj->isFinish = true;
+				}
+			}
+		}
+		else if (dynamic_cast<BrickQuesion*>(obj)) {
+
+			if (obj->isFinish == false )
+			{
+				LPCOLLISIONEVENT e = mario->SweptAABBEx(obj);
+
+				if (e->t > 0 && e->t <= 1 && e->ny >0 ) {
+					
+					obj->isFinish = true;
+
+					for (UINT i = 0; i < Items.size(); i++) {
+						if (Items[i]->GetX() == obj->GetX() && Items[i]->GetY() == obj->GetY()) {
+							Items[i]->y -= 16;
+						}
+					}
+				}
+			}
+		}
+		
 	}
 }

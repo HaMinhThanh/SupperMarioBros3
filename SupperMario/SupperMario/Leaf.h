@@ -8,6 +8,9 @@
 class Leaf: public GameObject
 {
 public:
+	Leaf();
+	~Leaf();
+
 	virtual void Render();
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 };

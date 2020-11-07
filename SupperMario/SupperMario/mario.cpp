@@ -12,6 +12,9 @@
 //#include "MarioRunning.h"
 
 #include "Goomba.h"
+#include "BrickGold.h"
+#include "BrickQuesion.h"
+#include "PlayScene.h"
 
 Mario::Mario(float x, float y) :GameObject()
 {
@@ -41,6 +44,14 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (isTurnToTail) {
 		y -= MARIO_TAIL_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT ;
 		isTurnToTail = false;
+	}
+
+	if (isAutoGo)
+		x += 1;
+
+	if (x >= 2816&& isAutoGo) {
+		isAutoGo = false;
+		Reset();
 	}
 
 	GameObject::Update(dt);
@@ -81,24 +92,46 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		x += min_tx * dx + nx * 0.04f;
 		y += min_ty * dy + ny * 0.04f;
 
-		/*for (UINT i = 0; i < coEventsResult.size(); i++)
-		{
-			LPCOLLISIONEVENT e = coEventsResult[i];
+		//for (UINT i = 0; i < coEventsResult.size(); i++)
+		//{
+		//	LPCOLLISIONEVENT e = coEventsResult[i];
 
-			if (dynamic_cast<BrickColor*>(e->obj)) {
+		//	if (dynamic_cast<BrickGold*>(e->obj)) {
 
-				nx = 0;
-				if (ny == 1)
-					ny = 0;
-				x += min_tx * dx + nx * 0.04f;
-				y += min_ty * dy + ny * 0.04f;
-			}
-			else {
-				x += min_tx * dx + nx * 0.04f;
-				y += min_ty * dy + ny * 0.04f;
-			}
+		//		BrickGold* brg = dynamic_cast<BrickGold*>(e->obj);
+		//		
+		//		if (brg->isFinish == false && isAllowSwing == true)
+		//		{
+		//			if (e->nx!=0 || e->ny!=0) {
+		//				brg->isFinish = true;
+		//				isSwing = true;
+		//			}
+		//		}
+		//	}
+		//	else if (dynamic_cast<BrickQuesion*>(e->obj)) {
 
-		}		*/
+		//		BrickQuesion* brq = dynamic_cast<BrickQuesion*>(e->obj);
+
+		//		if (e->ny > 0)
+		//		{
+		//			//LPCOLLISIONEVENT e = SweptAABBEx(brq);
+
+		//			if (brq->GetFinish() == false) {
+
+		//				SetState(MARIO_STATE_DIE);
+
+		//				brq->isFinish = true;
+
+		//				/*for (UINT i = 0; i < PlayScene.Items.size(); i++) {
+		//					if (Items[i]->GetX() == obj->GetX() && Items[i]->GetY() == obj->GetY()) {
+		//						Items[i]->y -= 16;
+		//					}
+		//				}*/
+		//			}
+		//		}
+		//	}
+
+		//}	
 	
 		if (nx != 0)
 		{
@@ -155,6 +188,16 @@ void Mario::Render()
 
 		isAllowHold = false;
 	}
+	else if (isSwing) {
+		if (vx > 0 || nx > 0)
+			SetAni(MARIO_ANI_SWING_RIGHT);
+		else
+			SetAni(MARIO_ANI_SWING_LEFT);
+
+		isSwing = false;
+		isAllowSwing = false;
+	}
+
 
 	int alpha = 255;
 	if (untouchable) alpha = 128;

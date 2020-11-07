@@ -14,6 +14,11 @@
 #include "Coin.h"
 #include "Leaf.h"
 
+#include "FireBall.h"
+
+#include "BrickGold.h"
+#include "BrickQuesion.h"
+
 #include "Utils.h"
 
 #include <map>
@@ -28,6 +33,7 @@ public:
 	vector<LPGAMEOBJECT> Items;
 	vector<LPGAMEOBJECT> Enemy;
 	vector<LPGAMEOBJECT> ColorBlock;
+	vector<LPGAMEOBJECT> Weapon;
 
 	std::map<int, bool> keys;
 
@@ -52,6 +58,9 @@ public:
 	void checkCollisionWithItem();
 	void checkCollisionWithEnemy();
 	void checkCollisionWithColorBlock();
+	void checkCollisionWithBrick();
+
+	void useFireBall();
 
 	Mario* GetPlayer() { return mario; }
 	
@@ -64,5 +73,7 @@ public:
 	virtual void OnKeyDown(int KeyCode);
 	virtual void OnKeyUp(int KeyCode);
 	PlayScenceKeyHandler(Scene* s) :ScenceKeyHandler(s) {};
+
+	void useWeapon();
 };
 

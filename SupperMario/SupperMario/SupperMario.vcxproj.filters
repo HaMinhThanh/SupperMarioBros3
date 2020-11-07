@@ -126,6 +126,9 @@
     <ClCompile Include="Star.cpp">
       <Filter>Objects\Item</Filter>
     </ClCompile>
+    <ClCompile Include="FireBall.cpp">
+      <Filter>Objects\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -216,6 +219,9 @@
       <Filter>Objects\Brick</Filter>
     </ClInclude>
     <ClInclude Include="Star.h">
+      <Filter>Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="FireBall.h">
       <Filter>Objects\Item</Filter>
     </ClInclude>
   </ItemGroup>
