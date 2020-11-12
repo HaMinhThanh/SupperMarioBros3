@@ -9,10 +9,13 @@
 #include "BrickColor.h"
 
 #define MARIO_WALKING_SPEED		0.15f 
+#define MARIO_WALKING_MAX_SPEED	0.15f
+
 //0.1f
-#define MARIO_JUMP_SPEED_Y		0.5f
-#define MARIO_JUMP_DEFLECT_SPEED 0.2f
-#define MARIO_GRAVITY			0.002f
+#define MARIO_JUMP_SPEED_Y		0.35f
+#define MARIO_JUMP_DEFLECT_SPEED 0.1f
+#define MARIO_GRAVITY			0.001f
+#define MARIO_GRAVITY_TAIL		0.35f
 #define MARIO_DIE_DEFLECT_SPEED	 0.5f
 
 #define MARIO_STATE_IDLE			0
@@ -22,6 +25,7 @@
 #define MARIO_STATE_DIE				400
 #define MARIO_STATE_FALL			500
 #define MARIO_STATE_RUN				600
+#define MARIO_STATE_FLY				700	
 
 #define MARIO_ANI_BIG_IDLE_RIGHT		0
 #define MARIO_ANI_BIG_IDLE_LEFT			1
@@ -74,10 +78,22 @@
 #define MARIO_ANI_SWING_RIGHT				45
 #define MARIO_ANI_SWING_LEFT				46	
 
+#define MARIO_ANI_IDLE_FIRE_RIGHT			47
+#define MARIO_ANI_IDLE_FIRE_LEFT			48
+#define MARIO_ANI_WALKING_FIRE_RIGHT		49
+#define MARIO_ANI_WALKING_FIRE_LEFT			50
+
+#define MARIO_ANI_FLY_RIGHT					51
+#define MARIO_ANI_FLY_LEFT					52
+#define MARIO_ANI_BE_FALL_RIGHT				53
+#define MARIO_ANI_BE_FALL_LEFT				54
+
 
 #define	MARIO_LEVEL_SMALL	1
 #define	MARIO_LEVEL_BIG		2
 #define MARIO_LEVEL_TAIL	3
+#define MARIO_LEVEL_FIRE	4
+#define MARIO_LEVEL_FLY		5
 
 #define ANIMATION_SET_1		1
 #define ANIMATION_SET_2		100
@@ -89,9 +105,11 @@
 #define MARIO_SMALL_BBOX_HEIGHT 15
 
 #define MARIO_TAIL_BBOX_WIDTH  23
-#define MARIO_TAIL_BBOX_HEIGHT 27
+#define MARIO_TAIL_BBOX_HEIGHT 28
 
 #define MARIO_UNTOUCHABLE_TIME 5000
+#define MARIO_FLY_TIME			5000	
+#define MARIO_MOMENTUM_TIME			3000
 
 const float PLAYER_MAX_JUMP_VELOCITY = 0.5f; //van toc nhay lon nhat
 const float PLAYER_MIN_JUMP_VELOCITY = -0.5f; //van toc nhay thap nhat
@@ -102,8 +120,15 @@ class Mario: public GameObject
 {
 public:
 	int level;
+
 	int untouchable;
 	DWORD untouchable_start;
+
+	int flyable;
+	DWORD flyable_start;
+
+	int momentable;
+	DWORD momentable_start;
 
 	float start_x;
 	float start_y;
@@ -116,16 +141,26 @@ public:
 	bool isTurnToBig;
 	bool isTurnToTail;
 
+	bool isTurnRight;
+	bool isTurnLeft;
+
 	bool isPressed;
+	bool isJumping;
 	bool isAllowKick;
 	bool isCollisionOnAxisY;
 	bool isAllowHold;
 	bool isHoldingItem;
+
 	bool isAllowSwing;
 	bool isAutoGo;
 	bool isUseFire;
 	bool isSwing;
+	bool isFlying;
 
+	bool noCollision;
+	bool collision;
+
+	bool isMomentum;
 
 	Mario(float x = 0.0f, float y = 0.0f);
 
@@ -140,6 +175,8 @@ public:
 	int GetLevel();
 
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
+	void StartFlyable() { isFlying = true; flyable_start = GetTickCount(); }
+	void StartMomentum() { isMomentum = true; momentable = 1; momentable_start = GetTickCount(); }
 
 	void Reset();
 

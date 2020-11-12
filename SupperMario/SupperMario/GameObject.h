@@ -59,6 +59,8 @@ public:
 	float dx;
 	float dy;
 
+	float w, h;
+
 	int nx;
 
 	int state;
@@ -99,6 +101,7 @@ public:
 
 	bool GetFinish() { return isFinish; }
 
+	void SetBoundBbox(float a, float b) { this->w = a; this->h = b; }
 	void RenderBoundingBox();
 
 	void SetAnimationSet(LPANIMATION_SET ani_set) { animation_set = ani_set; }

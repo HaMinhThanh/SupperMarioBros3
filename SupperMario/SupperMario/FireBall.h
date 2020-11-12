@@ -8,17 +8,18 @@
 #define FIREBALL_GOING_RIGHT	1
 #define FIREBALL_GOING_LEFT		2	
 
-#define FIREBALL_GRAVITY	0.00005f
-#define FIREBALL_SPEED_X	0.05f
-#define FIREBALL_SPEED_Y	0.001f	
+#define FIREBALL_GRAVITY	0.0005f
+#define FIREBALL_SPEED_X	0.1f
+#define FIREBALL_SPEED_Y	0.0001f	
 
-#define FIREBALL_SPEED_MAX_Y	0.01f
+#define FIREBALL_SPEED_MAX_Y	0.0001f
 
-#define FIREBALL_UNTOUCHABLE_TIME	5000
+#define FIREBALL_UNTOUCHABLE_TIME	3000
 
 
 class FireBall: public GameObject
 {
+public:
 	int untouchable;
 	DWORD untouchable_start;
 

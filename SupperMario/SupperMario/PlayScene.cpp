@@ -15,6 +15,7 @@
 #include "Mushroom.h"
 #include "Star.h"
 
+
 #include <map>
 
 using namespace std;
@@ -145,6 +146,9 @@ void PlayScene::ParseSection_Animation_Sets(string line)
 void PlayScene::ParseSection_Objects(string line)
 {
 	bool hd = false;
+
+	bool b = false;
+
 	int ani;
 	vector<string> tokens = split(line);
 
@@ -156,12 +160,15 @@ void PlayScene::ParseSection_Objects(string line)
 	float x = atof(tokens[1].c_str());
 	float y = atof(tokens[2].c_str());
 
+	float w, h;
+
 	int ani_set_id = atoi(tokens[3].c_str());
 
 	AnimationSets* animation_sets = AnimationSets::GetInstance();
 
 	GameObject* obj = NULL;
 	GameObject* item = NULL;
+
 
 	switch (object_type)
 	{
@@ -178,7 +185,9 @@ void PlayScene::ParseSection_Objects(string line)
 		break;
 	case OBJECT_TYPE_BRICK:
 		obj = new Brick();
+
 		break;
+
 	case OBJECT_TYPE_BRICKQUESION:
 		obj = new BrickQuesion();
 		if (x == 240 && y == 304) {
@@ -202,6 +211,17 @@ void PlayScene::ParseSection_Objects(string line)
 
 		ani = 32;
 		hd = true;
+		break;
+
+	case OBJECT_TYPE_COLORBRICK:
+
+		w = atof(tokens[4].c_str());
+		h = atof(tokens[5].c_str());
+
+		obj = new BrickColor();
+
+		obj->SetBoundBbox(w, h);
+
 		break;
 
 	default:
@@ -464,10 +484,15 @@ void PlayScene::Update(DWORD dt)
 	else if(cx+ game->GetScreenWidth()>=2816)
 		cx = 2816 - game->GetScreenWidth();
 
-	if (cy <= 0)
-		cy = 0;
-	else if (cy + game->GetScreenHeight() >= 432)
+	if (mario->level == MARIO_LEVEL_TAIL) {
+		if (cy <= 0) cy = 0;
+		else if (cy + game->GetScreenHeight() >= 432)
+			cy = 432 - game->GetScreenHeight();
+	}
+		
+	else //if (cy + game->GetScreenHeight() >= 432)
 		cy = 432 - game->GetScreenHeight();
+
 
 	Game::GetInstance()->SetCamPosition(cx, cy);
 	
@@ -540,7 +565,15 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
-		mario->SetState(MARIO_STATE_JUMP);
+		if (mario->isJumping)  {
+			mario->SetState(MARIO_STATE_JUMP);
+			mario->isJumping = false;
+		}
+		else if (mario->isFlying) {
+
+			mario->SetState(MARIO_STATE_FLY);
+		}
+
 		break;
 
 	case DIK_A:
@@ -592,7 +625,13 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		if (mario->level == MARIO_LEVEL_TAIL)
 			mario->isAllowSwing = true;
 		break;
+		
+	case DIK_R:
+		mario->level = MARIO_LEVEL_FIRE;
+		break;
+
 	case DIK_F:
+		if (mario->level == MARIO_LEVEL_FIRE)
 		mario->isUseFire = true;
 		break;
 	}
@@ -613,14 +652,20 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 	if (game->IsKeyDown(DIK_RIGHT)) {
 		mario->SetState(MARIO_STATE_WALKING_RIGHT);
 		mario->isPressed = true;
+
+		if (mario->momentable == 0)
+			mario->StartMomentum();
 	}
 	else if (game->IsKeyDown(DIK_LEFT)) {
 		mario->SetState(MARIO_STATE_WALKING_LEFT);
 		mario->isPressed = true;
+
+		if (mario->momentable == 0)
+			mario->StartMomentum();
 	}
 	else {
 		mario->SetState(MARIO_STATE_IDLE);
-		mario->isPressed = false;
+		
 	}
 
 }
@@ -639,6 +684,7 @@ void PlayScene::checkCollisionWithItem()
 			{
 				Items[i]->isFinish = true;
 				GameObject* obj = dynamic_cast<GameObject*> (Items[i]);
+
 				if (dynamic_cast<Star*>(obj)) {
 					mario->isAutoGo = true;
 				}
@@ -657,6 +703,9 @@ void PlayScene::checkCollisionWithItem()
 
 void PlayScene::checkCollisionWithEnemy()
 {
+
+	//bool isCollison;
+
 	if (GetTickCount() - mario->untouchable_start > MARIO_UNTOUCHABLE_TIME)
 	{
 		mario->untouchable_start = 0;
@@ -667,9 +716,32 @@ void PlayScene::checkCollisionWithEnemy()
 	{
 		GameObject* obj = dynamic_cast<GameObject*> (Enemy[i]);
 
+		for (INT i = 0; i < Weapon.size(); i++)
+		{
+			if (dynamic_cast<FireBall*> (Weapon[i])) {
+
+				FireBall *f= dynamic_cast<FireBall*> (Weapon[i]);
+
+				if (f->untouchable == 1 && f->GetFinish()==false) {
+
+					LPCOLLISIONEVENT e = Weapon[i]->SweptAABBEx(Enemy[i]);
+
+					if (e->t > 0 && e->t <= 1) {
+						isCollision = true;
+					}
+				}
+			}
+				
+		}
+
 		if (dynamic_cast<Goomba*>(obj)) // if obj is Goomba 
 		{
 			Goomba* goomba = dynamic_cast<Goomba*>(obj);
+
+			if (isCollision) { 
+				goomba->SetState(GOOMBA_STATE_DIE); 
+				isCollision = false;
+			}
 
 			LPCOLLISIONEVENT e = mario->SweptAABBEx(goomba);
 
@@ -706,10 +778,17 @@ void PlayScene::checkCollisionWithEnemy()
 		{
 			Koopas* koopas = dynamic_cast<Koopas*>(obj);
 
+			if (isCollision) {
+				koopas->SetState(KOOPAS_STATE_DIE);
+				isCollision = false;
+			}
+
 			LPCOLLISIONEVENT e = mario->SweptAABBEx(koopas);
 
-			if (mario->isAllowKick && koopas->GetState() == KOOPAS_STATE_DIE&& mario->isCollisionWithItem(koopas))
+			if ((mario->isAllowKick && koopas->GetState() == KOOPAS_STATE_DIE&& mario->isCollisionWithItem(koopas))||(koopas->GetState() == KOOPAS_STATE_DIE && mario->isCollisionWithItem(koopas)))
 			{
+				//if (mario->isAllowKick == false) mario->level--;
+
 				if (mario->vx > 0 || mario->nx > 0) {
 					koopas->SetState(KOOPAS_STATE_DIE_WALKING_RIGHT);
 				}
@@ -772,18 +851,18 @@ void PlayScene::checkCollisionWithColorBlock()
 
 		LPCOLLISIONEVENT e = mario->SweptAABBEx(obj);
 
-		if (e->t > 0 && e->t <= 1 && e->ny < 0 && e->nx == 0) {
+		if (e->t > 0 && e->t <= 1 && e->ny <= 0 ) {
 
-			e->nx = 0;
-			e->ny = -1;
-			mario->y += e->ny * 0.04f;
-			mario->SetVy(0);
+			mario->noCollision = false;
+			mario->vx = 0;
+			mario->vy = 0;
 			mario->isCollisionOnAxisY = true;
-			if (mario->y >= ColorBlock[i]->y)
-				mario->y = ColorBlock[i]->y;
+			
 		}
-		else
+		else {
 			mario->isCollisionOnAxisY = false;
+			
+		}
 	}
 }
 
@@ -820,12 +899,18 @@ void PlayScene::checkCollisionWithBrick()
 	for (UINT i = 0; i < Objects.size(); i++) {
 
 		GameObject* obj = dynamic_cast<GameObject*> (Objects[i]);
+		
+		if (dynamic_cast<Brick*>(obj)) {
 
-		if (dynamic_cast<BrickGold*>(obj)) {
+
+
+		}
+
+		else if (dynamic_cast<BrickGold*>(obj)) {
 
 			LPCOLLISIONEVENT e = mario->SweptAABBEx(obj);
-			if (e->t > 0 && e->t <= 1)	{
-				
+
+			if (e->t > 0 && e->t <= 1)	{				
 
 				if (obj->GetFinish() == false && mario->isAllowSwing == true) {
 					

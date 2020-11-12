@@ -34,6 +34,7 @@ public:
 	vector<LPGAMEOBJECT> Enemy;
 	vector<LPGAMEOBJECT> ColorBlock;
 	vector<LPGAMEOBJECT> Weapon;
+	vector<LPGAMEOBJECT> Bicks;
 
 	std::map<int, bool> keys;
 
@@ -63,6 +64,8 @@ public:
 	void useFireBall();
 
 	Mario* GetPlayer() { return mario; }
+
+	bool isCollision;
 	
 };
 

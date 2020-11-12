@@ -15,7 +15,7 @@
 using namespace std;
 
 #define WINDOW_CLASS_NAME L"Game Window"
-#define MAIN_WINDOW_TITLE L"02 - Animation"
+#define MAIN_WINDOW_TITLE L"Super Mario Bros 3 - World 1-1"
 #define WINDOW_ICON_PATH L"mario.ico"
 
 #define BRICK_TEXTURE_PATH L"brick.png"
