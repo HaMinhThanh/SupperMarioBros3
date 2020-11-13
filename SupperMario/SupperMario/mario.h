@@ -105,11 +105,11 @@
 #define MARIO_SMALL_BBOX_HEIGHT 15
 
 #define MARIO_TAIL_BBOX_WIDTH  23
-#define MARIO_TAIL_BBOX_HEIGHT 28
+#define MARIO_TAIL_BBOX_HEIGHT 27
 
 #define MARIO_UNTOUCHABLE_TIME 5000
-#define MARIO_FLY_TIME			5000	
-#define MARIO_MOMENTUM_TIME			3000
+#define MARIO_FLY_TIME			4000	
+#define MARIO_MOMENTUM_TIME		3000
 
 const float PLAYER_MAX_JUMP_VELOCITY = 0.5f; //van toc nhay lon nhat
 const float PLAYER_MIN_JUMP_VELOCITY = -0.5f; //van toc nhay thap nhat

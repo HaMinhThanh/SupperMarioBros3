@@ -32,6 +32,7 @@ Mario::Mario(float x, float y) :GameObject()
 	this->vx = x;
 	this->vy = y;
 
+	StartMomentum();
 	//StartFlyable();
 }
 
@@ -57,6 +58,14 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (vy == 0 && isFlying == false)
 		isJumping = true;
 
+	/*if (vx > 0)
+		if (momentable == 0)
+			StartMomentum();
+
+	if (vx < 0)
+		if (momentable == 0)
+			StartMomentum();*/
+
 	GameObject::Update(dt);
 	
 	vy += MARIO_GRAVITY * dt;
@@ -75,28 +84,31 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		untouchable = 0;
 	}
 
+	if (momentable == 1) {
+
+		if (GetTickCount() - momentable_start > MARIO_MOMENTUM_TIME) {
+
+			momentable_start = 0;
+			momentable = 0;
+			isMomentum = false;
+
+			if (level == MARIO_LEVEL_TAIL && isMomentum == false)
+				StartFlyable();
+		}
+	}
+
+
 	if (isFlying)
 	{
 
 		if (GetTickCount() - flyable_start > MARIO_FLY_TIME) {
 			isFlying = false;
 			flyable = 0;
+			isMomentum = true;
 		}
 	}
 
-	if (GetTickCount() - momentable_start > MARIO_MOMENTUM_TIME) {
-			momentable_start = 0;
-			momentable = 0;
-			isMomentum = false;
-			isPressed = false;
-
-			/*if (level == MARIO_LEVEL_TAIL && isMomentum == false)
-				SetState(MARIO_STATE_FLY);*/
-			//level = MARIO_LEVEL_FLY;
-			isMomentum = true;
-		}
 	
-
 	if (coEvents.size() == 0)
 	{		
 		collision = false;
@@ -210,29 +222,33 @@ void Mario::SetState(int  state)
 	switch (state)
 	{
 	case MARIO_STATE_WALKING_RIGHT:
-		vx = MARIO_WALKING_SPEED;
 
-		/*if (vx >= MARIO_WALKING_MAX_SPEED)
-			vx = MARIO_WALKING_MAX_SPEED;*/
+		vx = MARIO_WALKING_SPEED;
+		
 
 		nx = 1;
 		break;
 	case MARIO_STATE_WALKING_LEFT:
 		vx = -MARIO_WALKING_SPEED;
-		/*if (vx < -MARIO_WALKING_MAX_SPEED)
-			vx = -MARIO_WALKING_MAX_SPEED;*/
 
+		if (momentable == 0)
+			StartMomentum();
+		
 		nx = -1;
 		break;
 	case MARIO_STATE_JUMP:
-		vy = -MARIO_JUMP_SPEED_Y;
+		if (isFlying)
+			vy = -MARIO_GRAVITY_TAIL;
+		else
+			vy = -MARIO_JUMP_SPEED_Y;
 		break;
 	case MARIO_STATE_IDLE:
+		isMomentum = false;
 		vx = 0;
 		break;
 	
 	case MARIO_STATE_FLY:
-		vy = -MARIO_GRAVITY_TAIL;
+		isFlying = true;
 		break;
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
@@ -446,8 +462,8 @@ void Mario::changeAni()
 				}
 				else SetAni(MARIO_ANI_BIG_FALLING_LEFT);
 			}
-		}*/
-		/*else if (level = MARIO_LEVEL_FLY)
+		}
+		else if (level = MARIO_LEVEL_FLY)
 		{
 		if (vy >= 0) {
 			if (vx > 0 || nx > 0)

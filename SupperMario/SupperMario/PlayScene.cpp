@@ -1,5 +1,4 @@
-﻿#include <iostream>
-#include <fstream>
+﻿#include <fstream>
 
 #include "PlayScene.h"
 #include "Utils.h"
@@ -565,7 +564,7 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
-		if (mario->isJumping)  {
+		if (mario->isJumping|| mario->isFlying)  {
 			mario->SetState(MARIO_STATE_JUMP);
 			mario->isJumping = false;
 		}
@@ -609,10 +608,6 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->SetLevel(MARIO_LEVEL_SMALL);
 		break;
 
-	case DIK_K:
-		mario->isAllowKick = true;
-		break;
-
 	case DIK_H:
 		mario->isAllowHold = true;
 		break;
@@ -653,15 +648,15 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 		mario->SetState(MARIO_STATE_WALKING_RIGHT);
 		mario->isPressed = true;
 
-		if (mario->momentable == 0)
-			mario->StartMomentum();
+		/*if (mario->momentable == 0)
+			mario->StartMomentum();*/
 	}
 	else if (game->IsKeyDown(DIK_LEFT)) {
 		mario->SetState(MARIO_STATE_WALKING_LEFT);
 		mario->isPressed = true;
 
-		if (mario->momentable == 0)
-			mario->StartMomentum();
+		/*if (mario->momentable == 0)
+			mario->StartMomentum();*/
 	}
 	else {
 		mario->SetState(MARIO_STATE_IDLE);
@@ -718,20 +713,19 @@ void PlayScene::checkCollisionWithEnemy()
 
 		for (INT i = 0; i < Weapon.size(); i++)
 		{
-			if (dynamic_cast<FireBall*> (Weapon[i])) {
+			if ((Weapon[i])->GetFinish()==false) {
 
-				FireBall *f= dynamic_cast<FireBall*> (Weapon[i]);
+				//FireBall *f= dynamic_cast<FireBall*> (Weapon[i]);
 
-				if (f->untouchable == 1 && f->GetFinish()==false) {
+				//if ( f->GetFinish()==false) {
 
-					LPCOLLISIONEVENT e = Weapon[i]->SweptAABBEx(Enemy[i]);
+					LPCOLLISIONEVENT e = obj->SweptAABBEx(Weapon[i]);
 
 					if (e->t > 0 && e->t <= 1) {
 						isCollision = true;
 					}
-				}
-			}
-				
+				//}
+			}				
 		}
 
 		if (dynamic_cast<Goomba*>(obj)) // if obj is Goomba 
@@ -785,9 +779,9 @@ void PlayScene::checkCollisionWithEnemy()
 
 			LPCOLLISIONEVENT e = mario->SweptAABBEx(koopas);
 
-			if ((mario->isAllowKick && koopas->GetState() == KOOPAS_STATE_DIE&& mario->isCollisionWithItem(koopas))||(koopas->GetState() == KOOPAS_STATE_DIE && mario->isCollisionWithItem(koopas)))
+			if (koopas->GetState() == KOOPAS_STATE_DIE && mario->isCollisionWithItem(koopas) && mario->isAllowHold == false)
 			{
-				//if (mario->isAllowKick == false) mario->level--;
+				mario->isAllowKick == true;
 
 				if (mario->vx > 0 || mario->nx > 0) {
 					koopas->SetState(KOOPAS_STATE_DIE_WALKING_RIGHT);
