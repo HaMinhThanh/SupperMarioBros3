@@ -45,7 +45,6 @@ public:
 	void ParseSection_Objects(string line);
 	void ParseSection_Items(string line);
 	void ParseSection_Enemy(string line);
-	void ParseSection_ColorBlock(string line);
 
 public:
 
@@ -58,7 +57,6 @@ public:
 
 	void checkCollisionWithItem();
 	void checkCollisionWithEnemy();
-	void checkCollisionWithColorBlock();
 	void checkCollisionWithBrick();
 
 	void useFireBall();

@@ -78,6 +78,8 @@ void PlayScene::ParseSection_Sprites(string line)
 
 	if (tokens.size() < 6) return; // skip invalid lines
 
+	DebugOut(L"--> %s\n", ToWSTR(line).c_str());
+
 	int ID = atoi(tokens[0].c_str());
 	int l = atoi(tokens[1].c_str());
 	int t = atoi(tokens[2].c_str());
@@ -88,7 +90,7 @@ void PlayScene::ParseSection_Sprites(string line)
 	LPDIRECT3DTEXTURE9 tex = Textures::GetInstance()->Get(texID);
 	if (tex == NULL)
 	{
-		//DebugOut(L"[ERROR] Texture ID %d not found!\n", texID);
+		DebugOut(L"[ERROR] Texture ID %d not found!\n", texID);
 		return;
 	}
 
@@ -101,7 +103,7 @@ void PlayScene::ParseSection_Animations(string line)
 
 	if (tokens.size() < 3) return; // skip invalid lines - an animation must at least has 1 frame and 1 frame time
 
-	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+	DebugOut(L"--> %s\n",ToWSTR(line).c_str());
 
 	LPANIMATION ani = new Animation();
 
@@ -121,6 +123,8 @@ void PlayScene::ParseSection_Animation_Sets(string line)
 	vector<string> tokens = split(line);
 
 	if (tokens.size() < 2) return; // skip invalid lines - an animation set must at least id and one animation id
+
+	DebugOut(L"--> %s\n", ToWSTR(line).c_str());
 
 	int ani_set_id = atoi(tokens[0].c_str());
 
@@ -151,7 +155,7 @@ void PlayScene::ParseSection_Objects(string line)
 	int ani;
 	vector<string> tokens = split(line);
 
-	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+	DebugOut(L"--> %s\n",ToWSTR(line).c_str());
 
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
@@ -174,13 +178,13 @@ void PlayScene::ParseSection_Objects(string line)
 	case OBJECT_TYPE_MARIO:
 		if (mario != NULL)
 		{
-			//DebugOut(L"[ERROR] MARIO object was created before!\n");
+			DebugOut(L"[ERROR] MARIO object was created before!\n");
 			return;
 		}
 		obj = new Mario(x, y);
 		mario = (Mario*)obj;
 
-		//DebugOut(L"[INFO] Player object created!\n");
+		DebugOut(L"[INFO] Player object created!\n");
 		break;
 	case OBJECT_TYPE_BRICK:
 		obj = new Brick();
@@ -224,7 +228,7 @@ void PlayScene::ParseSection_Objects(string line)
 		break;
 
 	default:
-		//DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
+		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
 	}
 
@@ -249,7 +253,7 @@ void PlayScene::ParseSection_Items(string line)
 {
 	vector<string> tokens = split(line);
 
-	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+	DebugOut(L"--> %s\n",ToWSTR(line).c_str());
 
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
@@ -295,7 +299,7 @@ void PlayScene::ParseSection_Enemy(string line)
 {
 	vector<string> tokens = split(line);
 
-	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+	DebugOut(L"--> %s\n",ToWSTR(line).c_str());
 
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
@@ -335,45 +339,10 @@ void PlayScene::ParseSection_Enemy(string line)
 	Enemy.push_back(enemy);
 }
 
-void PlayScene::ParseSection_ColorBlock(string line)
-{
-	vector<string> tokens = split(line);
-
-	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
-
-	if (tokens.size() < 5) return; // skip invalid lines - an object set must have at least id, x, y
-
-	int object_type = atoi(tokens[0].c_str());
-	float x = atof(tokens[1].c_str());
-	float y = atof(tokens[2].c_str());
-
-	//int ani_set_id = atoi(tokens[3].c_str());
-
-	float w = atof(tokens[3].c_str());
-	float h = atof(tokens[4].c_str());
-
-	AnimationSets* animation_sets = AnimationSets::GetInstance();
-
-	BrickColor* Color = NULL;
-
-	Color = new BrickColor();
-
-	// General object setup
-	Color->SetPosition(x, y);
-
-	Color->SetBoundingBox(w, h);
-
-	//LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-
-	//Color->SetAnimationSet(ani_set);
-	ColorBlock.push_back(Color);
-}
-
-
 
 void PlayScene::Load()
 {
-	//DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
+	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
 
 	ifstream f;
 	f.open(sceneFilePath);
@@ -426,7 +395,6 @@ void PlayScene::Load()
 		case SCENE_SECTION_ITEMS: ParseSection_Items(line); break;
 		case SCENE_SECTION_OBJECTS: ParseSection_Objects(line); break;
 		case SCENE_SECTION_ENEMY: ParseSection_Enemy(line); break;
-		case SCENE_SECTION_COLORBLOCK: ParseSection_ColorBlock(line); break;
 		}
 	}
 
@@ -434,7 +402,7 @@ void PlayScene::Load()
 
 	Textures::GetInstance()->AddTexture(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
 
-	//DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
+	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
 
 void PlayScene::Update(DWORD dt)
@@ -483,7 +451,7 @@ void PlayScene::Update(DWORD dt)
 	else if(cx+ game->GetScreenWidth()>=2816)
 		cx = 2816 - game->GetScreenWidth();
 
-	if (mario->level == MARIO_LEVEL_TAIL) {
+	if (mario->level == MARIO_LEVEL_FLY || mario->level == MARIO_LEVEL_TAIL) {
 		if (cy <= 0) cy = 0;
 		else if (cy + game->GetScreenHeight() >= 432)
 			cy = 432 - game->GetScreenHeight();
@@ -497,7 +465,6 @@ void PlayScene::Update(DWORD dt)
 	
 	checkCollisionWithEnemy();
 	checkCollisionWithBrick();
-	checkCollisionWithColorBlock();
 	checkCollisionWithItem();
 }
 
@@ -553,12 +520,12 @@ void PlayScene::Unload()
 
 	mario = NULL;
 
-	//DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
+	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
 void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
-	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
+	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 
 	Mario* mario = ((PlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
@@ -567,10 +534,6 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		if (mario->isJumping|| mario->isFlying)  {
 			mario->SetState(MARIO_STATE_JUMP);
 			mario->isJumping = false;
-		}
-		else if (mario->isFlying) {
-
-			mario->SetState(MARIO_STATE_FLY);
 		}
 
 		break;
@@ -614,6 +577,7 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 
 	case DIK_D:
 		mario->isHoldingItem = false;
+		mario->isAllowKick = true;
 		break;
 
 	case DIK_X:
@@ -623,11 +587,18 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		
 	case DIK_R:
 		mario->level = MARIO_LEVEL_FIRE;
+
+		mario->isTurnToBig = true;
 		break;
 
 	case DIK_F:
 		if (mario->level == MARIO_LEVEL_FIRE)
 		mario->isUseFire = true;
+		break;
+
+	case DIK_M:
+		if (mario->level== MARIO_LEVEL_TAIL)
+			mario->isWagging = true;
 		break;
 	}
 }
@@ -781,7 +752,7 @@ void PlayScene::checkCollisionWithEnemy()
 
 			if (koopas->GetState() == KOOPAS_STATE_DIE && mario->isCollisionWithItem(koopas) && mario->isAllowHold == false)
 			{
-				mario->isAllowKick == true;
+				mario->isAllowKick =  true;
 
 				if (mario->vx > 0 || mario->nx > 0) {
 					koopas->SetState(KOOPAS_STATE_DIE_WALKING_RIGHT);
@@ -789,6 +760,9 @@ void PlayScene::checkCollisionWithEnemy()
 				else { 
 					koopas->SetState(KOOPAS_STATE_DIE_WALKING_LEFT); 
 				}
+			}
+			else if (mario->isAllowSwing && mario->isCollisionWithItem(koopas)) {
+				koopas->SetState(KOOPAS_STATE_DIE);
 			}
 			else if (mario->isAllowHold && koopas->GetState() == KOOPAS_STATE_DIE && mario->isCollisionWithItem(koopas))
 			{				
@@ -835,29 +809,6 @@ void PlayScene::checkCollisionWithEnemy()
 			}
 		}
 	} 
-}
-
-void PlayScene::checkCollisionWithColorBlock()
-{
-	for (int i = 0; i < ColorBlock.size(); i++) {
-
-		GameObject* obj = dynamic_cast<GameObject*> (ColorBlock[i]);
-
-		LPCOLLISIONEVENT e = mario->SweptAABBEx(obj);
-
-		if (e->t > 0 && e->t <= 1 && e->ny <= 0 ) {
-
-			mario->noCollision = false;
-			mario->vx = 0;
-			mario->vy = 0;
-			mario->isCollisionOnAxisY = true;
-			
-		}
-		else {
-			mario->isCollisionOnAxisY = false;
-			
-		}
-	}
 }
 
 void PlayScene::useFireBall()

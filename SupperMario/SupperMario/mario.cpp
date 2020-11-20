@@ -2,14 +2,7 @@
 #include "Game.h"
 #include "Mario.h"
 #include "Sprites.h"
-#include "MarioState.h"
-#include "MarioData.h"
-#include "MarioFalling.h"
-#include "MarioJumping.h"
-#include "MarioWalking.h"
-#include "MarioDie.h"
-#include "MarioIdle.h"
-//#include "MarioRunning.h"
+
 
 #include "Goomba.h"
 #include "BrickGold.h"
@@ -23,17 +16,12 @@ Mario::Mario(float x, float y) :GameObject()
 	momentable = 0;
 	flyable = 0;
 
-	SetState(MARIO_LEVEL_SMALL);
-	/*this->marioData = new MarioData();
-	this->marioData->mario = this;*/
+	SetState(MARIO_STATE_IDLE);
 
 	start_x = x;
 	start_y = y;
 	this->vx = x;
 	this->vy = y;
-
-	StartMomentum();
-	//StartFlyable();
 }
 
 void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -58,13 +46,18 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (vy == 0 && isFlying == false)
 		isJumping = true;
 
-	/*if (vx > 0)
-		if (momentable == 0)
-			StartMomentum();
+	if (vy > 0 && isWagging && level == MARIO_LEVEL_TAIL) {
+		vy -= 0.0007f * dt;
+	}
+	else if (vy < 0 && isWagging) {
+		vy = 0;
+	}
+	else
+		isWagging = false;
+	
 
-	if (vx < 0)
-		if (momentable == 0)
-			StartMomentum();*/
+	if (vx == 0 || vy == MARIO_JUMP_SPEED_Y)
+		momentable = 0;
 
 	GameObject::Update(dt);
 	
@@ -105,13 +98,16 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			isFlying = false;
 			flyable = 0;
 			isMomentum = true;
+
+			level = MARIO_LEVEL_TAIL;
 		}
 	}
 
 	
 	if (coEvents.size() == 0)
 	{		
-		collision = false;
+		collision_x = false;
+		collision_y = false;
 
 		x += dx;
 		y += dy;
@@ -120,7 +116,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	else
 	{
 		noCollision = true;
-		collision = true;
+		
 
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
@@ -153,12 +149,19 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	
 		if (nx != 0)
 		{
-			vx = 0;
+			vx = 0;	
+			collision_x = true;
 		}
+		else
+			collision_x = false;
+
 		if (ny != 0)
 		{
 			vy = 0;
+			collision_y = true;
 		}
+		else
+			collision_y = false;
 	}
 
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
@@ -170,7 +173,34 @@ void Mario::Render()
 	changeAni();
 
 	if (isAllowKick) {
-		SetAni(MARIO_ANI_BIG_KICK_RIGHT);
+		if (level == MARIO_LEVEL_BIG) {
+			if (vx == 0) {
+				if (nx > 0) SetAni(MARIO_ANI_BIG_KICK_RIGHT);
+				else SetAni(MARIO_ANI_BIG_KICK_LEFT);
+			}
+			else if (vx > 0)
+				SetAni(MARIO_ANI_BIG_KICK_RIGHT);
+			else SetAni(MARIO_ANI_BIG_KICK_LEFT);
+		}
+		else if (level == MARIO_LEVEL_TAIL) {
+			if (vx == 0) {
+				if (nx > 0) SetAni(MARIO_ANI_TAIL_KICK_RIGHT);
+				else SetAni(MARIO_ANI_TAIL_KICK_LEFT);
+			}
+			else if (vx > 0)
+				SetAni(MARIO_ANI_TAIL_KICK_RIGHT);
+			else SetAni(MARIO_ANI_TAIL_KICK_LEFT);
+		}
+		else if (level == MARIO_LEVEL_SMALL) {
+			if (vx == 0) {
+				if (nx > 0) SetAni(MARIO_ANI_SMALL_KICK_RIGHT);
+				else SetAni(MARIO_ANI_SMALL_KICK_LEFT);
+			}
+			else if (vx > 0)
+				SetAni(MARIO_ANI_SMALL_KICK_RIGHT);
+			else SetAni(MARIO_ANI_SMALL_KICK_LEFT);
+		}
+
 		isAllowKick = false;
 	}
 	else if (isHoldingItem )
@@ -206,13 +236,25 @@ void Mario::Render()
 		isAllowSwing = false;
 	}
 
+	else if (isWagging) {
+		if (vx > 0 || nx > 0)
+			SetAni(MARIO_ANI_WAGGING_RIGHT);
+		else
+			SetAni(MARIO_ANI_WAGGING_LEFT);
+
+		//isWagging = false;
+	}
+
 
 	int alpha = 255;
 	if (untouchable) alpha = 128;
-
+	//if (level == MARIO_LEVEL_BIG && vx == 0)
+	//DebugOut(L"Direct: %d", nx);
+		//animation_set->at(currentAni)->RenderDirect(x, y, nx, alpha);
+	//else
  	animation_set->at(currentAni)->Render(x, y, alpha);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Mario::SetState(int  state)
@@ -223,15 +265,22 @@ void Mario::SetState(int  state)
 	{
 	case MARIO_STATE_WALKING_RIGHT:
 
-		vx = MARIO_WALKING_SPEED;
-		
+		vx = MARIO_WALKING_SPEED;	
 
+		isTurnLeft = false;
+		//isTurnRight = true;
+
+		if (momentable == 0 && level == MARIO_LEVEL_TAIL && isTurnLeft == false)
+			StartMomentum();
 		nx = 1;
 		break;
 	case MARIO_STATE_WALKING_LEFT:
 		vx = -MARIO_WALKING_SPEED;
 
-		if (momentable == 0)
+		//isTurnLeft = true;
+		isTurnRight = false;
+
+		if (momentable == 0 && level == MARIO_LEVEL_TAIL && isTurnRight == false)
 			StartMomentum();
 		
 		nx = -1;
@@ -244,6 +293,7 @@ void Mario::SetState(int  state)
 		break;
 	case MARIO_STATE_IDLE:
 		isMomentum = false;
+		//momentable = 0;
 		vx = 0;
 		break;
 	
@@ -293,29 +343,6 @@ int Mario::GetLevel()
 	return level;
 }
 
-void Mario::SetStateName(MarioState* newState)
-{
-	allowMoveLeft = true;
-	allowMoveRight = true;
-
-	//if (this->marioData->state != NULL)
-	delete this->marioData->state;
-
-	this->marioData->state = newState;
-
-	this->changeAnimation(newState);
-
-	CurrentState = newState;
-	
-	mCurrentState = newState->GetState();
-
-}
-
-void Mario::changeAnimation(MarioState *state)
-{
-	this->marioData->state->changeAnimation();
-}
-
 int Mario::GetAni()
 {
 	return currentAni;
@@ -331,13 +358,14 @@ void Mario::changeAni()
 	if (state == MARIO_STATE_DIE)
 		SetAni(MARIO_ANI_DIE);
 	else {
-		if (level == MARIO_LEVEL_BIG|| level == MARIO_LEVEL_FIRE)
+		if (level == MARIO_LEVEL_BIG)
 		{
-			if (vy >= 0 || collision) {
+			if (vy >= 0 ) {
 				if (vx == 0)
 				{
 					if (nx > 0) SetAni(MARIO_ANI_BIG_IDLE_RIGHT);
 					else SetAni(MARIO_ANI_BIG_IDLE_LEFT);
+					//SetAni(MARIO_ANI_BIG_IDLE_LEFT);
 				}
 				else if (vx > 0)
 					SetAni(MARIO_ANI_BIG_WALKING_RIGHT);
@@ -353,7 +381,7 @@ void Mario::changeAni()
 			}
 
 
-			else if (vy > 0 && collision == false) {
+			else if (vy > 0 && collision_y == false) {
 
 				if (vx > 0 || nx>0)
 				{
@@ -388,7 +416,7 @@ void Mario::changeAni()
 				else SetAni(MARIO_ANI_SMALL_JUMPING_LEFT);
 			}
 
-			else if (vy > 0 && collision == false)
+			else if (vy > 0 && collision_y == false)
 			{
 				if (vx > 0 || nx > 0)
 				{
@@ -423,7 +451,7 @@ void Mario::changeAni()
 				else SetAni(MARIO_ANI_TAIL_JUMPING_LEFT);
 			}
 
-			else if (vy > 0 && collision == false)
+			else if (vy > 0 && collision_y == false)
 			{
 				if (vx > 0 || nx > 0)
 				{
@@ -432,9 +460,9 @@ void Mario::changeAni()
 				else SetAni(MARIO_ANI_TAIL_FALLING_LEFT);
 			}
 		}
-		/*if (level == MARIO_LEVEL_FIRE)
+		if (level == MARIO_LEVEL_FIRE)
 		{
-			if (vy >= 0 || collision) {
+			if (vy >= 0 ) {
 				if (vx == 0)
 				{
 					if (nx > 0) SetAni(MARIO_ANI_IDLE_FIRE_RIGHT);
@@ -448,12 +476,12 @@ void Mario::changeAni()
 			else if (vy < 0) {
 				if (vx > 0 || nx > 0)
 				{
-					SetAni(MARIO_ANI_BIG_JUMPING_RIGHT);
+					SetAni(MARIO_ANI_JUMPING_FIRE_RIGHT);
 				}
-				else SetAni(MARIO_ANI_BIG_JUMPING_LEFT);
+				else SetAni(MARIO_ANI_JUMPING_FIRE_LEFT);
 			}
 
-			else if (vy > 0 && collision == false) {
+			else if (vy > 0 && collision_y == false) {
 
 				if (vx > 0 || nx > 0)
 				{
@@ -463,90 +491,33 @@ void Mario::changeAni()
 				else SetAni(MARIO_ANI_BIG_FALLING_LEFT);
 			}
 		}
-		else if (level = MARIO_LEVEL_FLY)
+		else if (level == MARIO_LEVEL_FLY)
 		{
-		if (vy >= 0) {
-			if (vx > 0 || nx > 0)
-			{
-				SetAni(MARIO_ANI_BE_FALL_RIGHT);
-				
+			if (vy >= 0) {
+				if (vx > 0 )
+				{
+					SetAni(MARIO_ANI_BE_FALL_RIGHT);
+
+				}
+				else SetAni(MARIO_ANI_BE_FALL_LEFT);
 			}
-			else SetAni(MARIO_ANI_BE_FALL_LEFT);			
-		}
-		else if (vy < 0) {
-			if (vx > 0 || nx > 0)
-			{
-				SetAni(MARIO_ANI_FLY_RIGHT);
+			else if (vy < 0) {
+				if (vx > 0 || nx > 0)
+				{
+					SetAni(MARIO_ANI_FLY_RIGHT);
+				}
+				else
+					SetAni(MARIO_ANI_FLY_RIGHT);
+
 			}
-			else
-				SetAni(MARIO_ANI_FLY_RIGHT);
-			
-		}
 
-		else if (vy > 0 && collision == false)
-		{
-			if (vx > 0 || nx > 0)
-			{
-				SetAni(MARIO_ANI_TAIL_FALLING_RIGHT);
-			}
-			else SetAni(MARIO_ANI_TAIL_FALLING_LEFT);
-		}
-
-		}*/
-	}
-}
-
-
-void Mario::OnKeyDown(int key)
-{
-	if (key == DIK_SPACE)
-	{		
-		if (mCurrentState == MarioState::Walking || mCurrentState == MarioState::Idle)
-			{
-			this->SetStateName(new MarioJumping(this->marioData));
-			}		
-		
-	}
-	this->marioData->state->HandleKeyboard(key);
-}
-
-void Mario::OnKeyUp(int key)
-{
-	if (key == VK_SPACE)
-		allowJump = true;
-}
-
-void Mario::KeyState(BYTE* states)
-{
-	Game* game = Game::GetInstance();
-
-	if (mCurrentState == MarioState::Die) return;
-	if (game->IsKeyDown(DIK_RIGHT)) 
-	{
-		if (mCurrentState == MarioState::Idle)
-		{
-			//vx = MARIO_WALKING_SPEED;
-			SetStateName(new MarioWalking(this->marioData));
 		}
 	}
-	else if (game->IsKeyDown(DIK_LEFT))
-	{
-		if (mCurrentState == MarioState::Idle)
-		{
-			//vx = -MARIO_WALKING_SPEED;
-			SetStateName(new MarioWalking(this->marioData));
-		}
-	}
-	else
-		SetStateName(new MarioIdle(this->marioData));
 }
 
 void Mario::NoCollisionWithAxisY()
 {
-	if (mCurrentState != MarioState::Jumping && mCurrentState != MarioState::Falling)
-	{
-		this->SetStateName(new MarioFalling(this->marioData));
-	}
+
 }
 
 bool Mario::isCollisionWithItem(LPGAMEOBJECT item)

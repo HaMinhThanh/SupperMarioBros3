@@ -5,6 +5,7 @@
 
 #include "Game.h"
 #include "Textures.h"
+#include "Utils.h"
 
 Textures* Textures::_instance = NULL;
 
@@ -25,7 +26,7 @@ void Textures::AddTexture(int id, LPCWSTR filePath, D3DCOLOR transparentColor)
 	HRESULT result = D3DXGetImageInfoFromFile(filePath, &info);
 	if (result != D3D_OK)
 	{
-		//DebugOut(L"[ERROR] GetImageInfoFromFile failed: %s\n", filePath);
+		DebugOut(L"[ERROR] GetImageInfoFromFile failed: %s\n", filePath);
 		return;
 	}
 
@@ -56,7 +57,7 @@ void Textures::AddTexture(int id, LPCWSTR filePath, D3DCOLOR transparentColor)
 
 	textures[id] = texture;
 
-	//DebugOut(L"[INFO] Texture loaded Ok: id=%d, %s\n", id, filePath);
+	DebugOut(L"[INFO] Texture loaded Ok: id=%d, %s\n", id, filePath);
 }
 
 LPDIRECT3DTEXTURE9 Textures::Get(unsigned int i)

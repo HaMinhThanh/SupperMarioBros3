@@ -12,7 +12,7 @@ void Koopas::GetBoundingBox(float& left, float& top, float& right, float& bottom
 	top = y;
 	right = x + KOOPAS_BBOX_WIDTH;
 
-	if (state == KOOPAS_STATE_DIE)
+	if (state == KOOPAS_STATE_DIE|| state== KOOPAS_STATE_DIE_UP)
 		bottom = y + KOOPAS_BBOX_HEIGHT_DIE;
 	else
 		bottom = y + KOOPAS_BBOX_HEIGHT_DIE;
@@ -20,6 +20,9 @@ void Koopas::GetBoundingBox(float& left, float& top, float& right, float& bottom
 
 void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (state == KOOPAS_STATE_DIE_UP)
+		vy -= 0.003f * dt;
+
 	GameObject::Update(dt, coObjects);
 
 	vy += KOOPAS_GRAVITY * dt;
@@ -96,6 +99,9 @@ void Koopas::Render()
 	case KOOPAS_STATE_DIE:
 		ani = KOOPAS_ANI_DIE;
 		break;
+	case KOOPAS_STATE_DIE_UP:
+		ani = KOOPAS_ANI_DIE_UP;
+		break;
 	case KOOPAS_STATE_DIE_WALKING_RIGHT:
 		ani = KOOPAS_ANI_DIE_WALKING;
 		break;
@@ -123,6 +129,11 @@ void Koopas::SetState(int state)
 	switch (state)
 	{
 	case KOOPAS_STATE_DIE:
+		isDie = true;
+		vx = 0;
+		vy = 0;
+		break;
+	case KOOPAS_STATE_DIE_UP:
 		isDie = true;
 		vx = 0;
 		vy = 0;

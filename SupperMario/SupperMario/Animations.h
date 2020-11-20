@@ -29,6 +29,7 @@ public:
 	void AddAnimation(int spriteId, DWORD time = 0);
 
 	void Render(float x, float y, int alpha = 255);
+	void RenderDirect(float x, float y, int direct, int alpha = 255);
 };
 
 typedef Animation* LPANIMATION;

@@ -88,15 +88,18 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>d3dx.lib; dinput8.lib</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
+      <AdditionalDependencies>d3dx9.lib;d3d9.lib;dxguid.lib;dxerr.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -161,14 +164,9 @@
     <ClCompile Include="Leaf.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mario.cpp" />
-    <ClCompile Include="MarioData.cpp" />
-    <ClCompile Include="MarioDie.cpp" />
-    <ClCompile Include="MarioFalling.cpp" />
-    <ClCompile Include="MarioIdle.cpp" />
-    <ClCompile Include="MarioJumping.cpp" />
-    <ClCompile Include="MarioState.cpp" />
-    <ClCompile Include="MarioWalking.cpp" />
     <ClCompile Include="Mushroom.cpp" />
+    <ClCompile Include="ParaGoomba.cpp" />
+    <ClCompile Include="ParaKoopa.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sprites.cpp" />
@@ -194,14 +192,9 @@
     <ClInclude Include="Koopas.h" />
     <ClInclude Include="Leaf.h" />
     <ClInclude Include="mario.h" />
-    <ClInclude Include="MarioData.h" />
-    <ClInclude Include="MarioDie.h" />
-    <ClInclude Include="MarioFalling.h" />
-    <ClInclude Include="MarioIdle.h" />
-    <ClInclude Include="MarioJumping.h" />
-    <ClInclude Include="MarioState.h" />
-    <ClInclude Include="MarioWalking.h" />
     <ClInclude Include="Mushroom.h" />
+    <ClInclude Include="ParaGoomba.h" />
+    <ClInclude Include="ParaKoopa.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Sprites.h" />

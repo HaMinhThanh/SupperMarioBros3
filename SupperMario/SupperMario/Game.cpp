@@ -61,23 +61,6 @@ void Game::Init(HWND hWnd)
 
 }
 
-void Game::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture)
-{
-	D3DXVECTOR3 p(x, y, 0);
-	spriteHandler->Draw(texture, NULL, NULL, &p, D3DCOLOR_XRGB(255, 255, 255));
-}
-
-void Game::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom)
-{
-	D3DXVECTOR3 p(x, y, 0);
-	RECT r;
-	r.left = left;
-	r.top = top;
-	r.right = right;
-	r.bottom = bottom;
-	spriteHandler->Draw(texture, &r, NULL, &p, D3DCOLOR_XRGB(255, 255, 255));
-}
-
 void Game::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, int alpha)
 {
 	D3DXVECTOR3 p(floor(x - cam_x), floor(y - cam_y), 0);
@@ -87,6 +70,17 @@ void Game::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top,
 	r.right = right;
 	r.bottom = bottom;
 	spriteHandler->Draw(texture, &r,NULL, &p, D3DCOLOR_ARGB(alpha,255,255,255));
+}
+
+void Game::DrawFlipX(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, int alpha)
+{
+	D3DXVECTOR3 p(floor(x + cam_x), floor(y + cam_y), 0);
+	RECT r;
+	r.left = left;
+	r.top = top;
+	r.right = right;
+	r.bottom = bottom;
+	spriteHandler->Draw(texture, &r, NULL, &p, D3DCOLOR_ARGB(alpha, 255, 255, 255));
 }
 
 LPDIRECT3DTEXTURE9 Game::LoadTexture(LPCWSTR texturePath)
@@ -113,11 +107,11 @@ LPDIRECT3DTEXTURE9 Game::LoadTexture(LPCWSTR texturePath)
 
 	if (result != D3D_OK)
 	{
-		//DebugOut(L"[ERROR] CreateTextureFromFile failed. File: %s\n", texturePath);
+		DebugOut(L"[ERROR] CreateTextureFromFile failed. File: %s\n", texturePath);
 		return NULL;
 	}
 
-	//DebugOut(L"[INFO] Texture loaded ok from file: %s \n", texture);
+	DebugOut(L"[INFO] Texture loaded ok from file: %s \n", texture);
 	return texture;
 }
 
@@ -152,7 +146,7 @@ void Game::InitKeyBoard()
 			NULL);
 	if (hr != DI_OK)
 	{
-		//DebugOut(L"[ERROR] DirectInput8Create failed!\n");
+		DebugOut(L"[ERROR] DirectInput8Create failed!\n");
 		return;
 	}
 
@@ -160,7 +154,7 @@ void Game::InitKeyBoard()
 
 	if (hr != DI_OK)
 	{
-		//DebugOut(L"[ERROR] CreateDevice failed!\n");
+		DebugOut(L"[ERROR] CreateDevice failed!\n");
 		return;
 	}
 
@@ -181,11 +175,11 @@ void Game::InitKeyBoard()
 	hr = didv->Acquire();
 	if (hr != DI_OK)
 	{
-		//DebugOut(L"[ERROR] DINPUT8::Acquire failed!\n");
+		DebugOut(L"[ERROR] DINPUT8::Acquire failed!\n");
 		return;
 	}
 
-	//DebugOut(L"[INFO] Keyboard has been initialized succcessfully\n");
+	DebugOut(L"[INFO] Keyboard has been initialized succcessfully\n");
 }
 
 void Game::ProcessKeyBoard()
@@ -202,13 +196,13 @@ void Game::ProcessKeyBoard()
 			HRESULT h = didv->Acquire();
 			if (h == DI_OK)
 			{
-				//DebugOut(L"[INFO] Keyboard re-acquired!\n");
+				DebugOut(L"[INFO] Keyboard re-acquired!\n");
 			}
 			else return;
 		}
 		else
 		{
-			//DebugOut(L"[ERROR] DINPUT::GetDeviceState failed. Error: %d\n", hr);
+			DebugOut(L"[ERROR] DINPUT::GetDeviceState failed. Error: %d\n", hr);
 			return;
 		}
 	}
@@ -222,7 +216,7 @@ void Game::ProcessKeyBoard()
 	hr = didv->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), keyEvents, &dwElements, 0);
 	if (FAILED(hr))
 	{
-		//DebugOut(L"[ERROR] DINPUT::GetDeviceData failed. Error: %d\n", hr);
+		DebugOut(L"[ERROR] DINPUT::GetDeviceData failed. Error: %d\n", hr);
 		return;
 	}
 
@@ -340,7 +334,7 @@ void Game::ParseSection_Setting(string line)
 	if (tokens[0] == "start")
 		currentScene = atoi(tokens[1].c_str());
 	else;
-		//DebugOut(L"[ERROR] Unknown game setting %s\n", ToWSTR(tokens[0]).c_str());
+		DebugOut(L"[ERROR] Unknown game setting %s\n", ToWSTR(tokens[0]).c_str());
 }
 
 void Game::ParseSection_Scenes(string line)
@@ -389,14 +383,14 @@ void Game::Load(LPCWSTR gameFile)
 	}
 	f.close();
 
-	//DebugOut(L"[INFO] Loading game file : %s has been loaded successfully\n", gameFile);
+	DebugOut(L"[INFO] Loading game file : %s has been loaded successfully\n", gameFile);
 
 	SwitchScene(currentScene);
 }
 
 void Game::SwitchScene(int scene_id)
 {
-	//DebugOut(L"[INFO] Switching to scene %d\n", scene_id);
+	DebugOut(L"[INFO] Switching to scene %d\n", scene_id);
 
 	scenes[currentScene]->Unload();;
 

@@ -25,11 +25,11 @@
     <Filter Include="Objects\Brick">
       <UniqueIdentifier>{721433f6-e714-4e47-bb71-4dba543e7d8d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Objects\State">
-      <UniqueIdentifier>{ad06b461-ed19-442f-ad92-4ae4f3b2c5dc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Objects\Item">
       <UniqueIdentifier>{56ca6e67-ae05-4864-805d-acaa92410c2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Player">
+      <UniqueIdentifier>{505501f4-befa-4e36-898b-4f4dbc116948}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -46,9 +46,6 @@
       <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="mario.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="Animations.cpp">
@@ -69,9 +66,6 @@
     <ClCompile Include="Game.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
-    <ClCompile Include="MarioData.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Koopas.cpp">
       <Filter>Objects\Enemy</Filter>
     </ClCompile>
@@ -83,24 +77,6 @@
     </ClCompile>
     <ClCompile Include="Brick.cpp">
       <Filter>Objects\Brick</Filter>
-    </ClCompile>
-    <ClCompile Include="MarioDie.cpp">
-      <Filter>Objects\State</Filter>
-    </ClCompile>
-    <ClCompile Include="MarioFalling.cpp">
-      <Filter>Objects\State</Filter>
-    </ClCompile>
-    <ClCompile Include="MarioIdle.cpp">
-      <Filter>Objects\State</Filter>
-    </ClCompile>
-    <ClCompile Include="MarioJumping.cpp">
-      <Filter>Objects\State</Filter>
-    </ClCompile>
-    <ClCompile Include="MarioState.cpp">
-      <Filter>Objects\State</Filter>
-    </ClCompile>
-    <ClCompile Include="MarioWalking.cpp">
-      <Filter>Objects\State</Filter>
     </ClCompile>
     <ClCompile Include="Coin.cpp">
       <Filter>Objects\Item</Filter>
@@ -129,6 +105,15 @@
     <ClCompile Include="FireBall.cpp">
       <Filter>Objects\Item</Filter>
     </ClCompile>
+    <ClCompile Include="ParaKoopa.cpp">
+      <Filter>Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="ParaGoomba.cpp">
+      <Filter>Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="mario.cpp">
+      <Filter>Objects\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -141,9 +126,6 @@
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="mario.h">
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="Animations.h">
@@ -164,9 +146,6 @@
     <ClInclude Include="Game.h">
       <Filter>Framework</Filter>
     </ClInclude>
-    <ClInclude Include="MarioData.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Koopas.h">
       <Filter>Objects\Enemy</Filter>
     </ClInclude>
@@ -178,24 +157,6 @@
     </ClInclude>
     <ClInclude Include="Brick.h">
       <Filter>Objects\Brick</Filter>
-    </ClInclude>
-    <ClInclude Include="MarioDie.h">
-      <Filter>Objects\State</Filter>
-    </ClInclude>
-    <ClInclude Include="MarioFalling.h">
-      <Filter>Objects\State</Filter>
-    </ClInclude>
-    <ClInclude Include="MarioIdle.h">
-      <Filter>Objects\State</Filter>
-    </ClInclude>
-    <ClInclude Include="MarioJumping.h">
-      <Filter>Objects\State</Filter>
-    </ClInclude>
-    <ClInclude Include="MarioState.h">
-      <Filter>Objects\State</Filter>
-    </ClInclude>
-    <ClInclude Include="MarioWalking.h">
-      <Filter>Objects\State</Filter>
     </ClInclude>
     <ClInclude Include="Leaf.h">
       <Filter>Objects\Item</Filter>
@@ -223,6 +184,15 @@
     </ClInclude>
     <ClInclude Include="FireBall.h">
       <Filter>Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="ParaKoopa.h">
+      <Filter>Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="ParaGoomba.h">
+      <Filter>Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="mario.h">
+      <Filter>Objects\Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

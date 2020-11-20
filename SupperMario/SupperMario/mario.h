@@ -3,20 +3,19 @@
 #include "GameObject.h"
 #include "Animations.h"
 #include "Camera.h"
-#include "MarioData.h"
-#include "MarioState.h"
-#include "MarioWalking.h"
+
 #include "BrickColor.h"
 
 #define MARIO_WALKING_SPEED		0.15f 
 #define MARIO_WALKING_MAX_SPEED	0.15f
 
 //0.1f
-#define MARIO_JUMP_SPEED_Y		0.35f
+#define MARIO_JUMP_SPEED_Y		0.32f
 #define MARIO_JUMP_DEFLECT_SPEED 0.1f
-#define MARIO_GRAVITY			0.001f
-#define MARIO_GRAVITY_TAIL		0.35f
+#define MARIO_GRAVITY			0.0008f
+#define MARIO_GRAVITY_TAIL		0.25f
 #define MARIO_DIE_DEFLECT_SPEED	 0.5f
+#define MARIO_FALLING_TAIL_SPEED 0.00075f;
 
 #define MARIO_STATE_IDLE			0
 #define MARIO_STATE_WALKING_RIGHT	100
@@ -59,34 +58,40 @@
 #define MARIO_ANI_TAIL_FALLING_RIGHT		23
 #define MARIO_ANI_TAIL_FALLING_LEFT			24
 
-#define MARIO_ANI_BIG_KICK_RIGHT			31
-#define MARIO_ANI_BIG_KICK_LEFT				32
-#define MARIO_ANI_SMALL_KICK_RIGHT			33
-#define MARIO_ANI_SMALL_KICK_LEFT			35
-#define MARIO_ANI_TAIL_KICK_RIGHT			35
-#define MARIO_ANI_TAIL_KICK_LEFT			36
+#define MARIO_ANI_BIG_KICK_RIGHT			25
+#define MARIO_ANI_BIG_KICK_LEFT				26
+#define MARIO_ANI_SMALL_KICK_RIGHT			27
+#define MARIO_ANI_SMALL_KICK_LEFT			28
+#define MARIO_ANI_TAIL_KICK_RIGHT			29
+#define MARIO_ANI_TAIL_KICK_LEFT			30
 
-#define MARIO_ANI_IDLE_BIG_HOLD_RIGHT		37
-#define MARIO_ANI_IDLE_BIG_HOLD_LEFT		38
-#define MARIO_ANI_IDLE_TAIL_HOLD_RIGHT		39
-#define MARIO_ANI_IDLE_TAIL_HOLD_LEFT		40
-#define MARIO_ANI_WALKING_BIG_HOLD_RIGHT	41
-#define MARIO_ANI_WALKING_BIG_HOLD_LEFT		42
-#define MARIO_ANI_WALKING_TAIL_HOLD_RIGHT	43
-#define MARIO_ANI_WALKING_TAIL_HOLD_LEFT	44
+#define MARIO_ANI_IDLE_BIG_HOLD_RIGHT		31
+#define MARIO_ANI_IDLE_BIG_HOLD_LEFT		32
+#define MARIO_ANI_IDLE_TAIL_HOLD_RIGHT		33
+#define MARIO_ANI_IDLE_TAIL_HOLD_LEFT		34
+#define MARIO_ANI_WALKING_BIG_HOLD_RIGHT	35
+#define MARIO_ANI_WALKING_BIG_HOLD_LEFT		36
+#define MARIO_ANI_WALKING_TAIL_HOLD_RIGHT	37
+#define MARIO_ANI_WALKING_TAIL_HOLD_LEFT	38
 
-#define MARIO_ANI_SWING_RIGHT				45
-#define MARIO_ANI_SWING_LEFT				46	
+#define MARIO_ANI_SWING_RIGHT				39
+#define MARIO_ANI_SWING_LEFT				40	
 
-#define MARIO_ANI_IDLE_FIRE_RIGHT			47
-#define MARIO_ANI_IDLE_FIRE_LEFT			48
-#define MARIO_ANI_WALKING_FIRE_RIGHT		49
-#define MARIO_ANI_WALKING_FIRE_LEFT			50
+#define MARIO_ANI_IDLE_FIRE_RIGHT			41
+#define MARIO_ANI_IDLE_FIRE_LEFT			42
+#define MARIO_ANI_WALKING_FIRE_RIGHT		43
+#define MARIO_ANI_WALKING_FIRE_LEFT			44
 
-#define MARIO_ANI_FLY_RIGHT					51
-#define MARIO_ANI_FLY_LEFT					52
-#define MARIO_ANI_BE_FALL_RIGHT				53
-#define MARIO_ANI_BE_FALL_LEFT				54
+#define MARIO_ANI_FLY_RIGHT					45
+#define MARIO_ANI_FLY_LEFT					46
+#define MARIO_ANI_BE_FALL_RIGHT				47
+#define MARIO_ANI_BE_FALL_LEFT				48
+
+#define MARIO_ANI_JUMPING_FIRE_RIGHT		49
+#define MARIO_ANI_JUMPING_FIRE_LEFT			50
+
+#define MARIO_ANI_WAGGING_RIGHT				51
+#define MARIO_ANI_WAGGING_LEFT				52
 
 
 #define	MARIO_LEVEL_SMALL	1
@@ -109,7 +114,7 @@
 
 #define MARIO_UNTOUCHABLE_TIME 5000
 #define MARIO_FLY_TIME			4000	
-#define MARIO_MOMENTUM_TIME		3000
+#define MARIO_MOMENTUM_TIME		2000
 
 const float PLAYER_MAX_JUMP_VELOCITY = 0.5f; //van toc nhay lon nhat
 const float PLAYER_MIN_JUMP_VELOCITY = -0.5f; //van toc nhay thap nhat
@@ -156,9 +161,11 @@ public:
 	bool isUseFire;
 	bool isSwing;
 	bool isFlying;
+	bool isWagging;
 
 	bool noCollision;
-	bool collision;
+	bool collision_x;
+	bool collision_y;
 
 	bool isMomentum;
 
@@ -169,13 +176,11 @@ public:
 
 	void SetState(int state);
 
-	void SetStateName(MarioState* newState);
-
 	void SetLevel(int lev) { level = lev; }
 	int GetLevel();
 
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
-	void StartFlyable() { isFlying = true; flyable_start = GetTickCount(); }
+	void StartFlyable() { isFlying = true; flyable_start = GetTickCount(); level = MARIO_LEVEL_FLY; }
 	void StartMomentum() { isMomentum = true; momentable = 1; momentable_start = GetTickCount(); }
 
 	void Reset();
@@ -188,11 +193,6 @@ public:
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 
-	void changeAnimation(MarioState *state);
-
-	void OnKeyDown(int key);
-	void OnKeyUp(int key);
-	void KeyState(BYTE* states);
 
 	void NoCollisionWithAxisY();
 
@@ -204,11 +204,6 @@ public:
 	bool allowMoveRight;
 
 protected:
-	MarioData* marioData;
-
-	MarioState * CurrentState;
-
-	MarioState::StateName mCurrentState;
 
 	bool allowJump;
 
