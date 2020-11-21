@@ -709,6 +709,9 @@ void PlayScene::checkCollisionWithEnemy()
 			}
 
 			LPCOLLISIONEVENT e = mario->SweptAABBEx(goomba);
+			if (mario->isAllowSwing && mario->isCollisionWithItem(goomba)) {
+				goomba->SetState(GOOMBA_STATE_DIE);
+			}
 
 			if (e->t > 0 && e->t <= 1) {
 
@@ -750,20 +753,21 @@ void PlayScene::checkCollisionWithEnemy()
 
 			LPCOLLISIONEVENT e = mario->SweptAABBEx(koopas);
 
-			if (koopas->GetState() == KOOPAS_STATE_DIE && mario->isCollisionWithItem(koopas) && mario->isAllowHold == false)
+			if (mario->isAllowSwing && mario->isCollisionWithItem(koopas)) {
+				koopas->SetState(KOOPAS_STATE_DIE_UP);
+			}
+			else  if (koopas->GetState() == KOOPAS_STATE_DIE && mario->isCollisionWithItem(koopas) && mario->isAllowHold == false)
 			{
-				mario->isAllowKick =  true;
+				mario->isAllowKick = true;
 
 				if (mario->vx > 0 || mario->nx > 0) {
 					koopas->SetState(KOOPAS_STATE_DIE_WALKING_RIGHT);
 				}
-				else { 
-					koopas->SetState(KOOPAS_STATE_DIE_WALKING_LEFT); 
+				else {
+					koopas->SetState(KOOPAS_STATE_DIE_WALKING_LEFT);
 				}
 			}
-			else if (mario->isAllowSwing && mario->isCollisionWithItem(koopas)) {
-				koopas->SetState(KOOPAS_STATE_DIE);
-			}
+			
 			else if (mario->isAllowHold && koopas->GetState() == KOOPAS_STATE_DIE && mario->isCollisionWithItem(koopas))
 			{				
 				mario->isHoldingItem = true;

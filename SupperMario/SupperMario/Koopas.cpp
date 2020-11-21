@@ -12,62 +12,65 @@ void Koopas::GetBoundingBox(float& left, float& top, float& right, float& bottom
 	top = y;
 	right = x + KOOPAS_BBOX_WIDTH;
 
-	if (state == KOOPAS_STATE_DIE|| state== KOOPAS_STATE_DIE_UP)
+	if (state == KOOPAS_STATE_DIE|| state== KOOPAS_STATE_DIE_UP|| state== KOOPAS_STATE_DIE_WALKING_RIGHT|| state == KOOPAS_STATE_DIE_WALKING_LEFT)
 		bottom = y + KOOPAS_BBOX_HEIGHT_DIE;
 	else
-		bottom = y + KOOPAS_BBOX_HEIGHT_DIE;
+		bottom = y+ KOOPAS_BBOX_HEIGHT;
 }
 
 void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (state == KOOPAS_STATE_DIE_UP)
-		vy -= 0.003f * dt;
 
 	GameObject::Update(dt, coObjects);
 
-	vy += KOOPAS_GRAVITY * dt;
+	/*if (state == KOOPAS_STATE_WALKING_RIGHT || state == KOOPAS_STATE_DIE_WALKING_LEFT)
+		y = 350;
+	else {*/
 
-	vector<LPGAMEOBJECT> Bricks;
-	Bricks.clear();
+		vy += KOOPAS_GRAVITY * dt;
 
-	for (UINT i = 0; i < coObjects->size(); i++)
-		if (dynamic_cast<Brick*>(coObjects->at(i)))
-			Bricks.push_back(coObjects->at(i));
+		vector<LPGAMEOBJECT> Bricks;
+		Bricks.clear();
 
-	vector<LPCOLLISIONEVENT>  coEvents;
-	vector<LPCOLLISIONEVENT>  coEventsResult;
+		for (UINT i = 0; i < coObjects->size(); i++)
+			if (dynamic_cast<Brick*>(coObjects->at(i)))
+				Bricks.push_back(coObjects->at(i));
 
-	coEvents.clear();
+		vector<LPCOLLISIONEVENT>  coEvents;
+		vector<LPCOLLISIONEVENT>  coEventsResult;
 
-	CalcPotentialCollisions(&Bricks, coEvents);
+		coEvents.clear();
 
-	if (coEvents.size() == 0)
-	{
-		x += dx;
-		y += dy;
-	}
-	else
-	{
-		float min_tx, min_ty, nx = 0, ny;
-		float rdx, rdy;
+		CalcPotentialCollisions(&Bricks, coEvents);
 
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+		if (coEvents.size() == 0)
+		{
+			x += dx;
+			y += dy;
+		}
+		else
+		{
+			float min_tx, min_ty, nx = 0, ny;
+			float rdx, rdy;
 
-		x += min_tx * dx + nx * 0.04f;
-		y += min_ty * dy + ny * 0.04f;
+			FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		if (nx != 0)
-		{			
-			/*if (nx > 0)
-				SetState(KOOPAS_STATE_WALKING_RIGHT);
-			else
-				SetState(KOOPAS_STATE_WALKING_LEFT);*/
-		};
-		if (ny != 0) vy = 0;
+			x += min_tx * dx + nx * 0.04f;
+			y += min_ty * dy + ny * 0.04f;
 
-	}
-	for (UINT i = 0; i < coEvents.size(); i++)
-		delete coEvents[i];
+			if (nx != 0)
+			{
+				/*if (nx > 0)
+					SetState(KOOPAS_STATE_WALKING_RIGHT);
+				else
+					SetState(KOOPAS_STATE_WALKING_LEFT);*/
+			};
+			if (ny != 0) vy = 0;
+
+		}
+		for (UINT i = 0; i < coEvents.size(); i++)
+			delete coEvents[i];
+	
 
 	if (vx < 0 && x < 1152)
 	{
@@ -136,13 +139,14 @@ void Koopas::SetState(int state)
 	case KOOPAS_STATE_DIE_UP:
 		isDie = true;
 		vx = 0;
-		vy = 0;
+		vy = -0.5f;
 		break;
 	case KOOPAS_STATE_WALKING_RIGHT:
 		vx = KOOPAS_WALKING_SPEED;
 		break;
 	case KOOPAS_STATE_WALKING_LEFT:
 		vx = -KOOPAS_WALKING_SPEED;
+	
 		break;
 	case KOOPAS_STATE_DIE_WALKING_RIGHT:
 		vx = KOOPAS_DIE_SPEED;

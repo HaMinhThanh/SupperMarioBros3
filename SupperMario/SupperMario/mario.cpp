@@ -56,7 +56,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		isWagging = false;
 	
 
-	if (vx == 0 || vy == MARIO_JUMP_SPEED_Y)
+	if (vx == 0 || vy == MARIO_JUMP_SPEED_Y )
 		momentable = 0;
 
 	GameObject::Update(dt);
@@ -105,7 +105,9 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	
 	if (coEvents.size() == 0)
-	{		
+	{	
+		noCollision = true;
+
 		collision_x = false;
 		collision_y = false;
 
@@ -115,7 +117,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else
 	{
-		noCollision = true;
+		noCollision = false;
 		
 
 		float min_tx, min_ty, nx = 0, ny;
@@ -324,7 +326,10 @@ void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 	}
 	else if (level == MARIO_LEVEL_TAIL || level == MARIO_LEVEL_FLY)
 	{
-		right = x + MARIO_TAIL_BBOX_WIDTH;
+		if (isAllowSwing)
+			right = x + MARIO_TAIL_SWING_BBOX_WIDTH;
+		else
+			right = x + MARIO_TAIL_BBOX_WIDTH;
 		bottom = y + MARIO_TAIL_BBOX_HEIGHT;
 	}
 
@@ -381,7 +386,7 @@ void Mario::changeAni()
 			}
 
 
-			else if (vy > 0 && collision_y == false) {
+			else if (vy > 0 && noCollision == true) {
 
 				if (vx > 0 || nx>0)
 				{
@@ -390,6 +395,17 @@ void Mario::changeAni()
 				}
 				
 				else SetAni(MARIO_ANI_BIG_FALLING_LEFT);
+			}
+			else {
+				if (vx == 0)
+				{
+					if (nx > 0) SetAni(MARIO_ANI_BIG_IDLE_RIGHT);
+					else SetAni(MARIO_ANI_BIG_IDLE_LEFT);
+					//SetAni(MARIO_ANI_BIG_IDLE_LEFT);
+				}
+				else if (vx > 0)
+					SetAni(MARIO_ANI_BIG_WALKING_RIGHT);
+				else SetAni(MARIO_ANI_BIG_WALKING_LEFT);
 			}
 		}
 
@@ -507,7 +523,7 @@ void Mario::changeAni()
 					SetAni(MARIO_ANI_FLY_RIGHT);
 				}
 				else
-					SetAni(MARIO_ANI_FLY_RIGHT);
+					SetAni(MARIO_ANI_FLY_LEFT);
 
 			}
 
