@@ -8,6 +8,8 @@
 #include "Koopas.h"
 #include "Goomba.h"
 #include "Venus.h"
+#include "ParaKoopa.h"
+#include "ParaGoomba.h"
 
 #include "Leaf.h"
 #include "Coin.h"
@@ -47,6 +49,8 @@ using namespace std;
 #define ENEMY_TYPE_GOOMBA 1
 #define ENEMY_TYPE_KOOPAS 2
 #define ENEMY_TYPE_VENUS 3
+#define ENEMY_TYPE_PARAKOOPAS	4
+#define ENEMY_TYPE_PARAGOOMBA	5	
 
 #define MAX_SCENE_LINE 1024
 
@@ -324,6 +328,12 @@ void PlayScene::ParseSection_Enemy(string line)
 		break;
 	case ENEMY_TYPE_VENUS:
 		enemy = new Venus();
+		break;
+	case ENEMY_TYPE_PARAKOOPAS:
+		enemy = new ParaKoopa();
+		break;
+	case ENEMY_TYPE_PARAGOOMBA:
+		enemy = new ParaGoomba();
 		break;
 	default:
 		//DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
@@ -684,27 +694,27 @@ void PlayScene::checkCollisionWithEnemy()
 
 		for (INT i = 0; i < Weapon.size(); i++)
 		{
-			if ((Weapon[i])->GetFinish()==false) {
+			if ((Weapon[i])->GetFinish() == false) {
 
 				//FireBall *f= dynamic_cast<FireBall*> (Weapon[i]);
 
 				//if ( f->GetFinish()==false) {
 
-					LPCOLLISIONEVENT e = obj->SweptAABBEx(Weapon[i]);
+				LPCOLLISIONEVENT e = obj->SweptAABBEx(Weapon[i]);
 
-					if (e->t > 0 && e->t <= 1) {
-						isCollision = true;
-					}
+				if (e->t > 0 && e->t <= 1) {
+					isCollision = true;
+				}
 				//}
-			}				
+			}
 		}
 
 		if (dynamic_cast<Goomba*>(obj)) // if obj is Goomba 
 		{
 			Goomba* goomba = dynamic_cast<Goomba*>(obj);
 
-			if (isCollision) { 
-				goomba->SetState(GOOMBA_STATE_DIE); 
+			if (isCollision) {
+				goomba->SetState(GOOMBA_STATE_DIE);
 				isCollision = false;
 			}
 
@@ -742,7 +752,7 @@ void PlayScene::checkCollisionWithEnemy()
 				}
 			}
 		}
-		else if (dynamic_cast<Koopas*>(obj)) // if e->obj is Goomba 
+		else if (dynamic_cast<Koopas*>(obj)) // if e->obj is Koopa 
 		{
 			Koopas* koopas = dynamic_cast<Koopas*>(obj);
 
@@ -767,9 +777,9 @@ void PlayScene::checkCollisionWithEnemy()
 					koopas->SetState(KOOPAS_STATE_DIE_WALKING_LEFT);
 				}
 			}
-			
+
 			else if (mario->isAllowHold && koopas->GetState() == KOOPAS_STATE_DIE && mario->isCollisionWithItem(koopas))
-			{				
+			{
 				mario->isHoldingItem = true;
 				mario->isAllowHold = true;
 			}
@@ -781,7 +791,7 @@ void PlayScene::checkCollisionWithEnemy()
 			/*else if(KOOPAS_STATE_BE_FOLLOW_MARIO){
 				koopas->SetState(KOOPAS_STATE_DIE);*/
 
-			if (e->t > 0 && e->t <= 1) {				
+			if (e->t > 0 && e->t <= 1) {
 
 				// jump on top >> kill Goomba and deflect a bit 
 				if (e->ny < 0)
@@ -812,7 +822,97 @@ void PlayScene::checkCollisionWithEnemy()
 				}
 			}
 		}
-	} 
+		else if (dynamic_cast<ParaKoopa*>(obj)) // if e->obj is Koopa 
+		{
+			ParaKoopa* para = dynamic_cast<ParaKoopa*>(obj);
+
+			if (isCollision) {
+				para->SetState(KOOPAS_STATE_DIE);
+				isCollision = false;
+			}
+
+			LPCOLLISIONEVENT e = mario->SweptAABBEx(para);
+
+			if (e->t > 0 && e->t <= 1) {
+
+				// jump on top >> kill Goomba and deflect a bit 
+				if (e->ny < 0)
+				{
+					if (para->GetState() != PARAKOOPA_STATE_DIE)
+					{
+						para->SetState(PARAKOOPA_STATE_DIE);
+
+						//mario->vy = -MARIO_JUMP_DEFLECT_SPEED;
+						mario->vy = -0.3;
+
+						CreateKoopa(para->GetX(), para->GetY());
+					}
+
+				}
+				else if (e->nx != 0)
+				{
+					if (mario->untouchable == 0)
+					{
+						if (para->GetState() != KOOPAS_STATE_DIE)
+						{
+							if (mario->level > MARIO_LEVEL_SMALL)
+							{
+								mario->level--;
+								mario->StartUntouchable();
+							}
+							else
+								mario->SetState(MARIO_STATE_DIE);
+						}
+					}
+				}
+			}
+		}
+		else if (dynamic_cast<ParaGoomba*>(obj)) // if e->obj is Para Goomba
+		{
+			ParaGoomba* para = dynamic_cast<ParaGoomba*>(obj);
+
+			if (isCollision) {
+				para->SetState(PARAGOOMBA_STATE_DIE);
+				isCollision = false;
+			}
+
+			LPCOLLISIONEVENT e = mario->SweptAABBEx(para);
+
+			if (e->t > 0 && e->t <= 1) {
+
+				// jump on top >> kill Goomba and deflect a bit 
+				if (e->ny < 0)
+				{
+					if (para->GetState() != PARAGOOMBA_STATE_DIE)
+					{
+						if (para->GetState() == PARAGOOMBA_STATE_NORMAL)
+							para->SetState(PARAGOOMBA_STATE_DIE);
+						else if(para->GetState() == PARAGOOMBA_STATE_WING)
+							para->SetState(PARAGOOMBA_STATE_NORMAL);
+
+						mario->vy = -MARIO_JUMP_DEFLECT_SPEED;
+					}
+
+				}
+				else if (e->nx != 0)
+				{
+					if (mario->untouchable == 0)
+					{
+						if (para->GetState() != PARAGOOMBA_STATE_DIE)
+						{
+							if (mario->level > MARIO_LEVEL_SMALL)
+							{
+								mario->level--;
+								mario->StartUntouchable();
+							}
+							else
+								mario->SetState(MARIO_STATE_DIE);
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 void PlayScene::useFireBall()
@@ -891,4 +991,23 @@ void PlayScene::checkCollisionWithBrick()
 		}
 		
 	}
+}
+
+void PlayScene::CreateKoopa(float x, float y)
+{
+	AnimationSets* animation_sets = AnimationSets::GetInstance();
+	
+	GameObject* kp = NULL;
+
+	kp = new Koopas();
+	kp->SetState(KOOPAS_STATE_WALKING_LEFT);
+
+	kp->SetPosition(x, y);
+
+	LPANIMATION_SET ani_set = animation_sets->Get(31);
+
+	kp->SetAnimationSet(ani_set);
+	Enemy.push_back(kp);
+
+	isNotDie = true;
 }

@@ -2,6 +2,13 @@
 
 #include "GameObject.h"
 #include "Koopas.h"
+#include "PlayScene.h"
+
+#define PARAKOOPAS_BBOX_WIDTH	16
+#define PARAKOOPAS_BBOX_HEIGHT	28
+
+#define PARAKOOPA_STATE_DIE		200	
+
 
 class ParaKoopa: public GameObject
 {

@@ -4,24 +4,30 @@
 
 ParaGoomba::ParaGoomba()
 {
-	//SetState(GOOMBA_STATE_WALKING);
+	SetState(PARAGOOMBA_STATE_WING);
 }
 
 void ParaGoomba::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	if (state == GOOMBA_STATE_DIE)
+	if (state == PARAGOOMBA_STATE_DIE)
 	{
 		left = top = right = bottom = 0;
 	}
-	else {
+	else 
+	{
 		left = x;
 		top = y;
-		right = x + GOOMBA_BBOX_WIDTH;
-
-		if (state == GOOMBA_STATE_DIE)
-			bottom = y + GOOMBA_BBOX_HEIGHT_DIE;
-		else
-			bottom = y + GOOMBA_BBOX_HEIGHT;
+		
+		if (state == PARAGOOMBA_STATE_WING) 
+		{
+			right = x + PARAGOOMBA_BBOX_WIDTH;
+			bottom = y + PARAGOOMBA_BBOX_HEIGHT;
+		}
+		else if (state == PARAGOOMBA_STATE_NORMAL)
+		{
+			right = x + PARAGOOMBA_BBOX_WIDTH_NORMAL;
+			bottom = y + PARAGOOMBA_BBOX_HEIGHT_NORMAL;
+		}
 	}
 }
 
@@ -29,38 +35,83 @@ void ParaGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	GameObject::Update(dt, coObjects);
 
-	x += dx;
-	y += dy;
+	vy += PARAGOOMBA_GRAVITY * dt;
 
-	/*if (this->GetState() == GOOMBA_STATE_DIE) {
+	vector<LPGAMEOBJECT> Bricks;
+	Bricks.clear();
 
-	}*/
+	for (UINT i = 0; i < coObjects->size(); i++)
+		if (dynamic_cast<Brick*>(coObjects->at(i)))
+			Bricks.push_back(coObjects->at(i));
 
-	if (vx < 0 && x < 0)
+	vector<LPCOLLISIONEVENT>  coEvents;
+	vector<LPCOLLISIONEVENT>  coEventsResult;
+
+	coEvents.clear();
+
+	CalcPotentialCollisions(&Bricks, coEvents);
+
+	if (coEvents.size() == 0)
 	{
-		x = 0;
+		x += dx;
+		y += dy;
+	}
+	else
+	{
+		if (state == PARAGOOMBA_STATE_WING)
+			vy = -0.1f;
+
+		float min_tx, min_ty, nx = 0, ny;
+		float rdx, rdy;
+
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+
+		x += min_tx * dx + nx * 0.04f;
+		y += min_ty * dy + ny * 0.04f;
+
+	}
+	for (UINT i = 0; i < coEvents.size(); i++)
+		delete coEvents[i];
+
+	if (vx < 0 && x < 624)
+	{
+		x = 624;
 		vx = -vx;
 	}
-	if (vx > 0 && x > 290)
+	if (vx > 0 && x > 1088)
 	{
-		x = 290;
+		x = 1088;
 		vx = -vx;
 	}
 }
 
 void ParaGoomba::Render()
 {
-	int ani = GOOMBA_ANI_WALKING;
-	if (state == GOOMBA_STATE_DIE) {
+	int state = GetState();
+	int ani = PARAGOOMBA_ANI_WING;
+
+	if (state == PARAGOOMBA_STATE_DIE) {
 		return;
+	}
+	switch (state)
+	{
+	case PARAGOOMBA_STATE_WING:
+		ani = PARAGOOMBA_ANI_WING;
+		break;
+	case PARAGOOMBA_STATE_NORMAL:
+		ani = PARAGOOMBA_ANI_NORMAL;
+		break;
 	}
 
 	animation_set->at(ani)->Render(x, y);
+
+	RenderBoundingBox();
 }
 
 void ParaGoomba::SetState(int state)
 {
 	GameObject::SetState(state);
+
 	switch (state)
 	{
 	case GOOMBA_STATE_DIE:
@@ -69,8 +120,12 @@ void ParaGoomba::SetState(int state)
 		vy = 0;
 		this->SetId(-1);
 		break;
-	case GOOMBA_STATE_WALKING:
+	case PARAGOOMBA_STATE_WING:
 		vx = -GOOMBA_WALKING_SPEED;
+		break;
+	case PARAGOOMBA_STATE_NORMAL:
+		vx = -GOOMBA_WALKING_SPEED;
+		break;
 	}
 }
 

@@ -5,19 +5,23 @@
 
 ParaKoopa::ParaKoopa()
 {
-	SetState(KOOPAS_STATE_WALKING_LEFT);
+	SetState(KOOPAS_STATE_WING_LEFT);
 }
 
 void ParaKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	left = x;
-	top = y;
-	right = x + KOOPAS_BBOX_WIDTH;
+	if (state == PARAKOOPA_STATE_DIE)
+		left = right = top = bottom = 0;
+	else {
+		left = x;
+		top = y;
+		right = x + PARAKOOPAS_BBOX_WIDTH;
 
-	if (state == KOOPAS_STATE_DIE)
-		bottom = y + KOOPAS_BBOX_HEIGHT_DIE;
-	else
-		bottom = y + KOOPAS_BBOX_HEIGHT_DIE;
+		/*if (state == KOOPAS_STATE_DIE)
+			bottom = y + KOOPAS_BBOX_HEIGHT_DIE;
+		else*/
+		bottom = y + PARAKOOPAS_BBOX_HEIGHT;
+	}
 }
 
 void ParaKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -47,6 +51,8 @@ void ParaKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	else
 	{
+		vy = -0.1;
+
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx, rdy;
 
@@ -54,7 +60,7 @@ void ParaKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		x += min_tx * dx + nx * 0.04f;
 		y += min_ty * dy + ny * 0.04f;
-
+		                
 		if (nx != 0)
 		{
 			/*if (nx > 0)
@@ -62,7 +68,7 @@ void ParaKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			else
 				SetState(KOOPAS_STATE_WALKING_LEFT);*/
 		};
-		if (ny != 0) vy = 0;
+		//if (ny != 0) vy = 0;
 
 	}
 	for (UINT i = 0; i < coEvents.size(); i++)
@@ -74,7 +80,7 @@ void ParaKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			SetState(KOOPAS_STATE_DIE_WALKING_RIGHT);
 		}
 		else
-			SetState(KOOPAS_STATE_WALKING_RIGHT);
+			SetState(KOOPAS_STATE_WING_RIGHT);
 
 	}
 	if (vx > 0 && x > 1488)
@@ -83,7 +89,7 @@ void ParaKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			SetState(KOOPAS_STATE_DIE_WALKING_LEFT);
 		}
 		else
-			SetState(KOOPAS_STATE_WALKING_LEFT);
+			SetState(KOOPAS_STATE_WING_LEFT);
 	}
 }
 
@@ -92,23 +98,22 @@ void ParaKoopa::Render()
 	int ani;// 
 
 	int state = this->GetState();
+	if (state == PARAKOOPA_STATE_DIE)
+		return;
 
 	switch (state)
 	{
-	case KOOPAS_STATE_DIE:
-		ani = KOOPAS_ANI_DIE;
-		break;
 	case KOOPAS_STATE_DIE_WALKING_RIGHT:
-		ani = KOOPAS_ANI_DIE_WALKING;
+		ani = KOOPAS_ANI_DIE_DOWN;
 		break;
 	case KOOPAS_STATE_DIE_WALKING_LEFT:
-		ani = KOOPAS_ANI_DIE_WALKING;
+		ani = KOOPAS_ANI_DIE_DOWN;
 		break;
-	case KOOPAS_STATE_WALKING_RIGHT:
-		ani = KOOPAS_ANI_WALKING_RIGHT;
+	case KOOPAS_STATE_WING_RIGHT:
+		ani = KOOPAS_ANI_WING_RIGHT;
 		break;
-	case KOOPAS_STATE_WALKING_LEFT:
-		ani = KOOPAS_ANI_WALKING_LEFT;
+	case KOOPAS_STATE_WING_LEFT:
+		ani = KOOPAS_ANI_WING_LEFT;
 		break;
 	default:
 		return;
@@ -116,7 +121,7 @@ void ParaKoopa::Render()
 
 	animation_set->at(ani)->Render(x, y);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void ParaKoopa::SetState(int state)
@@ -124,10 +129,11 @@ void ParaKoopa::SetState(int state)
 	GameObject::SetState(state);
 	switch (state)
 	{
-	case KOOPAS_STATE_DIE:
+	case PARAKOOPA_STATE_DIE:
 		isDie = true;
 		vx = 0;
 		vy = 0;
+		//CreateKoopa(this->x, this->y);
 		break;
 	case KOOPAS_STATE_WALKING_RIGHT:
 		vx = KOOPAS_WALKING_SPEED;
@@ -141,10 +147,13 @@ void ParaKoopa::SetState(int state)
 	case KOOPAS_STATE_DIE_WALKING_LEFT:
 		vx = -KOOPAS_DIE_SPEED;
 		break;
-
-	case KOOPAS_STATE_BE_FOLLOW_MARIO:
-		vx = 0;
-		vy = 0;
+	case KOOPAS_STATE_WING_RIGHT:
+		vx = KOOPAS_WALKING_SPEED;
+		vy = -0.2;
+		break;
+	case KOOPAS_STATE_WING_LEFT:
+		vx = -KOOPAS_WALKING_SPEED;
+		vy = -0.2;
 		break;
 	}
 }

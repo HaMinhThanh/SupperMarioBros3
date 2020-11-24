@@ -56,7 +56,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		isWagging = false;
 	
 
-	if (vx == 0 || vy == MARIO_JUMP_SPEED_Y )
+	if (vx == 0 || vy == MARIO_JUMP_SPEED_Y || isWagging)
 		momentable = 0;
 
 	GameObject::Update(dt);
