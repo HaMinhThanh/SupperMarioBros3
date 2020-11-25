@@ -1,4 +1,4 @@
 # NMPT GAME 
 # SuperMarioBros3
 # Dev HaMinhThanh
-# Lecturere DinhNguyenAnhDung
+# Lecturer DinhNguyenAnhDung
