@@ -4,6 +4,7 @@
 #include "Utils.h"
 #include "Textures.h"
 #include "Sprites.h"
+#include "HidenWall.h"
 
 #include "Koopas.h"
 #include "Goomba.h"
@@ -29,7 +30,7 @@ using namespace std;
 #define SCENE_SECTION_ITEMS	6
 #define SCENE_SECTION_OBJECTS	7
 #define SCENE_SECTION_ENEMY 8
-#define SCENE_SECTION_COLORBLOCK 9
+#define SCENE_SECTION_BACKGROUND 9
 
 // OBJECT
 #define OBJECT_TYPE_MARIO	0
@@ -37,7 +38,10 @@ using namespace std;
 #define OBJECT_TYPE_BRICKQUESION	2
 #define OBJECT_TYPE_BRICKGOLD	3
 #define OBJECT_TYPE_VENUS	4
-#define OBJECT_TYPE_COLORBRICK	5
+#define OBJECT_TYPE_COLORBLOCK	5	
+
+// back ground
+#define OBJECT_TYPE_BACKGROUND	1
 
 // ITEMS
 #define ITEM_TYPE_COIN		1
@@ -107,7 +111,7 @@ void PlayScene::ParseSection_Animations(string line)
 
 	if (tokens.size() < 3) return; // skip invalid lines - an animation must at least has 1 frame and 1 frame time
 
-	DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+	DebugOut(L"--> %s\n", ToWSTR(line).c_str());
 
 	LPANIMATION ani = new Animation();
 
@@ -147,6 +151,47 @@ void PlayScene::ParseSection_Animation_Sets(string line)
 	AnimationSets::GetInstance()->AddAnimationSet(ani_set_id, s);
 }
 
+void PlayScene::ParseSection_BackGround(string line)
+{
+	int ani;
+	vector<string> tokens = split(line);
+
+	DebugOut(L"--> %s\n", ToWSTR(line).c_str());
+
+	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
+
+	int object_type = atoi(tokens[0].c_str());
+	float x = atof(tokens[1].c_str());
+	float y = atof(tokens[2].c_str());
+
+	int ani_set_id = atoi(tokens[3].c_str());
+
+	AnimationSets* animation_sets = AnimationSets::GetInstance();
+
+	GameObject* obj = NULL;
+
+	switch (object_type)
+	{
+	case OBJECT_TYPE_BACKGROUND:
+		obj = new HidenWall();
+		break;
+
+	default:
+		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
+		return;
+	}
+
+	// General object setup
+	obj->SetPosition(x, y);
+
+	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+
+	obj->SetAnimationSet(ani_set);
+
+	BackGround.push_back(obj);
+
+}
+
 /*
 	Parse a line in section [OBJECTS]
 */
@@ -159,7 +204,7 @@ void PlayScene::ParseSection_Objects(string line)
 	int ani;
 	vector<string> tokens = split(line);
 
-	DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+	DebugOut(L"--> %s\n", ToWSTR(line).c_str());
 
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
@@ -200,7 +245,8 @@ void PlayScene::ParseSection_Objects(string line)
 		if (x == 240 && y == 304) {
 			item = new Mushroom();
 			ani = 37;
-		}else if(x == 704 && y == 352) {
+		}
+		else if (x == 704 && y == 352) {
 			item = new Leaf();
 			ani = 36;
 		}
@@ -208,7 +254,7 @@ void PlayScene::ParseSection_Objects(string line)
 			item = new Coin();
 			ani = 32;
 		}
-		
+
 		hd = true;
 		break;
 	case OBJECT_TYPE_BRICKGOLD:
@@ -220,7 +266,7 @@ void PlayScene::ParseSection_Objects(string line)
 		hd = true;
 		break;
 
-	case OBJECT_TYPE_COLORBRICK:
+	case OBJECT_TYPE_COLORBLOCK:
 
 		w = atof(tokens[4].c_str());
 		h = atof(tokens[5].c_str());
@@ -243,21 +289,21 @@ void PlayScene::ParseSection_Objects(string line)
 		LPANIMATION_SET ani_set1 = animation_sets->Get(ani);
 		item->SetAnimationSet(ani_set1);
 		Items.push_back(item);
-	}	
+	}
 
-	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);	
+	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 
-	obj->SetAnimationSet(ani_set);	
+	obj->SetAnimationSet(ani_set);
 
 	Objects.push_back(obj);
-	
+
 }
 
 void PlayScene::ParseSection_Items(string line)
 {
 	vector<string> tokens = split(line);
 
-	DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+	DebugOut(L"--> %s\n", ToWSTR(line).c_str());
 
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
@@ -284,7 +330,7 @@ void PlayScene::ParseSection_Items(string line)
 	case ITEM_TYPE_STAR:
 		item = new Star();
 		break;
-	
+
 	default:
 		//DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -303,7 +349,7 @@ void PlayScene::ParseSection_Enemy(string line)
 {
 	vector<string> tokens = split(line);
 
-	DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+	DebugOut(L"--> %s\n", ToWSTR(line).c_str());
 
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
@@ -367,8 +413,11 @@ void PlayScene::Load()
 
 		if (line[0] == '#') continue;	// skip comment lines	
 
-		if (line == "[TEXTURES]") { 
-			section = SCENE_SECTION_TEXTURES; continue; 
+		if (line == "[BACKGROUND]") {
+			section = SCENE_SECTION_BACKGROUND; continue;
+		}
+		if (line == "[TEXTURES]") {
+			section = SCENE_SECTION_TEXTURES; continue;
 		}
 		if (line == "[SPRITES]") {
 			section = SCENE_SECTION_SPRITES; continue;
@@ -388,9 +437,7 @@ void PlayScene::Load()
 		if (line == "[ENEMY]") {
 			section = SCENE_SECTION_ENEMY; continue;
 		}
-		if (line == "[COLORBLOCK]") {
-			section = SCENE_SECTION_COLORBLOCK; continue;
-		}
+		
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
 
 		//
@@ -405,6 +452,7 @@ void PlayScene::Load()
 		case SCENE_SECTION_ITEMS: ParseSection_Items(line); break;
 		case SCENE_SECTION_OBJECTS: ParseSection_Objects(line); break;
 		case SCENE_SECTION_ENEMY: ParseSection_Enemy(line); break;
+		case SCENE_SECTION_BACKGROUND: ParseSection_BackGround(line); break;
 		}
 	}
 
@@ -422,7 +470,7 @@ void PlayScene::Update(DWORD dt)
 	// TO-DO: This is a "dirty" way, need a more organized way 
 
 	vector<LPGAMEOBJECT> coObjects;
-	
+
 
 	for (size_t i = 0; i < Objects.size(); i++)
 	{
@@ -455,10 +503,10 @@ void PlayScene::Update(DWORD dt)
 	Game* game = Game::GetInstance();
 	cx -= game->GetScreenWidth() / 2;
 	cy -= game->GetScreenHeight() / 2;
-	
+
 	if (cx <= 0)
 		cx = 0;
-	else if(cx+ game->GetScreenWidth()>=2816)
+	else if (cx + game->GetScreenWidth() >= 2816)
 		cx = 2816 - game->GetScreenWidth();
 
 	if (mario->level == MARIO_LEVEL_FLY || mario->level == MARIO_LEVEL_TAIL) {
@@ -466,31 +514,32 @@ void PlayScene::Update(DWORD dt)
 		else if (cy + game->GetScreenHeight() >= 432)
 			cy = 432 - game->GetScreenHeight();
 	}
-		
+
 	else //if (cy + game->GetScreenHeight() >= 432)
 		cy = 432 - game->GetScreenHeight();
 
 
 	Game::GetInstance()->SetCamPosition(cx, cy);
-	
+
 	checkCollisionWithEnemy();
 	checkCollisionWithBrick();
 	checkCollisionWithItem();
 }
 
 void PlayScene::Render()
-{	
+{
 
-	Sprites::GetInstance()->Get(1)->Draw(0, 0);
+	//Sprites::GetInstance()->Get(1)->Draw(0, 0);
+
+	for (int i = 0; i < BackGround.size(); i++)
+		BackGround[i]->Render();
+
 
 	for (int i = 0; i < Items.size(); i++)
 		Items[i]->Render();
 
 	for (int i = 0; i < Enemy.size(); i++)
-		Enemy[i]->Render();
-
-	for (int i = 0; i < ColorBlock.size(); i++)
-		ColorBlock[i]->Render();
+		Enemy[i]->Render();	
 
 	for (size_t i = 0; i < Weapon.size(); i++)
 	{
@@ -499,7 +548,7 @@ void PlayScene::Render()
 
 	for (int i = 0; i < Objects.size(); i++)
 		Objects[i]->Render();
-	
+
 }
 
 /*
@@ -516,8 +565,8 @@ void PlayScene::Unload()
 	for (int i = 0; i < Enemy.size(); i++)
 		delete Enemy[i];
 
-	for (int i = 0; i < ColorBlock.size(); i++)
-		delete ColorBlock[i];
+	for (int i = 0; i < BackGround.size(); i++)
+		delete BackGround[i];
 
 	for (int i = 0; i < Weapon.size(); i++)
 		delete Weapon[i];
@@ -525,7 +574,7 @@ void PlayScene::Unload()
 	Objects.clear();
 	Items.clear();
 	Enemy.clear();
-	ColorBlock.clear();
+	BackGround.clear();
 	Weapon.clear();
 
 	mario = NULL;
@@ -541,7 +590,7 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
-		if (mario->isJumping|| mario->isFlying)  {
+		if (mario->isJumping || mario->isFlying) {
 			mario->SetState(MARIO_STATE_JUMP);
 			mario->isJumping = false;
 		}
@@ -577,7 +626,7 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_S:
 		if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 			return;
-	
+
 		mario->SetLevel(MARIO_LEVEL_SMALL);
 		break;
 
@@ -594,7 +643,7 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		if (mario->level == MARIO_LEVEL_TAIL)
 			mario->isAllowSwing = true;
 		break;
-		
+
 	case DIK_R:
 		mario->level = MARIO_LEVEL_FIRE;
 
@@ -603,11 +652,11 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 
 	case DIK_F:
 		if (mario->level == MARIO_LEVEL_FIRE)
-		mario->isUseFire = true;
+			mario->isUseFire = true;
 		break;
 
 	case DIK_M:
-		if (mario->level== MARIO_LEVEL_TAIL)
+		if (mario->level == MARIO_LEVEL_TAIL)
 			mario->isWagging = true;
 		break;
 	}
@@ -615,15 +664,15 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 
 void PlayScenceKeyHandler::useWeapon()
 {
-	
+
 }
 
 void PlayScenceKeyHandler::KeyState(BYTE* states)
-{	
+{
 	Game* game = Game::GetInstance();
 	Mario* mario = ((PlayScene*)scence)->GetPlayer();
 
-	 //disable control key when Mario die 
+	//disable control key when Mario die 
 	if (mario->GetState() == MARIO_STATE_DIE) return;
 	if (game->IsKeyDown(DIK_RIGHT)) {
 		mario->SetState(MARIO_STATE_WALKING_RIGHT);
@@ -641,7 +690,7 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 	}
 	else {
 		mario->SetState(MARIO_STATE_IDLE);
-		
+
 	}
 
 }
@@ -717,11 +766,11 @@ void PlayScene::checkCollisionWithEnemy()
 				goomba->SetState(GOOMBA_STATE_DIE);
 				isCollision = false;
 			}
-
-			LPCOLLISIONEVENT e = mario->SweptAABBEx(goomba);
+			
 			if (mario->isAllowSwing && mario->isCollisionWithItem(goomba)) {
 				goomba->SetState(GOOMBA_STATE_DIE);
 			}
+			LPCOLLISIONEVENT e = mario->SweptAABBEx(goomba);
 
 			if (e->t > 0 && e->t <= 1) {
 
@@ -759,9 +808,7 @@ void PlayScene::checkCollisionWithEnemy()
 			if (isCollision) {
 				koopas->SetState(KOOPAS_STATE_DIE);
 				isCollision = false;
-			}
-
-			LPCOLLISIONEVENT e = mario->SweptAABBEx(koopas);
+			}			
 
 			if (mario->isAllowSwing && mario->isCollisionWithItem(koopas)) {
 				koopas->SetState(KOOPAS_STATE_DIE_UP);
@@ -788,8 +835,7 @@ void PlayScene::checkCollisionWithEnemy()
 
 				mario->SetHodingItem(koopas);
 			}
-			/*else if(KOOPAS_STATE_BE_FOLLOW_MARIO){
-				koopas->SetState(KOOPAS_STATE_DIE);*/
+			LPCOLLISIONEVENT e = mario->SweptAABBEx(koopas);
 
 			if (e->t > 0 && e->t <= 1) {
 
@@ -797,7 +843,7 @@ void PlayScene::checkCollisionWithEnemy()
 				if (e->ny < 0)
 				{
 					if (koopas->GetState() != KOOPAS_STATE_DIE)
-					{
+					{			
 						koopas->SetState(KOOPAS_STATE_DIE);
 
 						mario->vy = -MARIO_JUMP_DEFLECT_SPEED;
@@ -885,10 +931,10 @@ void PlayScene::checkCollisionWithEnemy()
 				{
 					if (para->GetState() != PARAGOOMBA_STATE_DIE)
 					{
-						if (para->GetState() == PARAGOOMBA_STATE_NORMAL)
+						/*if (para->GetState() == PARAGOOMBA_STATE_NORMAL)
 							para->SetState(PARAGOOMBA_STATE_DIE);
-						else if(para->GetState() == PARAGOOMBA_STATE_WING)
-							para->SetState(PARAGOOMBA_STATE_NORMAL);
+						else if (para->GetState() == PARAGOOMBA_STATE_WING)
+							para->SetState(PARAGOOMBA_STATE_NORMAL);*/
 
 						mario->vy = -MARIO_JUMP_DEFLECT_SPEED;
 					}
@@ -908,6 +954,52 @@ void PlayScene::checkCollisionWithEnemy()
 							else
 								mario->SetState(MARIO_STATE_DIE);
 						}
+					}
+				}
+			}
+		}
+		else if (dynamic_cast<Venus*>(obj))
+		{
+			Venus* venus = dynamic_cast<Venus*>(obj);
+
+			if (mario->GetX() == venus->GetX()&& mario->GetY()==venus->GetY())
+				venus->SetState(VENUS_STATE_TOP);
+			else if (mario->GetX() < venus->GetX())
+			{
+				if (mario->GetY() <= venus->GetY())
+					venus->SetState(VENUS_STATE_BOT_LEFT);
+				else
+					venus->SetState(VENUS_STATE_TOP_LEFT);
+			}
+			else if (mario->GetX() > venus->GetX())
+			{
+				if (mario->GetY() <= venus->GetY())
+					venus->SetState(VENUS_STATE_BOT_RIGHT);
+				else
+					venus->SetState(VENUS_STATE_TOP_RIGHT);
+			}
+
+
+			if (isCollision) {
+				venus->SetState(VENUS_STATE_DIE);
+				isCollision = false;
+			}
+
+			LPCOLLISIONEVENT e = mario->SweptAABBEx(venus);
+
+			if (e->t > 0 && e->t <= 1) {
+
+				if (mario->untouchable == 0)
+				{
+					if (venus->GetState() != VENUS_STATE_DIE)
+					{
+						if (mario->level > MARIO_LEVEL_SMALL)
+						{
+							mario->level--;
+							mario->StartUntouchable();
+						}
+						else
+							mario->SetState(MARIO_STATE_DIE);
 					}
 				}
 			}
@@ -948,7 +1040,7 @@ void PlayScene::checkCollisionWithBrick()
 	for (UINT i = 0; i < Objects.size(); i++) {
 
 		GameObject* obj = dynamic_cast<GameObject*> (Objects[i]);
-		
+
 		if (dynamic_cast<Brick*>(obj)) {
 
 
@@ -959,10 +1051,10 @@ void PlayScene::checkCollisionWithBrick()
 
 			LPCOLLISIONEVENT e = mario->SweptAABBEx(obj);
 
-			if (e->t > 0 && e->t <= 1)	{				
+			if (e->t > 0 && e->t <= 1) {
 
 				if (obj->GetFinish() == false && mario->isAllowSwing == true) {
-					
+
 					mario->isSwing = true;
 				}
 
@@ -973,12 +1065,12 @@ void PlayScene::checkCollisionWithBrick()
 		}
 		else if (dynamic_cast<BrickQuesion*>(obj)) {
 
-			if (obj->isFinish == false )
+			if (obj->isFinish == false)
 			{
 				LPCOLLISIONEVENT e = mario->SweptAABBEx(obj);
 
-				if (e->t > 0 && e->t <= 1 && e->ny >0 ) {
-					
+				if (e->t > 0 && e->t <= 1 && e->ny > 0) {
+
 					obj->isFinish = true;
 
 					for (UINT i = 0; i < Items.size(); i++) {
@@ -989,14 +1081,14 @@ void PlayScene::checkCollisionWithBrick()
 				}
 			}
 		}
-		
+
 	}
 }
 
 void PlayScene::CreateKoopa(float x, float y)
 {
 	AnimationSets* animation_sets = AnimationSets::GetInstance();
-	
+
 	GameObject* kp = NULL;
 
 	kp = new Koopas();

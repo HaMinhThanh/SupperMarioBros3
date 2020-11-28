@@ -45,9 +45,6 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Animations.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
@@ -113,6 +110,12 @@
     </ClCompile>
     <ClCompile Include="mario.cpp">
       <Filter>Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Fire.cpp">
+      <Filter>Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="mario.h">
       <Filter>Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Fire.h">
+      <Filter>Objects\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -21,7 +21,7 @@ using namespace std;
 #define BRICK_TEXTURE_PATH L"brick.png"
 #define MARIO_TEXTURE_PATH L"mario.png"
 
-#define BACKGROUND_COLOR D3DCOLOR_XRGB(154,255,255)
+#define BACKGROUND_COLOR D3DCOLOR_XRGB(156,252,240)
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
 

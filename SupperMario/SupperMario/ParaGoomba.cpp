@@ -105,7 +105,7 @@ void ParaGoomba::Render()
 
 	animation_set->at(ani)->Render(x, y);
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void ParaGoomba::SetState(int state)

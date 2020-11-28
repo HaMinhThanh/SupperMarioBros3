@@ -29,10 +29,10 @@ public:
 	
 	Mario* mario;
 
+	vector<LPGAMEOBJECT> BackGround;
 	vector<LPGAMEOBJECT> Objects;
 	vector<LPGAMEOBJECT> Items;
-	vector<LPGAMEOBJECT> Enemy;
-	vector<LPGAMEOBJECT> ColorBlock;
+	vector<LPGAMEOBJECT> Enemy;	
 	vector<LPGAMEOBJECT> Weapon;
 	vector<LPGAMEOBJECT> Bicks;
 
@@ -45,6 +45,7 @@ public:
 	void ParseSection_Objects(string line);
 	void ParseSection_Items(string line);
 	void ParseSection_Enemy(string line);
+	void ParseSection_BackGround(string line);
 
 public:
 

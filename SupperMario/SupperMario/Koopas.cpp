@@ -48,20 +48,35 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx, rdy;
+		float maxRight = 0, minLeft = 99999999;
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 		x += min_tx * dx + nx * 0.04f;
 		y += min_ty * dy + ny * 0.04f;
 
-		if (nx != 0)
+		/*for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
-			/*if (nx > 0)
+			LPCOLLISIONEVENT e = coEventsResult[i];
+
+			GameObject* b = dynamic_cast<GameObject*>(e->obj);
+
+			if (b->GetX() + 16 > maxRight)
+			{
+				maxRight = b->GetX() + 16;
+			}
+			if (b->GetX() < minLeft)
+			{
+				minLeft = b->GetX();
+			}
+
+		}
+		if (!isDie) {
+			if (this->GetX() > maxRight && vx > 0)
+				SetState(KOOPAS_STATE_WALKING_LEFT);
+			else if (this->GetX() < minLeft && vx < 0)
 				SetState(KOOPAS_STATE_WALKING_RIGHT);
-			else
-				SetState(KOOPAS_STATE_WALKING_LEFT);*/
-		};
-		if (ny != 0) vy = 0;
+		}*/
 
 	}
 	for (UINT i = 0; i < coEvents.size(); i++)
@@ -70,9 +85,9 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (vx < 0 && x < 1152)
 	{
-		if (isDie) {
+		if (isDie) 
 			SetState(KOOPAS_STATE_DIE_WALKING_RIGHT);
-		}
+		
 		else
 			SetState(KOOPAS_STATE_WALKING_RIGHT);
 
@@ -89,7 +104,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Koopas::Render()
 {
-	int ani;// 
+	int ani;
 
 	int state = this->GetState();
 
@@ -128,14 +143,14 @@ void Koopas::SetState(int state)
 	switch (state)
 	{
 	case KOOPAS_STATE_DIE:
-		isDie = true;
+		//isDie = true;
 		vx = 0;
 		vy = 0;
 		break;
 	case KOOPAS_STATE_DIE_UP:
 		isDie = true;
 		vx = 0;
-		vy = -0.5f;
+		vy = -0.3f;
 		break;
 	case KOOPAS_STATE_WALKING_RIGHT:
 		vx = KOOPAS_WALKING_SPEED;
@@ -149,11 +164,6 @@ void Koopas::SetState(int state)
 		break;
 	case KOOPAS_STATE_DIE_WALKING_LEFT:
 		vx = -KOOPAS_DIE_SPEED;
-		break;
-
-	case KOOPAS_STATE_BE_FOLLOW_MARIO:
-		vx = 0;
-		vy = 0;
 		break;
 	}
 }

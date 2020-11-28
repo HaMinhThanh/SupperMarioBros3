@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "mario.h"
+#include "Fire.h"
 
 #define VENUS_SPEED_Y	0.015f
 
@@ -37,5 +38,13 @@ public:
 	Venus();
 
 	virtual void SetState(int state);
+
+	Fire* fire;
+
+	bool isFire;
+
+	int untouchable;
+	DWORD untouchable_start;
+	void StartFire() { untouchable = 1; untouchable_start = GetTickCount(); }
 };
 
