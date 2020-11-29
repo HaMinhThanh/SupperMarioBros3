@@ -61,7 +61,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	GameObject::Update(dt);
 	
-	vy += MARIO_GRAVITY * dt;
+	//vy += MARIO_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -244,7 +244,6 @@ void Mario::Render()
 		else
 			SetAni(MARIO_ANI_WAGGING_LEFT);
 
-		//isWagging = false;
 	}
 
 

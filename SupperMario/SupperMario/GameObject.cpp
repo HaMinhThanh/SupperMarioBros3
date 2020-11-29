@@ -240,6 +240,13 @@ void GameObject::AddVy(float vy)
 	this->vy += vy;
 }
 
+int GameObject::GetState() 
+{
+	if (this == NULL)
+		return -1;
+	return state;
+}
+
 void GameObject::ReSetAnimationSet(int re)
 {
 	AnimationSets* animation_sets = AnimationSets::GetInstance();

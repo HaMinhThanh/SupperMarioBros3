@@ -38,7 +38,7 @@ class Game
 	float cam_y = 0.0f;
 
 	int ScreenWidth;
-	int ScreenHeight;
+	int ScreenHeight;	
 
 	unordered_map<int, LPSCENE> scenes;
 	int currentScene;
@@ -47,6 +47,8 @@ class Game
 	void ParseSection_Scenes(string line);
 
 public:
+	D3DCOLOR background;
+
 	void InitKeyBoard();
 	void SetKeyHandler(LPKEYEVENTHANDLER handler) { keyHandler = handler; }
 	void Init(HWND hWnd);

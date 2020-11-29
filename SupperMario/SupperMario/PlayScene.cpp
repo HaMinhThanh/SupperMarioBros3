@@ -76,8 +76,9 @@ void PlayScene::ParseSection_Textures(string line)
 	int R = atoi(tokens[2].c_str());
 	int G = atoi(tokens[3].c_str());
 	int B = atoi(tokens[4].c_str());
-
+	
 	Textures::GetInstance()->AddTexture(texID, path.c_str(), D3DCOLOR_XRGB(R, G, B));
+	
 }
 
 void PlayScene::ParseSection_Sprites(string line)
@@ -159,37 +160,45 @@ void PlayScene::ParseSection_BackGround(string line)
 	DebugOut(L"--> %s\n", ToWSTR(line).c_str());
 
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
+	if (tokens.size() == 3) {
+		int R = atoi(tokens[0].c_str());
+		int G = atoi(tokens[1].c_str());
+		int B = atoi(tokens[2].c_str());
 
-	int object_type = atoi(tokens[0].c_str());
-	float x = atof(tokens[1].c_str());
-	float y = atof(tokens[2].c_str());
-
-	int ani_set_id = atoi(tokens[3].c_str());
-
-	AnimationSets* animation_sets = AnimationSets::GetInstance();
-
-	GameObject* obj = NULL;
-
-	switch (object_type)
-	{
-	case OBJECT_TYPE_BACKGROUND:
-		obj = new HidenWall();
-		break;
-
-	default:
-		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
-		return;
+		Game::GetInstance()->background = D3DCOLOR_XRGB(R, G, B);
 	}
+	else {
 
-	// General object setup
-	obj->SetPosition(x, y);
+		int object_type = atoi(tokens[0].c_str());
+		float x = atof(tokens[1].c_str());
+		float y = atof(tokens[2].c_str());
 
-	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+		int ani_set_id = atoi(tokens[3].c_str());
 
-	obj->SetAnimationSet(ani_set);
+		AnimationSets* animation_sets = AnimationSets::GetInstance();
 
-	BackGround.push_back(obj);
+		GameObject* obj = NULL;
 
+		switch (object_type)
+		{
+		case OBJECT_TYPE_BACKGROUND:
+			obj = new HidenWall();
+			break;
+
+		default:
+			DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
+			return;
+		}
+
+		// General object setup
+		obj->SetPosition(x, y);
+
+		LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+
+		obj->SetAnimationSet(ani_set);
+
+		BackGround.push_back(obj);
+	}
 }
 
 /*
@@ -501,22 +510,24 @@ void PlayScene::Update(DWORD dt)
 	mario->GetPosition(cx, cy);
 
 	Game* game = Game::GetInstance();
-	cx -= game->GetScreenWidth() / 2;
-	cy -= game->GetScreenHeight() / 2;
+	//cx -= game->GetScreenWidth() / 2;
+	//cy -= game->GetScreenHeight() / 2;
 
-	if (cx <= 0)
-		cx = 0;
-	else if (cx + game->GetScreenWidth() >= 2816)
-		cx = 2816 - game->GetScreenWidth();
+	//if (cx <= 0)
+	//	cx = 0;
+	//else if (cx + game->GetScreenWidth() >= 2816)
+	//	cx = 2816 - game->GetScreenWidth();
 
-	if (mario->level == MARIO_LEVEL_FLY || mario->level == MARIO_LEVEL_TAIL) {
-		if (cy <= 0) cy = 0;
-		else if (cy + game->GetScreenHeight() >= 432)
-			cy = 432 - game->GetScreenHeight();
-	}
+	//if (mario->level == MARIO_LEVEL_FLY || mario->level == MARIO_LEVEL_TAIL) {
+	//	if (cy <= 0) cy = 0;
+	//	else if (cy + game->GetScreenHeight() >= 432)
+	//		cy = 432 - game->GetScreenHeight();
+	//}
 
-	else //if (cy + game->GetScreenHeight() >= 432)
-		cy = 432 - game->GetScreenHeight();
+	//else //if (cy + game->GetScreenHeight() >= 432)
+	//	cy = 432 - game->GetScreenHeight();
+	cx = 0;
+	cy = 0;
 
 
 	Game::GetInstance()->SetCamPosition(cx, cy);
@@ -931,10 +942,10 @@ void PlayScene::checkCollisionWithEnemy()
 				{
 					if (para->GetState() != PARAGOOMBA_STATE_DIE)
 					{
-						/*if (para->GetState() == PARAGOOMBA_STATE_NORMAL)
+						if (para->GetState() == PARAGOOMBA_STATE_NORMAL)
 							para->SetState(PARAGOOMBA_STATE_DIE);
 						else if (para->GetState() == PARAGOOMBA_STATE_WING)
-							para->SetState(PARAGOOMBA_STATE_NORMAL);*/
+							para->SetState(PARAGOOMBA_STATE_NORMAL);
 
 						mario->vy = -MARIO_JUMP_DEFLECT_SPEED;
 					}

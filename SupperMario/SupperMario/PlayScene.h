@@ -47,6 +47,8 @@ public:
 	void ParseSection_Enemy(string line);
 	void ParseSection_BackGround(string line);
 
+	D3DCOLOR *background;
+
 public:
 
 	PlayScene(int id, LPCWSTR filePath);

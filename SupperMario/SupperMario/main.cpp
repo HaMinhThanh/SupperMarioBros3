@@ -64,7 +64,7 @@ void Render()
 
 	if (d3ddv->BeginScene())
 	{
-		d3ddv->ColorFill(bb, NULL, BACKGROUND_COLOR);
+		d3ddv->ColorFill(bb, NULL, game->background);
 
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
