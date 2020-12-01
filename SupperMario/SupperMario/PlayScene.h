@@ -18,6 +18,7 @@
 
 #include "BrickGold.h"
 #include "BrickQuesion.h"
+#include "Portal.h"
 
 #include "Utils.h"
 

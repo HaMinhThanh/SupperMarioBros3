@@ -31,6 +31,9 @@
     <Filter Include="Objects\Player">
       <UniqueIdentifier>{505501f4-befa-4e36-898b-4f4dbc116948}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HUD">
+      <UniqueIdentifier>{aa3aa857-3611-4ae8-acd0-845f8176e3ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -117,6 +120,15 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Portal.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD.cpp">
+      <Filter>HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>HUD</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -199,6 +211,15 @@
     </ClInclude>
     <ClInclude Include="Fire.h">
       <Filter>Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Portal.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>HUD</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

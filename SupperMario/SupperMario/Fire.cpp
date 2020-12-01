@@ -11,8 +11,6 @@ Fire::Fire()
 	//StartUnFinish();
 
 	isFinish = false;
-	vx = 0;
-	vy = 0;
 }
 
 Fire::~Fire()

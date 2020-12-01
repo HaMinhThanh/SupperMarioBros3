@@ -143,7 +143,7 @@ void Koopas::SetState(int state)
 	switch (state)
 	{
 	case KOOPAS_STATE_DIE:
-		//isDie = true;
+		isDie = true;
 		vx = 0;
 		vy = 0;
 		break;

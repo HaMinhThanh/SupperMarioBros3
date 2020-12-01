@@ -38,7 +38,8 @@ using namespace std;
 #define OBJECT_TYPE_BRICKQUESION	2
 #define OBJECT_TYPE_BRICKGOLD	3
 #define OBJECT_TYPE_VENUS	4
-#define OBJECT_TYPE_COLORBLOCK	5	
+#define OBJECT_TYPE_COLORBLOCK	5
+#define OBJECT_TYPE_PORTAL		50
 
 // back ground
 #define OBJECT_TYPE_BACKGROUND	1
@@ -286,6 +287,15 @@ void PlayScene::ParseSection_Objects(string line)
 
 		break;
 
+	case OBJECT_TYPE_PORTAL:
+	{
+		float r = atof(tokens[4].c_str());
+		float b = atof(tokens[5].c_str());
+		int scene_id = atoi(tokens[6].c_str());
+		obj = new Portal(x, y, r, b, scene_id);
+	}
+	break;
+
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -510,8 +520,8 @@ void PlayScene::Update(DWORD dt)
 	mario->GetPosition(cx, cy);
 
 	Game* game = Game::GetInstance();
-	//cx -= game->GetScreenWidth() / 2;
-	//cy -= game->GetScreenHeight() / 2;
+	cx -= game->GetScreenWidth() / 2;
+	cy -= game->GetScreenHeight() / 2;
 
 	//if (cx <= 0)
 	//	cx = 0;
@@ -526,9 +536,6 @@ void PlayScene::Update(DWORD dt)
 
 	//else //if (cy + game->GetScreenHeight() >= 432)
 	//	cy = 432 - game->GetScreenHeight();
-	cx = 0;
-	cy = 0;
-
 
 	Game::GetInstance()->SetCamPosition(cx, cy);
 
@@ -641,18 +648,22 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->SetLevel(MARIO_LEVEL_SMALL);
 		break;
 
-	case DIK_H:
+	/*case DIK_H:
 		mario->isAllowHold = true;
-		break;
+		break;*/
 
-	case DIK_D:
+	/*case DIK_D:
 		mario->isHoldingItem = false;
 		mario->isAllowKick = true;
-		break;
+		break;*/
 
 	case DIK_X:
-		if (mario->level == MARIO_LEVEL_TAIL)
+		if (mario->level == MARIO_LEVEL_TAIL) {
 			mario->isAllowSwing = true;
+
+			if (mario->swing == 0)
+				mario->StartSwing();
+		}
 		break;
 
 	case DIK_R:
@@ -664,11 +675,6 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_F:
 		if (mario->level == MARIO_LEVEL_FIRE)
 			mario->isUseFire = true;
-		break;
-
-	case DIK_M:
-		if (mario->level == MARIO_LEVEL_TAIL)
-			mario->isWagging = true;
 		break;
 	}
 }
@@ -685,23 +691,40 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 
 	//disable control key when Mario die 
 	if (mario->GetState() == MARIO_STATE_DIE) return;
+
 	if (game->IsKeyDown(DIK_RIGHT)) {
 		mario->SetState(MARIO_STATE_WALKING_RIGHT);
 		mario->isPressed = true;
-
-		/*if (mario->momentable == 0)
-			mario->StartMomentum();*/
 	}
 	else if (game->IsKeyDown(DIK_LEFT)) {
 		mario->SetState(MARIO_STATE_WALKING_LEFT);
 		mario->isPressed = true;
-
-		/*if (mario->momentable == 0)
-			mario->StartMomentum();*/
 	}
 	else {
 		mario->SetState(MARIO_STATE_IDLE);
 
+	}
+
+	if (game->IsKeyDown(DIK_Z)) {
+		mario->isAllowMoment = true;
+	}
+	else {
+		mario->isAllowMoment = false;
+	}
+
+	if (game->IsKeyDown(DIK_H)) {
+		mario->isAllowHold = true;
+	}
+	else {
+		mario->isAllowHold = false;
+		mario->isHoldingItem = false;
+	}
+
+	if(game->IsKeyDown(DIK_M)){
+		mario->isWagging = true;
+	}
+	else{
+		mario->isWagging = false;
 	}
 
 }
@@ -772,6 +795,7 @@ void PlayScene::checkCollisionWithEnemy()
 		if (dynamic_cast<Goomba*>(obj)) // if obj is Goomba 
 		{
 			Goomba* goomba = dynamic_cast<Goomba*>(obj);
+			LPCOLLISIONEVENT e = mario->SweptAABBEx(goomba);
 
 			if (isCollision) {
 				goomba->SetState(GOOMBA_STATE_DIE);
@@ -780,8 +804,7 @@ void PlayScene::checkCollisionWithEnemy()
 			
 			if (mario->isAllowSwing && mario->isCollisionWithItem(goomba)) {
 				goomba->SetState(GOOMBA_STATE_DIE);
-			}
-			LPCOLLISIONEVENT e = mario->SweptAABBEx(goomba);
+			}			
 
 			if (e->t > 0 && e->t <= 1) {
 
@@ -815,6 +838,7 @@ void PlayScene::checkCollisionWithEnemy()
 		else if (dynamic_cast<Koopas*>(obj)) // if e->obj is Koopa 
 		{
 			Koopas* koopas = dynamic_cast<Koopas*>(obj);
+			LPCOLLISIONEVENT e = mario->SweptAABBEx(koopas);
 
 			if (isCollision) {
 				koopas->SetState(KOOPAS_STATE_DIE);
@@ -826,7 +850,8 @@ void PlayScene::checkCollisionWithEnemy()
 			}
 			else  if (koopas->GetState() == KOOPAS_STATE_DIE && mario->isCollisionWithItem(koopas) && mario->isAllowHold == false)
 			{
-				mario->isAllowKick = true;
+					if (mario->kicking == 0)
+						mario->StartKick();
 
 				if (mario->vx > 0 || mario->nx > 0) {
 					koopas->SetState(KOOPAS_STATE_DIE_WALKING_RIGHT);
@@ -838,15 +863,13 @@ void PlayScene::checkCollisionWithEnemy()
 
 			else if (mario->isAllowHold && koopas->GetState() == KOOPAS_STATE_DIE && mario->isCollisionWithItem(koopas))
 			{
-				mario->isHoldingItem = true;
-				mario->isAllowHold = true;
+				mario->isHoldingItem = true;				
 			}
 
 			if (mario->isHoldingItem) {
 
 				mario->SetHodingItem(koopas);
-			}
-			LPCOLLISIONEVENT e = mario->SweptAABBEx(koopas);
+			}			
 
 			if (e->t > 0 && e->t <= 1) {
 
@@ -882,13 +905,12 @@ void PlayScene::checkCollisionWithEnemy()
 		else if (dynamic_cast<ParaKoopa*>(obj)) // if e->obj is Koopa 
 		{
 			ParaKoopa* para = dynamic_cast<ParaKoopa*>(obj);
+			LPCOLLISIONEVENT e = mario->SweptAABBEx(para);
 
 			if (isCollision) {
 				para->SetState(KOOPAS_STATE_DIE);
 				isCollision = false;
-			}
-
-			LPCOLLISIONEVENT e = mario->SweptAABBEx(para);
+			}			
 
 			if (e->t > 0 && e->t <= 1) {
 
@@ -928,12 +950,12 @@ void PlayScene::checkCollisionWithEnemy()
 		{
 			ParaGoomba* para = dynamic_cast<ParaGoomba*>(obj);
 
+			LPCOLLISIONEVENT e = mario->SweptAABBEx(para);
+
 			if (isCollision) {
 				para->SetState(PARAGOOMBA_STATE_DIE);
 				isCollision = false;
 			}
-
-			LPCOLLISIONEVENT e = mario->SweptAABBEx(para);
 
 			if (e->t > 0 && e->t <= 1) {
 
@@ -972,6 +994,7 @@ void PlayScene::checkCollisionWithEnemy()
 		else if (dynamic_cast<Venus*>(obj))
 		{
 			Venus* venus = dynamic_cast<Venus*>(obj);
+			LPCOLLISIONEVENT e = mario->SweptAABBEx(venus);
 
 			if (mario->GetX() == venus->GetX()&& mario->GetY()==venus->GetY())
 				venus->SetState(VENUS_STATE_TOP);
@@ -994,9 +1017,7 @@ void PlayScene::checkCollisionWithEnemy()
 			if (isCollision) {
 				venus->SetState(VENUS_STATE_DIE);
 				isCollision = false;
-			}
-
-			LPCOLLISIONEVENT e = mario->SweptAABBEx(venus);
+			}			
 
 			if (e->t > 0 && e->t <= 1) {
 
@@ -1091,6 +1112,10 @@ void PlayScene::checkCollisionWithBrick()
 					}
 				}
 			}
+		}
+		else if (dynamic_cast<Portal*>(obj)) {
+			Portal* p = dynamic_cast<Portal*>(obj);
+			Game::GetInstance()->SwitchScene(p->GetSceneId());
 		}
 
 	}

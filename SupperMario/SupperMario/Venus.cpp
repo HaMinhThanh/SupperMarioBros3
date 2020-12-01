@@ -3,6 +3,7 @@
 Venus::Venus()
 {
 	fire = new Fire();
+	fire->SetPosition(this->x, this->y);
 
 	untouchable = 0;
 	SetState(VENUS_STATE_BOT_LEFT);
@@ -41,9 +42,9 @@ void Venus::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	else if (y == VENUS_MIN_Y)
 	{
-		if (untouchable == 0) {
+		/*if (untouchable == 0) {
 			StartFire();
-		}
+		}*/
 	}
 	else if (y == VENUS_MAX_Y)
 	{

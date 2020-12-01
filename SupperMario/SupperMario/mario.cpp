@@ -9,12 +9,24 @@
 #include "BrickQuesion.h"
 #include "PlayScene.h"
 
+Mario* Mario::instance = NULL;
+
+Mario* Mario::GetInstance()
+{
+	if (instance == NULL)
+		instance = new Mario();
+
+	return instance;
+}
+
 Mario::Mario(float x, float y) :GameObject()
 {
 	level = MARIO_LEVEL_BIG;
 	untouchable = 0;
 	momentable = 0;
 	flyable = 0;
+	kicking = 0;
+	swing = 0;
 
 	SetState(MARIO_STATE_IDLE);
 
@@ -36,7 +48,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 	if (isAutoGo)
-		x += 1;
+		SetState(MARIO_STATE_WALKING_RIGHT);
 
 	if (x >= 2816 && isAutoGo) {
 		isAutoGo = false;
@@ -61,7 +73,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	GameObject::Update(dt);
 	
-	//vy += MARIO_GRAVITY * dt;
+	vy += MARIO_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -103,7 +115,20 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
+	if (GetTickCount() - kicking_start > MARIO_KICKING_TIME)
+	{
+		kicking = 0;
+		kicking_start = 0;
+		isAllowKick = false;
+	}
 	
+	if (GetTickCount() - swing_start > MARIO_SWING_TIME)
+	{
+		swing = 0;
+		swing_start = 0;
+		isAllowSwing = false;
+	}
+
 	if (coEvents.size() == 0)
 	{	
 		noCollision = true;
@@ -202,8 +227,6 @@ void Mario::Render()
 				SetAni(MARIO_ANI_SMALL_KICK_RIGHT);
 			else SetAni(MARIO_ANI_SMALL_KICK_LEFT);
 		}
-
-		isAllowKick = false;
 	}
 	else if (isHoldingItem )
 	{
@@ -225,17 +248,12 @@ void Mario::Render()
 				SetAni(MARIO_ANI_WALKING_TAIL_HOLD_RIGHT);
 			else SetAni(MARIO_ANI_WALKING_TAIL_HOLD_LEFT);
 		}			
-
-		isAllowHold = false;
 	}
 	else if (isAllowSwing) {
 		if (vx > 0 || nx > 0)
 			SetAni(MARIO_ANI_SWING_RIGHT);
 		else
 			SetAni(MARIO_ANI_SWING_LEFT);
-
-		isSwing = false;
-		isAllowSwing = false;
 	}
 
 	else if (isWagging) {
@@ -271,7 +289,7 @@ void Mario::SetState(int  state)
 		isTurnLeft = false;
 		//isTurnRight = true;
 
-		if (momentable == 0 && level == MARIO_LEVEL_TAIL && isTurnLeft == false)
+		if (momentable == 0 && level == MARIO_LEVEL_TAIL && isTurnLeft == false && isAllowMoment)
 			StartMomentum();
 		nx = 1;
 		break;
@@ -281,7 +299,7 @@ void Mario::SetState(int  state)
 		//isTurnLeft = true;
 		isTurnRight = false;
 
-		if (momentable == 0 && level == MARIO_LEVEL_TAIL && isTurnRight == false)
+		if (momentable == 0 && level == MARIO_LEVEL_TAIL && isTurnRight == false && isAllowMoment)
 			StartMomentum();
 		
 		nx = -1;

@@ -154,12 +154,14 @@
     <ClCompile Include="BrickQuesion.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Coin.cpp" />
+    <ClCompile Include="Event.cpp" />
     <ClCompile Include="Fire.cpp" />
     <ClCompile Include="FireBall.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Goomba.cpp" />
     <ClCompile Include="HidenWall.cpp" />
+    <ClCompile Include="HUD.cpp" />
     <ClCompile Include="KeyEventHandler.cpp" />
     <ClCompile Include="Koopas.cpp" />
     <ClCompile Include="Leaf.cpp" />
@@ -169,6 +171,7 @@
     <ClCompile Include="ParaGoomba.cpp" />
     <ClCompile Include="ParaKoopa.cpp" />
     <ClCompile Include="PlayScene.cpp" />
+    <ClCompile Include="Portal.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Star.cpp" />
@@ -184,12 +187,14 @@
     <ClInclude Include="BrickQuesion.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Coin.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="Fire.h" />
     <ClInclude Include="FireBall.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Goomba.h" />
     <ClInclude Include="HidenWall.h" />
+    <ClInclude Include="HUD.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Koopas.h" />
     <ClInclude Include="Leaf.h" />
@@ -198,6 +203,7 @@
     <ClInclude Include="ParaGoomba.h" />
     <ClInclude Include="ParaKoopa.h" />
     <ClInclude Include="PlayScene.h" />
+    <ClInclude Include="Portal.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="Star.h" />

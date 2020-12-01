@@ -113,9 +113,11 @@
 #define MARIO_TAIL_BBOX_HEIGHT 27
 #define MARIO_TAIL_SWING_BBOX_WIDTH	34
 
-#define MARIO_UNTOUCHABLE_TIME 5000
+#define MARIO_UNTOUCHABLE_TIME	4000
 #define MARIO_FLY_TIME			4000	
 #define MARIO_MOMENTUM_TIME		2000
+#define MARIO_KICKING_TIME		200
+#define MARIO_SWING_TIME		400
 
 const float PLAYER_MAX_JUMP_VELOCITY = 0.5f; //van toc nhay lon nhat
 const float PLAYER_MIN_JUMP_VELOCITY = -0.5f; //van toc nhay thap nhat
@@ -124,6 +126,8 @@ const float PLAYER_BOTTOM_RANGE_FALLING = 6.0f; // do dai va cham voi bottom neu
 
 class Mario: public GameObject
 {
+	static Mario* instance;
+
 public:
 	int level;
 
@@ -135,6 +139,12 @@ public:
 
 	int momentable;
 	DWORD momentable_start;
+
+	int kicking;
+	DWORD kicking_start;
+
+	int swing;
+	DWORD swing_start;
 
 	float start_x;
 	float start_y;
@@ -150,26 +160,28 @@ public:
 	bool isTurnRight;
 	bool isTurnLeft;
 
-	bool isPressed;
-	bool isJumping;
+	bool isPressed;	
 	bool isAllowKick;
-	bool isCollisionOnAxisY;
 	bool isAllowHold;
 	bool isHoldingItem;
-
+	bool isAllowMoment;
 	bool isAllowSwing;
+	
 	bool isAutoGo;
 	bool isUseFire;
 	bool isSwing;
 	bool isFlying;
 	bool isWagging;
+	bool isJumping;
 
 	bool noCollision;
 	bool collision_x;
 	bool collision_y;
+	bool isCollisionOnAxisY;
 
 	bool isMomentum;
 
+	static Mario* GetInstance();
 	Mario(float x = 0.0f, float y = 0.0f);
 
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
@@ -183,6 +195,8 @@ public:
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	void StartFlyable() { isFlying = true; flyable_start = GetTickCount(); level = MARIO_LEVEL_FLY; }
 	void StartMomentum() { isMomentum = true; momentable = 1; momentable_start = GetTickCount(); }
+	void StartKick() { kicking = 1; kicking_start = GetTickCount(); }
+	void StartSwing() { swing = 1; swing_start = GetTickCount(); }
 
 	void Reset();
 
