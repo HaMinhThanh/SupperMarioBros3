@@ -6,6 +6,9 @@
 #include "Event.h"
 #include "Star.h"
 
+#define HUD_BBOX_WIDTH	245
+#define HUD_BBOX_HEIGHT	42
+
 class HUD
 {
 	int time;
@@ -17,7 +20,7 @@ class HUD
 	bool isStop;	
 	DWORD timeItem;
 
-	Event* event;
+	Event* event;	
 
 	static HUD* instance;
 public:

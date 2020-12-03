@@ -417,6 +417,8 @@ void PlayScene::ParseSection_Enemy(string line)
 
 void PlayScene::Load()
 {
+	HUD = HUD::GetInstance();
+
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
 
 	ifstream f;
@@ -539,6 +541,8 @@ void PlayScene::Update(DWORD dt)
 
 	Game::GetInstance()->SetCamPosition(cx, cy);
 
+	HUD->Update(dt);
+
 	checkCollisionWithEnemy();
 	checkCollisionWithBrick();
 	checkCollisionWithItem();
@@ -547,7 +551,7 @@ void PlayScene::Update(DWORD dt)
 void PlayScene::Render()
 {
 
-	//Sprites::GetInstance()->Get(1)->Draw(0, 0);
+	//Sprites::GetInstance()->Get(1)->Draw(0, 0);	
 
 	for (int i = 0; i < BackGround.size(); i++)
 		BackGround[i]->Render();
@@ -566,6 +570,8 @@ void PlayScene::Render()
 
 	for (int i = 0; i < Objects.size(); i++)
 		Objects[i]->Render();
+
+	HUD->Render();
 
 }
 
@@ -750,10 +756,16 @@ void PlayScene::checkCollisionWithItem()
 				else if (dynamic_cast<Leaf*>(obj)) {
 					if (mario->level != MARIO_LEVEL_TAIL)
 						mario->level = MARIO_LEVEL_TAIL;
+					mario->score += 1000;
 				}
 				else if (dynamic_cast<Mushroom*>(obj)) {
 					if (mario->level != MARIO_LEVEL_BIG)
 						mario->level = MARIO_LEVEL_BIG;
+					mario->score += 1000;
+				}
+				else if (dynamic_cast<Coin*>(obj)) {
+					mario->score += 100;
+					mario->dola += 1;
 				}
 			}
 		}
@@ -811,6 +823,7 @@ void PlayScene::checkCollisionWithEnemy()
 				// jump on top >> kill Goomba and deflect a bit 
 				if (e->ny < 0)
 				{
+					mario->score += 100;
 					if (goomba->GetState() != GOOMBA_STATE_DIE)
 					{
 						goomba->SetState(GOOMBA_STATE_DIE);
@@ -876,6 +889,7 @@ void PlayScene::checkCollisionWithEnemy()
 				// jump on top >> kill Goomba and deflect a bit 
 				if (e->ny < 0)
 				{
+					mario->score += 100;
 					if (koopas->GetState() != KOOPAS_STATE_DIE)
 					{			
 						koopas->SetState(KOOPAS_STATE_DIE);
@@ -917,6 +931,7 @@ void PlayScene::checkCollisionWithEnemy()
 				// jump on top >> kill Goomba and deflect a bit 
 				if (e->ny < 0)
 				{
+					mario->score += 100;
 					if (para->GetState() != PARAKOOPA_STATE_DIE)
 					{
 						para->SetState(PARAKOOPA_STATE_DIE);
@@ -962,6 +977,7 @@ void PlayScene::checkCollisionWithEnemy()
 				// jump on top >> kill Goomba and deflect a bit 
 				if (e->ny < 0)
 				{
+					mario->score += 100;
 					if (para->GetState() != PARAGOOMBA_STATE_DIE)
 					{
 						if (para->GetState() == PARAGOOMBA_STATE_NORMAL)
@@ -1085,12 +1101,8 @@ void PlayScene::checkCollisionWithBrick()
 
 			if (e->t > 0 && e->t <= 1) {
 
-				if (obj->GetFinish() == false && mario->isAllowSwing == true) {
-
-					mario->isSwing = true;
-				}
-
-				if (mario->isSwing) {
+				if ((obj->GetFinish() == false && mario->isAllowSwing == true) || e->ny > 0) {
+				
 					obj->isFinish = true;
 				}
 			}
@@ -1128,9 +1140,8 @@ void PlayScene::CreateKoopa(float x, float y)
 	GameObject* kp = NULL;
 
 	kp = new Koopas();
-	kp->SetState(KOOPAS_STATE_WALKING_LEFT);
-
 	kp->SetPosition(x, y);
+	kp->SetState(KOOPAS_STATE_WALKING_LEFT);	
 
 	LPANIMATION_SET ani_set = animation_sets->Get(31);
 

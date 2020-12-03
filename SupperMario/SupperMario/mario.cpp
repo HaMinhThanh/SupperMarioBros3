@@ -34,6 +34,11 @@ Mario::Mario(float x, float y) :GameObject()
 	start_y = y;
 	this->vx = x;
 	this->vy = y;
+
+	score = 10;
+	live = 4;
+	dola = 0;
+	item = 0;
 }
 
 void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -580,5 +585,15 @@ void Mario::SetHodingItem(LPGAMEOBJECT item)
 	else {
 		item->x = x-8;
 		item->y = y + 8;
+	}
+}
+
+void Mario::LoadItem(int itm)
+{
+	LPGAMEOBJECT item = NULL;
+
+	switch (itm)
+	{
+	
 	}
 }

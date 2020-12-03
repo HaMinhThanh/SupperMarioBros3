@@ -4,21 +4,25 @@
 #include "Textures.h"
 #include "Scene.h"
 #include "GameObject.h"
+#include "HUD.h"
+
 #include "Brick.h"
+#include "BrickGold.h"
+#include "BrickQuesion.h"
+#include "Portal.h"
+#include "BrickColor.h"
+
 #include "mario.h"
 #include "Goomba.h"
 #include "Koopas.h"
 #include "Venus.h"
-#include "BrickColor.h"
+
 
 #include "Coin.h"
 #include "Leaf.h"
 
 #include "FireBall.h"
 
-#include "BrickGold.h"
-#include "BrickQuesion.h"
-#include "Portal.h"
 
 #include "Utils.h"
 
@@ -29,6 +33,8 @@ class PlayScene: public Scene
 public:
 	
 	Mario* mario;
+
+	HUD* HUD;
 
 	vector<LPGAMEOBJECT> BackGround;
 	vector<LPGAMEOBJECT> Objects;

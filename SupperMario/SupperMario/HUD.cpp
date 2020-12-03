@@ -1,5 +1,6 @@
 #include "HUD.h"
 #include "Game.h"
+#include <string>
 
 HUD* HUD::instance = NULL;
 
@@ -42,6 +43,15 @@ void HUD::Render()
 
 	float cx, cy;
 	game->GetCamPos(cx, cy);
+
 	Sprites* sprite = Sprites::GetInstance();
-	sprite->Get(50000)->Draw(cx, cy+ game->GetScreenHeight());
+	sprite->Get(50000)->Draw(cx, cy+ game->GetScreenHeight()-HUD_BBOX_HEIGHT);
+
+	string str = to_string(mario->GetDola());
+
+	event->DrawNumber(3, cx + 132 , cy + game->GetScreenHeight() - 20, time);
+	//event->DrawNumber(str.size(), cx + 140, cy + game->GetScreenHeight() - 30, mario->GetDola());
+	//event->DrawNumber(7, cx+55, cy + game->GetScreenHeight() - 20, mario->GetX());
+
+	event->DrawNumber(2, cx + 140, cy + game->GetScreenHeight() - 30, 15);
 }

@@ -151,6 +151,13 @@ public:
 
 	int direct;
 
+	// HUD
+	int score;
+	int dola;
+	int live;
+
+	int item;
+
 public:
 
 	bool isTurnToSmall;
@@ -217,6 +224,16 @@ public:
 
 	bool allowMoveLeft;
 	bool allowMoveRight;
+
+	// HUD
+	int GetScore() { return score; }
+	int GetDola() { return dola; }
+	int GetLive() { return live; }
+
+	int GetItem() { return item; }
+	void SetItem(int itm) { item = itm; }
+
+	void LoadItem(int itm);
 
 protected:
 
