@@ -3,6 +3,7 @@
 Mushroom::Mushroom()
 {
 	isFinish = false();
+	
 }
 
 Mushroom::~Mushroom()

@@ -14,6 +14,7 @@ class HUD
 	int time;
 	DWORD count;
 	int number;
+	int it1, it2, it3;
 	int dola;
 	int score;
 
@@ -33,7 +34,8 @@ public:
 		dola = 0;
 		score = 0;
 		timeItem = 0;
-		//Event = new Event();
+		it1 = it2 = it3 = -1;
+		event = new Event();
 	}
 	~HUD()
 	{

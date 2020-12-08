@@ -1,6 +1,7 @@
 #include "Fire.h"
 #include "FireBall.h"
 #include "Brick.h"
+#include "mario.h"
 
 Fire::Fire()
 {
@@ -44,6 +45,11 @@ void Fire::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	x += dx;
 	y += dy;
+
+	Mario* mario = Mario::GetInstance(0, 0);
+
+	x = mario->x - 30;
+	y = mario->y - 30;
 
 }
 

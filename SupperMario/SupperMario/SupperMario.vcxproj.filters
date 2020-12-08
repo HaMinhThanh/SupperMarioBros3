@@ -105,9 +105,6 @@
     <ClCompile Include="FireBall.cpp">
       <Filter>Objects\Item</Filter>
     </ClCompile>
-    <ClCompile Include="ParaKoopa.cpp">
-      <Filter>Objects\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="ParaGoomba.cpp">
       <Filter>Objects\Enemy</Filter>
     </ClCompile>
@@ -199,9 +196,6 @@
     </ClInclude>
     <ClInclude Include="FireBall.h">
       <Filter>Objects\Item</Filter>
-    </ClInclude>
-    <ClInclude Include="ParaKoopa.h">
-      <Filter>Objects\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="ParaGoomba.h">
       <Filter>Objects\Enemy</Filter>

@@ -8,8 +8,9 @@
 class BrickGold: public GameObject
 {
 public:
-	BrickGold();
-	~BrickGold();
+	int item;
+
+	BrickGold(float x, float y, int item);
 
 	virtual void Render();
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);

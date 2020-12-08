@@ -113,16 +113,12 @@
 #define MARIO_TAIL_BBOX_HEIGHT 27
 #define MARIO_TAIL_SWING_BBOX_WIDTH	34
 
-#define MARIO_UNTOUCHABLE_TIME	4000
+#define MARIO_UNTOUCHABLE_TIME	2000
 #define MARIO_FLY_TIME			4000	
 #define MARIO_MOMENTUM_TIME		2000
 #define MARIO_KICKING_TIME		200
 #define MARIO_SWING_TIME		400
 
-const float PLAYER_MAX_JUMP_VELOCITY = 0.5f; //van toc nhay lon nhat
-const float PLAYER_MIN_JUMP_VELOCITY = -0.5f; //van toc nhay thap nhat
-const float PLAYER_MAX_RUNNING_SPEED = 0.15; //toc do chay nhanh nhat cua player
-const float PLAYER_BOTTOM_RANGE_FALLING = 6.0f; // do dai va cham voi bottom neu nhu va cham
 
 class Mario: public GameObject
 {
@@ -157,6 +153,7 @@ public:
 	int live;
 
 	int item;
+	int numItem;
 
 public:
 
@@ -188,7 +185,7 @@ public:
 
 	bool isMomentum;
 
-	static Mario* GetInstance();
+	static Mario* GetInstance(float x, float y);
 	Mario(float x = 0.0f, float y = 0.0f);
 
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);

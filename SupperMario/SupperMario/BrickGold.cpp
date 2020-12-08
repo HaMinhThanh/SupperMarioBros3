@@ -1,14 +1,11 @@
 #include "BrickGold.h"
 
 
-BrickGold::BrickGold()
+BrickGold::BrickGold(float x, float y, int itm)
 {
 	isFinish = false;
-}
-
-BrickGold::~BrickGold()
-{
-
+	SetPosition(x, y);
+	item = itm;
 }
 
 void BrickGold::Render()

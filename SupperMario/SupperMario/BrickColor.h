@@ -4,7 +4,8 @@
 
 class BrickColor: public GameObject
 {
-protected:
+public:
+	int item;
 
 public:
 

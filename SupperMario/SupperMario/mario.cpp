@@ -11,10 +11,10 @@
 
 Mario* Mario::instance = NULL;
 
-Mario* Mario::GetInstance()
+Mario* Mario::GetInstance(float x, float y)
 {
 	if (instance == NULL)
-		instance = new Mario();
+		instance = new Mario(x, y);
 
 	return instance;
 }
@@ -35,7 +35,7 @@ Mario::Mario(float x, float y) :GameObject()
 	this->vx = x;
 	this->vy = y;
 
-	score = 10;
+	score = 0;
 	live = 4;
 	dola = 0;
 	item = 0;
@@ -43,6 +43,16 @@ Mario::Mario(float x, float y) :GameObject()
 
 void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+	if (state == MARIO_STATE_DIE)
+	{
+		live--;
+		if (live >= 0) {
+			Reset();
+		}
+		else{
+			return;
+		}
+	}
 	if (isTurnToBig) {
 		y -= MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT ;
 		isTurnToBig = false;

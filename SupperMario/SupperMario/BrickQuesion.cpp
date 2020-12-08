@@ -1,14 +1,11 @@
 #include "BrickQuesion.h"
 
 
-BrickQuesion::BrickQuesion()
+BrickQuesion::BrickQuesion(float x, float y, int itm)
 {
 	isFinish = false;
-}
-
-BrickQuesion::~BrickQuesion()
-{
-
+	SetPosition(x, y);
+	item = itm;
 }
 
 void BrickQuesion::Render()
