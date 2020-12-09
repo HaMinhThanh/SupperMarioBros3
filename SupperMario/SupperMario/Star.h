@@ -13,9 +13,16 @@ class Star: public GameObject
 public:
 
 public:
+	int item;
+
+	int fly;
+	DWORD fly_start;
+	void Start_Fly() { fly = 1; fly_start = GetTickCount(); }
+
 	Star();
 	~Star();
 
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObject);
 	virtual void Render();
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 };

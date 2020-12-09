@@ -25,8 +25,6 @@
 #define VENUS_STATE_TOP			500	
 #define VENUS_STATE_DIE			900	
 
-#define VENUS_MIN_Y				336
-#define VENUS_MAX_Y				370
 
 class Venus: public GameObject
 {
@@ -36,16 +34,19 @@ class Venus: public GameObject
 
 public:
 	float max, min;
-	Venus(float max, float min);
+	int setFire;
+	Venus(float max, float min, int fire);
 
 	virtual void SetState(int state);
 
 	Fire* fire;
 
-	bool isFire;
+	int isFire;
 
-	int untouchable;
-	DWORD untouchable_start;
-	void StartFire() { untouchable = 1; untouchable_start = GetTickCount(); }
+	bool isNormal;
+
+	int idle;
+	DWORD idle_start;
+	void StartFire() { idle = 1; idle_start = GetTickCount(); }
 };
 

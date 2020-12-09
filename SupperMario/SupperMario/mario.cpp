@@ -115,6 +115,10 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (level == MARIO_LEVEL_TAIL && isMomentum == false)
 				StartFlyable();
 		}
+		else
+		{
+			//if(GetTickCount())
+		}
 	}
 
 

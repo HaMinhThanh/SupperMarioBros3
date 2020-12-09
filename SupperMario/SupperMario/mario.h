@@ -155,6 +155,8 @@ public:
 	int item;
 	int numItem;
 
+	int metter;
+
 public:
 
 	bool isTurnToSmall;

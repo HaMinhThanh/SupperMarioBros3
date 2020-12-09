@@ -74,13 +74,13 @@ void HUD::Render()
 
 	event->DrawPower(cx + 58, cy + game->GetScreenHeight() - 27, 0);
 
-	//if (it1 != -1) {
-		event->DrawItem(cx + 171, cy + game->GetScreenHeight() - 28, 1);
-	//}
-	//if (it1 != -1) {
-		event->DrawItem(cx + 195, cy + game->GetScreenHeight() - 28, 2);
-	//}
-	//if (it1 != -1) {
-		event->DrawItem(cx + 219, cy + game->GetScreenHeight() - 28, 3);
-	//}
+	if (it1 != -1) {
+		event->DrawItem(cx + 171, cy + game->GetScreenHeight() - 28, it1);
+	}
+	if (it2 != -1) {
+		event->DrawItem(cx + 195, cy + game->GetScreenHeight() - 28, it2);
+	}
+	if (it3 != -1) {
+		event->DrawItem(cx + 219, cy + game->GetScreenHeight() - 28, it3);
+	}
 }

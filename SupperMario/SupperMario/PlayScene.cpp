@@ -294,7 +294,10 @@ void PlayScene::ParseSection_Objects(string line)
 
 	obj->SetAnimationSet(ani_set);
 
-	Objects.push_back(obj);
+	if (dynamic_cast<Mario*>(obj)) {
+
+	}else
+		Objects.push_back(obj);
 
 }
 
@@ -359,7 +362,7 @@ void PlayScene::ParseSection_Enemy(string line)
 	int ani_set_id = atoi(tokens[3].c_str());
 
 	int level;
-	int max, min;
+	int max, min, fire;
 
 	AnimationSets* animation_sets = AnimationSets::GetInstance();
 
@@ -378,7 +381,8 @@ void PlayScene::ParseSection_Enemy(string line)
 	case ENEMY_TYPE_VENUS:
 		max = atoi(tokens[4].c_str());
 		min = atoi(tokens[5].c_str());
-		enemy = new Venus(max, min);
+		fire = atoi(tokens[6].c_str());
+		enemy = new Venus(max, min, fire);
 		break;
 	case ENEMY_TYPE_PARAGOOMBA:
 		enemy = new ParaGoomba();
@@ -500,6 +504,7 @@ void PlayScene::Update(DWORD dt)
 	{
 		Weapon[i]->Update(dt, &coObjects);
 	}
+	mario->Update(dt, &coObjects);
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (mario == NULL) return;
@@ -541,22 +546,23 @@ void PlayScene::Render()
 	//Sprites::GetInstance()->Get(1)->Draw(0, 0);	
 
 	for (int i = 0; i < BackGround.size(); i++)
-		BackGround[i]->Render();
-
+		BackGround[i]->Render();	
 
 	for (int i = 0; i < Items.size(); i++)
-		Items[i]->Render();
+		Items[i]->Render();	
 
 	for (int i = 0; i < Enemy.size(); i++)
 		Enemy[i]->Render();
+
+	for (int i = 0; i < Objects.size(); i++)
+		Objects[i]->Render();
 
 	for (size_t i = 0; i < Weapon.size(); i++)
 	{
 		Weapon[i]->Render();
 	}
 
-	for (int i = 0; i < Objects.size(); i++)
-		Objects[i]->Render();
+	mario->Render();
 
 	HUD->Render();
 
@@ -567,11 +573,11 @@ void PlayScene::Render()
 */
 void PlayScene::Unload()
 {
-	for (int i = 0; i < Objects.size(); i++)
-		delete Objects[i];
-
 	for (int i = 0; i < Items.size(); i++)
 		delete Items[i];
+
+	for (int i = 0; i < Objects.size(); i++)
+		delete Objects[i];
 
 	for (int i = 0; i < Enemy.size(); i++)
 		delete Enemy[i];
@@ -581,6 +587,8 @@ void PlayScene::Unload()
 
 	for (int i = 0; i < Weapon.size(); i++)
 		delete Weapon[i];
+
+	delete mario;
 
 	Objects.clear();
 	Items.clear();
@@ -734,13 +742,24 @@ void PlayScene::checkCollisionWithItem()
 		{
 			if (mario->isCollisionWithItem(Items[i]) == true) // có va chạm
 			{
-				Items[i]->isFinish = true;
+				//Items[i]->isFinish = true;
 				GameObject* obj = dynamic_cast<GameObject*> (Items[i]);
 
 				if (dynamic_cast<Star*>(obj)) {
+					Star* star = dynamic_cast<Star*>(obj);
+
+					mario->item = rand() % 3 + 1;
+					mario->numItem += 1;
+					mario->vy = 0;
+
+					star->item = mario->item;
+					star->Start_Fly();
+
 					mario->isAutoGo = true;
 				}
 				else if (dynamic_cast<Leaf*>(obj)) {
+					dynamic_cast<Leaf*>(obj)->isFinish = true;
+
 					if (mario->level == MARIO_LEVEL_SMALL) {
 						mario->isTurnToTail = true;
 					}
@@ -751,6 +770,9 @@ void PlayScene::checkCollisionWithItem()
 					mario->score += 1000;					
 				}
 				else if (dynamic_cast<Mushroom*>(obj)) {
+
+					dynamic_cast<Mushroom*>(obj)->isFinish = true;
+
 					if (mario->level == MARIO_LEVEL_SMALL) {
 						mario->isTurnToBig = true;
 					}
@@ -761,6 +783,8 @@ void PlayScene::checkCollisionWithItem()
 					mario->score += 1000;					
 				}
 				else if (dynamic_cast<Coin*>(obj)) {
+					dynamic_cast<Coin*>(obj)->isFinish = true;
+
 					mario->score += 100;
 					mario->dola += 1;
 
