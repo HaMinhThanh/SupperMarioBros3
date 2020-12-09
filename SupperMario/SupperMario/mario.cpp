@@ -21,7 +21,7 @@ Mario* Mario::GetInstance(float x, float y)
 
 Mario::Mario(float x, float y) :GameObject()
 {
-	level = MARIO_LEVEL_BIG;
+	level = MARIO_LEVEL_SMALL;
 	untouchable = 0;
 	momentable = 0;
 	flyable = 0;
@@ -54,7 +54,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 	if (isTurnToBig) {
-		y -= MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT ;
+		y -= MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT;
 		isTurnToBig = false;
 	}
 	if (isTurnToTail) {

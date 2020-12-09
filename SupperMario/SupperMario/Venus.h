@@ -6,10 +6,10 @@
 
 #define VENUS_SPEED_Y	0.015f
 
-#define VENUS_ANI_IDLE_TOP_LEFT		0
-#define VENUS_ANI_IDLE_TOP_RIGHT	1
-#define VENUS_ANI_IDLE_BOT_RIGHT	2
-#define VENUS_ANI_IDLE_BOT_LEFT		3
+#define VENUS_ANI_TOP_LEFT		0
+#define VENUS_ANI_TOP_RIGHT	1
+#define VENUS_ANI_BOT_LEFT	2
+#define VENUS_ANI_BOT_RIGHT		3
 #define VENUS_ANI_OPEN_TOP_LEFT		4	
 #define VENUS_ANI_OPEN_TOP_RIGHT	5
 #define	VENUS_ANI_OPEN_BOT_LEFT		6
@@ -35,7 +35,8 @@ class Venus: public GameObject
 	virtual void Render();
 
 public:
-	Venus();
+	float max, min;
+	Venus(float max, float min);
 
 	virtual void SetState(int state);
 

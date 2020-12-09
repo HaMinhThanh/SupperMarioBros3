@@ -69,8 +69,6 @@ public:
 	void checkCollisionWithEnemy();
 	void checkCollisionWithBrick();
 
-	void CreateKoopa(float x, float y);
-
 	void useFireBall();
 
 	Mario* GetPlayer() { return mario; }

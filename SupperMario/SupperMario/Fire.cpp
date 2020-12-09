@@ -41,15 +41,17 @@ void Fire::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 
 void Fire::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (state == FIRE_HIDEN) {
+		isFinish = true;
+	}
+	else{
+		isFinish = false;
+	}
+
 	GameObject::Update(dt, coObjects);
 
 	x += dx;
-	y += dy;
-
-	Mario* mario = Mario::GetInstance(0, 0);
-
-	x = mario->x - 30;
-	y = mario->y - 30;
+	y += dy;	
 
 }
 
@@ -60,7 +62,7 @@ void Fire::SetState(int state)
 	switch (state)
 	{
 	case FIRE_HIDEN:
-		isFinish = true;
+		//isFinish = true;
 		vx = vy = 0;
 		break;
 	case FIRE_TOP:
@@ -68,20 +70,20 @@ void Fire::SetState(int state)
 		vy = -0.01;
 		break;
 	case FIRE_TOP_LEFT:
-		vx = -0.02;
-		vy = -0.01;
+		vx = -0.05;
+		vy = -0.02;
 		break;
 	case FIRE_TOP_RIGHT:
-		vx = 0.02;
-		vy = -0.01;
+		vx = 0.05;
+		vy = -0.02;
 		break;
 	case FIRE_BOT_LEFT:
-		vx = -0.02;
-		vy = 0.01;
+		vx = -0.05;
+		vy = 0.02;
 		break;
 	case FIRE_BOT_RIGHT:
-		vx = 0.02;
-		vy = 0.01;
+		vx = 0.05;
+		vy = 0.02;
 		break;
 	}
 }

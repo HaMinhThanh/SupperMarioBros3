@@ -359,6 +359,7 @@ void PlayScene::ParseSection_Enemy(string line)
 	int ani_set_id = atoi(tokens[3].c_str());
 
 	int level;
+	int max, min;
 
 	AnimationSets* animation_sets = AnimationSets::GetInstance();
 
@@ -375,7 +376,9 @@ void PlayScene::ParseSection_Enemy(string line)
 		enemy = new Koopas(x, y, level);
 		break;
 	case ENEMY_TYPE_VENUS:
-		enemy = new Venus();
+		max = atoi(tokens[4].c_str());
+		min = atoi(tokens[5].c_str());
+		enemy = new Venus(max, min);
 		break;
 	case ENEMY_TYPE_PARAGOOMBA:
 		enemy = new ParaGoomba();
@@ -738,14 +741,24 @@ void PlayScene::checkCollisionWithItem()
 					mario->isAutoGo = true;
 				}
 				else if (dynamic_cast<Leaf*>(obj)) {
+					if (mario->level == MARIO_LEVEL_SMALL) {
+						mario->isTurnToTail = true;
+					}
+
 					if (mario->level != MARIO_LEVEL_TAIL)
 						mario->level = MARIO_LEVEL_TAIL;
-					mario->score += 1000;
+
+					mario->score += 1000;					
 				}
 				else if (dynamic_cast<Mushroom*>(obj)) {
+					if (mario->level == MARIO_LEVEL_SMALL) {
+						mario->isTurnToBig = true;
+					}
+
 					if (mario->level != MARIO_LEVEL_BIG)
 						mario->level = MARIO_LEVEL_BIG;
-					mario->score += 1000;
+
+					mario->score += 1000;					
 				}
 				else if (dynamic_cast<Coin*>(obj)) {
 					mario->score += 100;
@@ -972,17 +985,19 @@ void PlayScene::checkCollisionWithEnemy()
 			LPCOLLISIONEVENT e = mario->SweptAABBEx(venus);
 
 			if (mario->GetX() == venus->GetX() && mario->GetY() == venus->GetY())
+			{
 				venus->SetState(VENUS_STATE_TOP);
+			}
 			else if (mario->GetX() < venus->GetX())
 			{
-				if (mario->GetY() <= venus->GetY())
+				if (mario->GetY() >= venus->GetY())
 					venus->SetState(VENUS_STATE_BOT_LEFT);
 				else
 					venus->SetState(VENUS_STATE_TOP_LEFT);
 			}
 			else if (mario->GetX() > venus->GetX())
 			{
-				if (mario->GetY() <= venus->GetY())
+				if (mario->GetY() >= venus->GetY())
 					venus->SetState(VENUS_STATE_BOT_RIGHT);
 				else
 					venus->SetState(VENUS_STATE_TOP_RIGHT);
@@ -1073,14 +1088,15 @@ void PlayScene::checkCollisionWithBrick()
 				LPCOLLISIONEVENT e = mario->SweptAABBEx(obj);
 				BrickQuesion* bq = dynamic_cast<BrickQuesion*>(obj);
 
-				if (e->t > 0 && e->t <= 1 && e->ny > 0) {
+				if (e->t > 0 && e->t <= 1 && e->ny > 0) {					
 
 					bq->isFinish = true;
 
 					if (bq->item == 0) {
 						if (mario->level >= MARIO_LEVEL_BIG) {
 							Leaf* leaf = new Leaf();
-							leaf->SetPosition(obj->x, obj->y - 16);
+							leaf->SetPosition(obj->x, obj->y - 36);
+
 							AnimationSets* animation_sets = AnimationSets::GetInstance();
 							LPANIMATION_SET ani_set = animation_sets->Get(36);
 
@@ -1089,7 +1105,8 @@ void PlayScene::checkCollisionWithBrick()
 						}
 						else if (mario->level < MARIO_LEVEL_BIG) {
 							Mushroom* mr = new Mushroom();
-							mr->SetPosition(obj->x, obj->y - 16);
+							mr->SetPosition(obj->x, obj->y - 36);
+
 							AnimationSets* animation_sets = AnimationSets::GetInstance();
 							LPANIMATION_SET ani_set = animation_sets->Get(37);
 
@@ -1099,9 +1116,12 @@ void PlayScene::checkCollisionWithBrick()
 
 					}
 					else if (bq->item == 1) {
+						mario->score += 100;
+
 						Coin* coin = new Coin();
 						coin->SetPosition(obj->x, obj->y - 16);
 						coin->isNoCollision = true;
+
 						AnimationSets* animation_sets = AnimationSets::GetInstance();
 						LPANIMATION_SET ani_set = animation_sets->Get(32);
 
@@ -1136,23 +1156,4 @@ void PlayScene::checkCollisionWithBrick()
 		}
 
 	}
-}
-
-
-void PlayScene::CreateKoopa(float x, float y)
-{
-	/*AnimationSets* animation_sets = AnimationSets::GetInstance();
-
-	GameObject* kp = NULL;
-
-	kp = new Koopas();
-	kp->SetPosition(x, y);
-	kp->SetState(KOOPAS_STATE_WALKING_LEFT);
-
-	LPANIMATION_SET ani_set = animation_sets->Get(31);
-
-	kp->SetAnimationSet(ani_set);
-	Enemy.push_back(kp);
-
-	isNotDie = true;*/
 }
