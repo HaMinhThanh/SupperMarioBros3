@@ -72,7 +72,7 @@ void HUD::Render()
 	event->DrawNumber(1, cx + 42, cy + game->GetScreenHeight() - 27, game->GetCurrentSceneId());
 	event->DrawNumber(str.size(), cx + 140, cy + game->GetScreenHeight() - 27, mario->GetDola());
 
-	event->DrawPower(cx + 58, cy + game->GetScreenHeight() - 27, 0);
+	event->DrawPower(cx + 58, cy + game->GetScreenHeight() - 27, mario->metter);
 
 	if (it1 != -1) {
 		event->DrawItem(cx + 171, cy + game->GetScreenHeight() - 28, it1);

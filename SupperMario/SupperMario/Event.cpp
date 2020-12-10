@@ -38,16 +38,19 @@ void Event::DrawPower(float x, float y, int m) {
 	for (int i = 0; i < m; i++)
 	{
 		if (i > 6) return;
+
 		if (i != 6)
 			Sprites::GetInstance()->Get(SPRITE_POWER_WHITE)->Draw(x, y);
 		else if (i == 6)
-			Sprites::GetInstance()->Get(SPRITE_P_CHARACTER_WHITE)->Draw(x, y);
+			//Sprites::GetInstance()->Get(SPRITE_P_CHARACTER_WHITE)->Draw(x, y);
+		Animations::GetInstance()->Get(915)->Render(x, y);
 		x += 8;
 	}
 
 	for (int i = m; i < 7; i++)
 	{
 		if (i > 6) return;
+
 		if (i != 6)
 			Sprites::GetInstance()->Get(SPRITE_POWER_BLACK)->Draw(x, y);
 		else if (i == 6)

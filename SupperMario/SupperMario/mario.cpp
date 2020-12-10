@@ -39,6 +39,7 @@ Mario::Mario(float x, float y) :GameObject()
 	live = 4;
 	dola = 0;
 	item = 0;
+	metter = 0;
 }
 
 void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -86,6 +87,11 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (vx == 0 || vy == MARIO_JUMP_SPEED_Y || isWagging)
 		momentable = 0;
 
+	if (metter >= 7)
+		metter = 7;
+	else if (metter <= 0)
+		metter = 0;
+
 	GameObject::Update(dt);
 	
 	vy += MARIO_GRAVITY * dt;
@@ -105,20 +111,28 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 	if (momentable == 1) {
+		metter += 1;
 
 		if (GetTickCount() - momentable_start > MARIO_MOMENTUM_TIME) {
 
 			momentable_start = 0;
 			momentable = 0;
 			isMomentum = false;
+			metter = 7;
 
 			if (level == MARIO_LEVEL_TAIL && isMomentum == false)
 				StartFlyable();
 		}
 		else
 		{
-			//if(GetTickCount())
+			/*if ((GetTickCount() - momentable_start) % 300 == 0)
+				metter += 1;*/
 		}
+	}
+	else
+	{
+		if (isFlying == false)
+			metter -= 1;
 	}
 
 

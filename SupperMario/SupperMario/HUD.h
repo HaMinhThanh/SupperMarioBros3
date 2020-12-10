@@ -13,6 +13,7 @@ class HUD
 {
 	int time;
 	DWORD count;
+
 	int number;
 	int it1, it2, it3;
 	int dola;

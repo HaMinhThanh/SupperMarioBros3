@@ -751,6 +751,7 @@ void PlayScene::checkCollisionWithItem()
 					mario->item = rand() % 3 + 1;
 					mario->numItem += 1;
 					mario->vy = 0;
+					mario->score += 10000;
 
 					star->item = mario->item;
 					star->Start_Fly();

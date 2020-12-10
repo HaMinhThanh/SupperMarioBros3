@@ -28,12 +28,45 @@ void Goomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	GameObject::Update(dt, coObjects);
 
-	x += dx;
-	y += dy;
+	vy += KOOPAS_GRAVITY * dt;
 
-	/*if (this->GetState() == GOOMBA_STATE_DIE) {
+	vector<LPGAMEOBJECT> Bricks;
+	Bricks.clear();
+
+	for (UINT i = 0; i < coObjects->size(); i++)
+		if (dynamic_cast<Brick*>(coObjects->at(i)) || dynamic_cast<BrickColor*>(coObjects->at(i))
+			|| dynamic_cast<BrickGold*>(coObjects->at(i)) || dynamic_cast<BrickQuesion*>(coObjects->at(i)))
+			Bricks.push_back(coObjects->at(i));
+
+	vector<LPCOLLISIONEVENT>  coEvents;
+	vector<LPCOLLISIONEVENT>  coEventsResult;
+
+	coEvents.clear();
+
+	CalcPotentialCollisions(&Bricks, coEvents);
+
+	if (coEvents.size() == 0)
+	{
+		x += dx;
+		y += dy;
+	}
+	else
+	{
+		float min_tx, min_ty, nx = 0, ny;
+		float rdx, rdy;
+
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+
+		x += min_tx * dx + nx * 0.04f;
+		y += min_ty * dy + ny * 0.04f;
+
+		if (nx != 0) {
+			vx = -vx;
+		}
 		
-	}*/
+	}
+	for (UINT i = 0; i < coEvents.size(); i++)
+		delete coEvents[i];
 
 	if (vx < 0 && x < 0)
 	{
