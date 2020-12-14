@@ -19,11 +19,13 @@ using namespace std;
 #define OBJECT_TYPE_GREEN_MARIO			 10
 
 #define OBJECT_TYPE_BACKGROUND	1
-#define OBJECT_TYPE_KOOPAS	2
-#define OBJECT_TYPE_GOOMBA	3
-#define OBJECT_TYPE_LEAF	4
-#define OBJECT_TYPE_MUSHROOM	5
-#define OBJECT_TYPE_STAR	6
+#define OBJECT_TYPE_KOOPAS_GREEN	2
+#define OBJECT_TYPE_KOOPAS_RED	3
+#define OBJECT_TYPE_GOOMBA	4
+#define OBJECT_TYPE_LEAF	5
+#define OBJECT_TYPE_MUSHROOM	6
+#define OBJECT_TYPE_STAR	7
+#define OBJECT_TYPE_BRICK	8
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -136,45 +138,61 @@ void IntroScene::ParseSection_OBJECTS(string line)
 	float x = atof(tokens[1].c_str());
 	float y = atof(tokens[2].c_str());
 
+	int type;
+
 	int ani_set_id = atoi(tokens[3].c_str());
 
 	AnimationSets* animation_sets = AnimationSets::GetInstance();
 
 	GameObject* obj = NULL;
 
+	bool isBackground = false;
+
 	switch (object_type)
 	{
 	case OBJECT_TYPE_RED_MARIO:
-		obj = new Mario(x,y);
+		obj = new Mario(x, y);
 		player1 = (Mario*)obj;
-		//DebugOut(L"[INFO] Player1 created!\n");
+		//DebugOut(L"[INFO] Player1 object created!\n");
 		break;
 	case OBJECT_TYPE_GREEN_MARIO:
-		obj = new Mario(x,y);
+		obj = new Mario(x, y);
 		player2 = (Mario*)obj;
 		//DebugOut(L"[INFO] Player2 object created!\n");
 		break;
 
-	case OBJECT_TYPE_BACKGROUND: 
-		obj = new HidenWall(); 
+	case OBJECT_TYPE_BACKGROUND: {
+		type = atoi(tokens[4].c_str());
+		obj = new HidenWall(x,y,type);
+		isBackground = true;
 		break;
-	case OBJECT_TYPE_KOOPAS: 
-		obj = new Koopas(x,y,1);
-		koopas = (Koopas*)obj;
+	}
+	case OBJECT_TYPE_KOOPAS_GREEN:
+		obj = new Koopas(x, y, 1);
+		koopasGreen = (Koopas*)obj;
 		break;
-	case OBJECT_TYPE_GOOMBA: 
+	case OBJECT_TYPE_KOOPAS_RED:
+		obj = new Koopas(x, y, 1);
+		koopasRed = (Koopas*)obj;
+		break;
+	case OBJECT_TYPE_GOOMBA:
 		obj = new Goomba();
 		goomba = (Goomba*)obj;
 		break;
-	case OBJECT_TYPE_LEAF: 
-		obj = new Leaf(); 
+	case OBJECT_TYPE_LEAF:
+		obj = new Leaf();
 		leaf = (Leaf*)obj;
 		break;
 	case OBJECT_TYPE_MUSHROOM:
 		obj = new Mushroom();
+		isBackground = true;
 		break;
 	case OBJECT_TYPE_STAR:
 		obj = new Star();
+		isBackground = true;
+		break;
+	case OBJECT_TYPE_BRICK:
+		obj = new Brick();
 		break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
@@ -187,8 +205,8 @@ void IntroScene::ParseSection_OBJECTS(string line)
 	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 
 	obj->SetAnimationSet(ani_set);
-	objects.push_back(obj);
 
+	objects.push_back(obj);
 }
 
 void IntroScene::Load()
@@ -246,10 +264,89 @@ void IntroScene::Load()
 void IntroScene::Update(DWORD dt)
 {
 
+	//if (!isStart)
+	//{
+	//	player1->nx = -1;
+	//	player1->SetState(MARIO_STATE_IDLE);
+	//	player1->SetLevel(MARIO_LEVEL_BIG);
+
+	//	player2->SetState(MARIO_STATE_IDLE);
+	//	player2->SetLevel(MARIO_LEVEL_BIG);
+
+	//	HidenWall* hd = new HidenWall();
+
+	//	time_start = GetTickCount();
+	//	isStart = true;
+	//}
+	//else if (GetTickCount() - time_start > 800)
+	//{
+	//	player1->SetState(MARIO_STATE_WALKING_RIGHT);
+	//	player2->SetState(MARIO_STATE_WALKING_LEFT);
+
+	//	player1->vx = 0;
+	//	player2->vx = 0;
+
+	//}
+
+	//if (GetTickCount() - time_start > 2000)
+	//{
+	//	player1->SetState(MARIO_STATE_WALKING_RIGHT);
+	//	player2->SetState(MARIO_STATE_WALKING_LEFT);
+
+	//}
+
+	//if (GetTickCount() - time_start > 2500)
+	//{
+	//	player2->SetState(MARIO_STATE_JUMP);
+	//	player2->SetState(MARIO_STATE_WALKING_RIGHT);
+
+	//	// Create function for Collision mario with mario
+
+	//	// Create condition if mairo walking through side limit
+	//}
+
+	//if (GetTickCount() - time_start > 3000)
+	//{
+	//	// rot chu
+	//}
+
+	//if (GetTickCount() - time_start > 3500)
+	//{
+	//	// rot cac item va enemy
+	//}
+
+	//if (GetTickCount() - time_start > 5000)
+	//{
+	//	player1->SetState(MARIO_STATE_JUMP);
+	//}
+
+	vector<LPGAMEOBJECT> coObjects;
+
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		coObjects.push_back(objects[i]);
+	}
+
+	for (int i = 0; i < background.size(); i++)
+	{
+		background[i]->Update(dt);
+	}
+
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i]->Update(dt, &coObjects);
+	}
+
+	Game::GetInstance()->SetCamPosition(20, 0);
 }
 
 void IntroScene::Render()
 {
+	for (int i = 0; i < background.size(); i++)
+	{
+		background[i]->Render();
+	}
+
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Render();
@@ -258,11 +355,17 @@ void IntroScene::Render()
 
 void IntroScene::Unload()
 {
+	for (int i = 0; i < background.size(); i++)
+	{
+		delete background[i];
+	}
+
 	for (int i = 0; i < objects.size(); i++)
 	{
 		delete objects[i];
 	}
 
+	background.clear();
 	objects.clear();
 	player1 = NULL;
 	player2 = NULL;

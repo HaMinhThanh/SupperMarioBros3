@@ -4,6 +4,6 @@ start	1
 [SCENES]
 1	map1_1a.txt
 2	map1_1b.txt
-3	world_map.txt
-4	first_map.txt
+3	map_worldmap.txt
+4	map_intro.txt
 	

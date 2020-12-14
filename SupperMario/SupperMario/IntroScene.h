@@ -17,11 +17,13 @@ class IntroScene: public Scene
 protected:
 	Mario* player1;
 	Mario* player2;
-	Koopas* koopas;
+	Koopas* koopasGreen;
+	Koopas* koopasRed;
 	Goomba* goomba;
 	Leaf* leaf;
 
 	vector<LPGAMEOBJECT> objects;
+	vector<LPGAMEOBJECT> background;
 
 	DWORD time_count = 0;
 	DWORD time_start;

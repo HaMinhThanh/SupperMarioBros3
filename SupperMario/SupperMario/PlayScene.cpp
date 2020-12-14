@@ -234,16 +234,18 @@ void PlayScene::ParseSection_Objects(string line)
 	{
 	case OBJECT_TYPE_MARIO:
 		obj = Mario::GetInstance(x, y);
-		/*if (mario != NULL)
+		if (mario != NULL)
 		{
 			DebugOut(L"[ERROR] MARIO object was created before!\n");
 			return;
 		}
-		obj = new Mario(x, y);*/
-		mario = (Mario*)obj;
+		//obj = new Mario(x, y);
+		//mario = (Mario*)obj;
+		mario = Mario::GetInstance(x, y);
 
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
+
 	case OBJECT_TYPE_BRICK:
 		obj = new Brick();
 
@@ -294,10 +296,8 @@ void PlayScene::ParseSection_Objects(string line)
 
 	obj->SetAnimationSet(ani_set);
 
-	if (dynamic_cast<Mario*>(obj)) {
-
-	}else
-		Objects.push_back(obj);
+	if (dynamic_cast<Mario*>(obj)) {}
+	else Objects.push_back(obj);
 
 }
 
@@ -517,19 +517,19 @@ void PlayScene::Update(DWORD dt)
 	cx -= game->GetScreenWidth() / 2;
 	cy -= game->GetScreenHeight() / 2;
 
-	if (cx <= 0)
-		cx = 0;
-	else if (cx + game->GetScreenWidth() >= 2816)
-		cx = 2816 - game->GetScreenWidth();
+	//if (cx <= 0)
+	//	cx = 0;
+	//else if (cx + game->GetScreenWidth() >= 2816)
+	//	cx = 2816 - game->GetScreenWidth();
 
-	if (mario->level == MARIO_LEVEL_FLY || mario->level == MARIO_LEVEL_TAIL) {
-		if (cy <= 0) cy = 0;
-		else if (cy + game->GetScreenHeight() >= 432)
-			cy = 432 - game->GetScreenHeight() + 42;
-	}
+	//if (mario->level == MARIO_LEVEL_FLY || mario->level == MARIO_LEVEL_TAIL) {
+	//	if (cy <= 0) cy = 0;
+	//	else if (cy + game->GetScreenHeight() >= 432)
+	//		cy = 432 - game->GetScreenHeight() + 42;
+	//}
 
-	else //if (cy + game->GetScreenHeight() >= 432)
-		cy = 432 - game->GetScreenHeight() + 42;
+	//else //if (cy + game->GetScreenHeight() >= 432)
+	//	cy = 432 - game->GetScreenHeight() + 42;
 
 	Game::GetInstance()->SetCamPosition(cx, cy);
 
@@ -538,6 +538,7 @@ void PlayScene::Update(DWORD dt)
 	checkCollisionWithEnemy();
 	checkCollisionWithBrick();
 	checkCollisionWithItem();
+	
 }
 
 void PlayScene::Render()
@@ -588,7 +589,7 @@ void PlayScene::Unload()
 	for (int i = 0; i < Weapon.size(); i++)
 		delete Weapon[i];
 
-	delete mario;
+	//delete mario;
 
 	Objects.clear();
 	Items.clear();
@@ -608,16 +609,25 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	Mario* mario = ((PlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
-	case DIK_SPACE:
+	case DIK_S:
 		if (mario->isJumping || mario->isFlying) {
 			mario->SetState(MARIO_STATE_JUMP);
 			mario->isJumping = false;
 		}
 
 		break;
-
-	case DIK_A:
+	case DIK_Q:
 		mario->Reset();
+		break;
+	case DIK_A:
+		
+		if (mario->level == MARIO_LEVEL_TAIL) {
+			mario->isAllowSwing = true;
+
+			if (mario->swing == 0)
+				mario->StartSwing();
+		}
+		break;
 		break;
 
 	case DIK_B:
@@ -642,7 +652,7 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->SetLevel(MARIO_LEVEL_TAIL);
 		break;
 
-	case DIK_S:
+	case DIK_N:
 		if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 			return;
 
@@ -688,45 +698,61 @@ void PlayScenceKeyHandler::useWeapon()
 void PlayScenceKeyHandler::KeyState(BYTE* states)
 {
 	Game* game = Game::GetInstance();
-	Mario* mario = ((PlayScene*)scence)->GetPlayer();
+	//Mario* mario = ((PlayScene*)scence)->GetPlayer();
+	Mario* mario = Mario::GetInstance(0, 0);
 
 	//disable control key when Mario die 
 	if (mario->GetState() == MARIO_STATE_DIE) return;
+	
+	
 
-	if (game->IsKeyDown(DIK_RIGHT)) {
-		mario->SetState(MARIO_STATE_WALKING_RIGHT);
-		mario->isPressed = true;
-	}
-	else if (game->IsKeyDown(DIK_LEFT)) {
-		mario->SetState(MARIO_STATE_WALKING_LEFT);
-		mario->isPressed = true;
-	}
-	else {
-		mario->SetState(MARIO_STATE_IDLE);
+		if (game->IsKeyDown(DIK_RIGHT))
+		{
+			mario->SetState(MARIO_STATE_WALKING_RIGHT);
+			mario->isPressed = true;
+		}
+		else if (game->IsKeyDown(DIK_LEFT))
+		{
+			mario->SetState(MARIO_STATE_WALKING_LEFT);
+			mario->isPressed = true;
+		}
+		else
+		{
+			mario->SetState(MARIO_STATE_IDLE);
 
-	}
+		}
 
-	if (game->IsKeyDown(DIK_Z)) {
-		mario->isAllowMoment = true;
-	}
-	else {
-		mario->isAllowMoment = false;
-	}
+		if (game->IsKeyDown(DIK_A))
+		{
+			mario->isAllowMoment = true;
+			mario->isAllowHold = true;
+		}
+		else
+		{
+			mario->isAllowMoment = false;
+			mario->isAllowHold = false;
+			mario->isHoldingItem = false;
+		}
 
-	if (game->IsKeyDown(DIK_H)) {
-		mario->isAllowHold = true;
-	}
-	else {
-		mario->isAllowHold = false;
-		mario->isHoldingItem = false;
-	}
+		if (game->IsKeyDown(DIK_H))
+		{
+			mario->isAllowHold = true;
+		}
+		else
+		{
+			mario->isAllowHold = false;
+			mario->isHoldingItem = false;
+		}
 
-	if (game->IsKeyDown(DIK_M)) {
-		mario->isWagging = true;
-	}
-	else {
-		mario->isWagging = false;
-	}
+		if (game->IsKeyDown(DIK_S))
+		{
+			mario->isWagging = true;
+		}
+		else
+		{
+			mario->isWagging = false;
+		}
+	
 
 }
 
@@ -1175,9 +1201,15 @@ void PlayScene::checkCollisionWithBrick()
 			}
 		}
 
-		else if (dynamic_cast<Portal*>(obj)) {
-			Portal* p = dynamic_cast<Portal*>(obj);
-			Game::GetInstance()->SwitchScene(p->GetSceneId());
+		else if (dynamic_cast<Portal*>(obj)) 
+		{
+
+			LPCOLLISIONEVENT e = mario->SweptAABBEx(obj);
+
+			if (e->t > 0 && e->t <= 1 && e->ny > 0) {
+				Portal* p = dynamic_cast<Portal*>(obj);
+				Game::GetInstance()->SwitchScene(p->GetSceneId());
+			}
 		}
 
 	}

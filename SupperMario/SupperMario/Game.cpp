@@ -5,6 +5,7 @@
 #include "Utils.h"
 
 #include "PlayScene.h"
+#include "IntroScene.h"
 
 #define MAX_GAME_LINE 1024
 
@@ -344,8 +345,17 @@ void Game::ParseSection_Scenes(string line)
 	if (tokens.size() < 2) return;
 	int id = atoi(tokens[0].c_str());
 	LPCWSTR path = ToLPCWSTR(tokens[1]);
+	LPSCENE scene = NULL;
 
-	LPSCENE scene = new PlayScene(id, path);
+	if (id == 4)
+	{
+		scene = new IntroScene(id, path);
+	}
+	else
+	{
+		scene = new PlayScene(id, path);
+	}
+		
 	scenes[id] = scene;
 }
 
