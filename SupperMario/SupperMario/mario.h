@@ -155,7 +155,7 @@ public:
 	int item;
 	int numItem;
 
-	int metter;
+	float metter;
 
 public:
 
@@ -201,7 +201,7 @@ public:
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	void StartFlyable() { isFlying = true; flyable_start = GetTickCount(); level = MARIO_LEVEL_FLY; }
 	void StartMomentum() { isMomentum = true; momentable = 1; momentable_start = GetTickCount(); }
-	void StartKick() { kicking = 1; kicking_start = GetTickCount(); }
+	void StartKick() { isAllowKick = true; kicking = 1; kicking_start = GetTickCount(); }
 	void StartSwing() { swing = 1; swing_start = GetTickCount(); }
 
 	void Reset();

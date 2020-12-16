@@ -46,6 +46,8 @@ public:
 	vector<LPGAMEOBJECT> GetObjects() { return objects; }
 	Mario* GetPlayer1() { return player1; }
 	Mario* GetPlayer2() { return player2; }
+
+	int addition = 1;
 };
 
 class IntroSceneKeyHandler :public ScenceKeyHandler

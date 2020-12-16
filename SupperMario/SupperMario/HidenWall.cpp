@@ -1,24 +1,18 @@
 #include "HidenWall.h"
 #include "Brick.h"
 
-HidenWall::HidenWall()
-{
-	vx = vy = 0;
-
-	isFinish = false;
-}
-
-HidenWall::HidenWall(float x, float y, int type)
+HidenWall::HidenWall(float x, float y, int type, int ani_id)
 {
 	isFinish = false;
 	SetPosition(x, y);
 
 	this->type = type;
-	if (type == 1)
-		vy = -0.1f;
-	else if (type == 2)
-		vy = 0.1f;
-	vx = 0;
+
+	if (ani_id != 0)
+	{
+		this->SetAnimationSet(AnimationSets::GetInstance()->Get(ani_id));
+	}
+	
 }
 
 HidenWall::~HidenWall()
@@ -26,7 +20,7 @@ HidenWall::~HidenWall()
 
 }
 
-void HidenWall::Update(DWORD dt, vector<LPGAMEOBJECT> coObjects)
+void HidenWall::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {	
 	GameObject::Update(dt);
 
@@ -39,6 +33,11 @@ void HidenWall::Update(DWORD dt, vector<LPGAMEOBJECT> coObjects)
 
 void HidenWall::Render()
 {
+	if (type == 1)
+		vy = -0.1f;
+	else if (type == 2)
+		vy = 0.1f;
+
 	if (isFinish == false)
 	{
 		animation_set->at(0)->Render(x, y);

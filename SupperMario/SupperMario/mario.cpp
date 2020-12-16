@@ -74,12 +74,12 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (vy == 0 && isFlying == false)
 		isJumping = true;
 
-	if (vy > 0 && isWagging && level == MARIO_LEVEL_TAIL) {
-		vy -= 0.0007f * dt;
+	if (vy > 0 && isWagging && level == MARIO_LEVEL_TAIL && isJumping== false) {
+		vy -= 0.00075f * dt;
 	}
-	else if (vy < 0 && isWagging) {
+	/*else if (vy < 0 && isWagging) {
 		vy = 0;
-	}
+	}*/
 	else
 		isWagging = false;
 	
@@ -111,7 +111,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 	if (momentable == 1) {
-		metter += 1;
+		metter += 0.1f;
 
 		if (GetTickCount() - momentable_start > MARIO_MOMENTUM_TIME) {
 
@@ -347,6 +347,7 @@ void Mario::SetState(int  state)
 		isMomentum = false;
 		//momentable = 0;
 		vx = 0;
+		//vy = 0;
 		break;
 	
 	case MARIO_STATE_FLY:

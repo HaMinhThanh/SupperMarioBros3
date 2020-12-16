@@ -23,7 +23,7 @@ void Leaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	else if (GetTickCount() - start_falling >= 800) {
 		Start_Falling();
 	}
-	vy = 0.01f;
+	vy = 0.02f;
 
 	GameObject::Update(dt, coObjects);
 

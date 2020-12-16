@@ -138,7 +138,7 @@ void IntroScene::ParseSection_OBJECTS(string line)
 	float x = atof(tokens[1].c_str());
 	float y = atof(tokens[2].c_str());
 
-	int type;
+	int type, level;
 
 	int ani_set_id = atoi(tokens[3].c_str());
 
@@ -164,15 +164,16 @@ void IntroScene::ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BACKGROUND: {
 		type = atoi(tokens[4].c_str());
 		obj = new HidenWall(x,y,type);
-		isBackground = true;
 		break;
 	}
 	case OBJECT_TYPE_KOOPAS_GREEN:
-		obj = new Koopas(x, y, 1);
+		level = atof(tokens[4].c_str());
+		obj = new Koopas(x, y, level);
 		koopasGreen = (Koopas*)obj;
 		break;
 	case OBJECT_TYPE_KOOPAS_RED:
-		obj = new Koopas(x, y, 1);
+		level = atof(tokens[4].c_str());
+		obj = new Koopas(x, y, level);
 		koopasRed = (Koopas*)obj;
 		break;
 	case OBJECT_TYPE_GOOMBA:
@@ -264,46 +265,57 @@ void IntroScene::Load()
 void IntroScene::Update(DWORD dt)
 {
 
-	//if (!isStart)
-	//{
-	//	player1->nx = -1;
-	//	player1->SetState(MARIO_STATE_IDLE);
-	//	player1->SetLevel(MARIO_LEVEL_BIG);
+	if (!isStart)
+	{
+		player1->nx = -1;
+		player1->SetState(MARIO_STATE_IDLE);
+		player1->SetLevel(MARIO_LEVEL_BIG);
 
-	//	player2->SetState(MARIO_STATE_IDLE);
-	//	player2->SetLevel(MARIO_LEVEL_BIG);
+		player2->SetState(MARIO_STATE_IDLE);
+		player2->SetLevel(MARIO_LEVEL_BIG);
 
-	//	HidenWall* hd = new HidenWall();
+		HidenWall* hd = new HidenWall();
 
-	//	time_start = GetTickCount();
-	//	isStart = true;
-	//}
-	//else if (GetTickCount() - time_start > 800)
-	//{
-	//	player1->SetState(MARIO_STATE_WALKING_RIGHT);
-	//	player2->SetState(MARIO_STATE_WALKING_LEFT);
+		time_start = GetTickCount();
+		isStart = true;
+	}
+	else if (GetTickCount() - time_start > 2000)
+	{
+		player1->SetState(MARIO_STATE_WALKING_RIGHT);
+		player2->SetState(MARIO_STATE_WALKING_LEFT);
 
-	//	player1->vx = 0;
-	//	player2->vx = 0;
+		player1->vx = 0;
+		player2->vx = 0;
 
-	//}
+	}
 
-	//if (GetTickCount() - time_start > 2000)
-	//{
-	//	player1->SetState(MARIO_STATE_WALKING_RIGHT);
-	//	player2->SetState(MARIO_STATE_WALKING_LEFT);
+	if (GetTickCount() - time_start > 3000)
+	{
+		player1->SetState(MARIO_STATE_WALKING_LEFT);
+		player2->SetState(MARIO_STATE_WALKING_RIGHT);
 
-	//}
+	}
 
-	//if (GetTickCount() - time_start > 2500)
-	//{
-	//	player2->SetState(MARIO_STATE_JUMP);
-	//	player2->SetState(MARIO_STATE_WALKING_RIGHT);
+	if (GetTickCount() - time_start > 3300)
+	{
+		player2->SetState(MARIO_STATE_JUMP);
+		//player2->SetState(MARIO_STATE_WALKING_RIGHT);
 
-	//	// Create function for Collision mario with mario
+		// Create function for Collision mario with mario
 
-	//	// Create condition if mairo walking through side limit
-	//}
+		// Create condition if mairo walking through side limit
+	}
+
+	if (GetTickCount() - time_start > 3600)
+	{
+		player2->SetState(MARIO_STATE_IDLE);
+		player2->vy = 0.2f;
+		player2->SetState(MARIO_STATE_WALKING_RIGHT);
+
+		// Create function for Collision mario with mario
+
+		// Create condition if mairo walking through side limit
+	}	
 
 	//if (GetTickCount() - time_start > 3000)
 	//{
@@ -318,7 +330,23 @@ void IntroScene::Update(DWORD dt)
 	//if (GetTickCount() - time_start > 5000)
 	//{
 	//	player1->SetState(MARIO_STATE_JUMP);
+
+	//	/*HidenWall* hd = new HidenWall(160, 99, 1, 24);
+	//	objects.push_back(hd);*/
+
 	//}
+	
+	if (GetTickCount() - time_start > 10000)
+	{
+		if (addition == 1) {
+			Koopas* kp = new Koopas(0, 170, 3);
+			kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
+			kp->SetState(KOOPAS_STATE_WALKING_RIGHT);
+			kp->vx = 0.02f;
+			objects.push_back(kp);
+		}
+		addition = 0;
+	}	
 
 	vector<LPGAMEOBJECT> coObjects;
 
@@ -327,26 +355,25 @@ void IntroScene::Update(DWORD dt)
 		coObjects.push_back(objects[i]);
 	}
 
-	for (int i = 0; i < background.size(); i++)
-	{
-		background[i]->Update(dt);
-	}
-
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt, &coObjects);
 	}
 
-	Game::GetInstance()->SetCamPosition(20, 0);
+	Game::GetInstance()->SetCamPosition(0, 0);
+
+	if (GetTickCount() - time_start > 40000)
+	{
+		time_start = 0;
+		isStart = false;
+
+		Game::GetInstance()->SwitchScene(4);
+	}
+
 }
 
 void IntroScene::Render()
 {
-	for (int i = 0; i < background.size(); i++)
-	{
-		background[i]->Render();
-	}
-
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Render();

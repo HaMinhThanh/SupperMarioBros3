@@ -34,11 +34,11 @@
     <Filter Include="HUD">
       <UniqueIdentifier>{aa3aa857-3611-4ae8-acd0-845f8176e3ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\SceneManager">
+      <UniqueIdentifier>{eb7fe5d7-e3eb-4c71-8302-2f83b95a1077}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
     <ClCompile Include="Sprites.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
@@ -49,9 +49,6 @@
       <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="Animations.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayScene.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="KeyEventHandler.cpp">
@@ -127,13 +124,16 @@
       <Filter>HUD</Filter>
     </ClCompile>
     <ClCompile Include="IntroScene.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Framework\SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayScene.cpp">
+      <Filter>Framework\SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Framework\SceneManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Scene.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
     <ClInclude Include="Sprites.h">
       <Filter>Framework</Filter>
     </ClInclude>
@@ -144,9 +144,6 @@
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="Animations.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayScene.h">
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="KeyEventHandler.h">
@@ -219,7 +216,13 @@
       <Filter>HUD</Filter>
     </ClInclude>
     <ClInclude Include="IntroScene.h">
-      <Filter>Header Files</Filter>
+      <Filter>Framework\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayScene.h">
+      <Filter>Framework\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Framework\SceneManager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
