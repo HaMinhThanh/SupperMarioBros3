@@ -132,6 +132,9 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Framework\SceneManager</Filter>
     </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Objects\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprites.h">
@@ -223,6 +226,9 @@
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Framework\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Objects\Item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

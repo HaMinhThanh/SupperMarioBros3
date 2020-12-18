@@ -93,6 +93,11 @@
 #define MARIO_ANI_WAGGING_RIGHT				51
 #define MARIO_ANI_WAGGING_LEFT				52
 
+#define MARIO_ANI_BIG_CROUCH_RIGHT			53
+#define MARIO_ANI_BIG_CROUCH_LEFT			54
+#define MARIO_ANI_TAIL_CROUCH_RIGHT			55
+#define MARIO_ANI_TAIL_CROUCH_LEFT			56
+
 
 #define	MARIO_LEVEL_SMALL	1
 #define	MARIO_LEVEL_BIG		2
@@ -112,6 +117,8 @@
 #define MARIO_TAIL_BBOX_WIDTH  23
 #define MARIO_TAIL_BBOX_HEIGHT 27
 #define MARIO_TAIL_SWING_BBOX_WIDTH	34
+
+#define MARIO_CROUCH_BBOX_HEIGHT	18
 
 #define MARIO_UNTOUCHABLE_TIME	2000
 #define MARIO_FLY_TIME			4000	
@@ -156,6 +163,9 @@ public:
 	int numItem;
 
 	float metter;
+
+	bool isCrouch;
+	int isTurnBack = 0;
 
 public:
 

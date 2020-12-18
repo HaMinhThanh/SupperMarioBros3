@@ -88,9 +88,23 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		momentable = 0;
 
 	if (metter >= 7)
+	{
 		metter = 7;
+	}
 	else if (metter <= 0)
+	{
 		metter = 0;
+	}
+
+	if (isCrouch)
+	{
+		SetState(MARIO_STATE_IDLE);
+	}
+	else if (isTurnBack == 1)
+	{
+		isTurnBack = 0;
+		y -= 10;
+	}
 
 	GameObject::Update(dt);
 	
@@ -111,6 +125,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 	if (momentable == 1) {
+
 		metter += 0.1f;
 
 		if (GetTickCount() - momentable_start > MARIO_MOMENTUM_TIME) {
@@ -232,9 +247,12 @@ void Mario::Render()
 {
 	changeAni();
 
-	if (isAllowKick) {
-		if (level == MARIO_LEVEL_BIG) {
-			if (vx == 0) {
+	if (isAllowKick) 
+	{
+		if (level == MARIO_LEVEL_BIG) 
+		{
+			if (vx == 0) 
+			{
 				if (nx > 0) SetAni(MARIO_ANI_BIG_KICK_RIGHT);
 				else SetAni(MARIO_ANI_BIG_KICK_LEFT);
 			}
@@ -242,8 +260,10 @@ void Mario::Render()
 				SetAni(MARIO_ANI_BIG_KICK_RIGHT);
 			else SetAni(MARIO_ANI_BIG_KICK_LEFT);
 		}
-		else if (level == MARIO_LEVEL_TAIL) {
-			if (vx == 0) {
+		else if (level == MARIO_LEVEL_TAIL) 
+		{
+			if (vx == 0) 
+			{
 				if (nx > 0) SetAni(MARIO_ANI_TAIL_KICK_RIGHT);
 				else SetAni(MARIO_ANI_TAIL_KICK_LEFT);
 			}
@@ -251,8 +271,10 @@ void Mario::Render()
 				SetAni(MARIO_ANI_TAIL_KICK_RIGHT);
 			else SetAni(MARIO_ANI_TAIL_KICK_LEFT);
 		}
-		else if (level == MARIO_LEVEL_SMALL) {
-			if (vx == 0) {
+		else if (level == MARIO_LEVEL_SMALL) 
+		{
+			if (vx == 0) 
+			{
 				if (nx > 0) SetAni(MARIO_ANI_SMALL_KICK_RIGHT);
 				else SetAni(MARIO_ANI_SMALL_KICK_LEFT);
 			}
@@ -263,8 +285,10 @@ void Mario::Render()
 	}
 	else if (isHoldingItem )
 	{
-		if (level == MARIO_LEVEL_BIG) {
-			if (vx == 0) {
+		if (level == MARIO_LEVEL_BIG) 
+		{
+			if (vx == 0) 
+			{
 				if (nx > 0) SetAni(MARIO_ANI_IDLE_BIG_HOLD_RIGHT);
 				else SetAni(MARIO_ANI_IDLE_BIG_HOLD_LEFT);
 			}
@@ -272,8 +296,10 @@ void Mario::Render()
 				SetAni(MARIO_ANI_WALKING_BIG_HOLD_RIGHT);
 			else SetAni(MARIO_ANI_WALKING_BIG_HOLD_LEFT);
 		}
-		else if (level == MARIO_LEVEL_TAIL) {
-			if (vx == 0) {
+		else if (level == MARIO_LEVEL_TAIL) 
+		{
+			if (vx == 0) 
+			{
 				if (nx > 0) SetAni(MARIO_ANI_IDLE_TAIL_HOLD_RIGHT);
 				else SetAni(MARIO_ANI_IDLE_TAIL_HOLD_LEFT);
 			}
@@ -282,19 +308,39 @@ void Mario::Render()
 			else SetAni(MARIO_ANI_WALKING_TAIL_HOLD_LEFT);
 		}			
 	}
-	else if (isAllowSwing) {
+	else if (isAllowSwing) 
+	{
 		if (vx > 0 || nx > 0)
 			SetAni(MARIO_ANI_SWING_RIGHT);
 		else
 			SetAni(MARIO_ANI_SWING_LEFT);
 	}
 
-	else if (isWagging) {
+	else if (isWagging) 
+	{
 		if (vx > 0 || nx > 0)
 			SetAni(MARIO_ANI_WAGGING_RIGHT);
 		else
 			SetAni(MARIO_ANI_WAGGING_LEFT);
 
+	}
+
+	else if (isCrouch) 
+	{
+		if (level == MARIO_LEVEL_BIG)
+		{
+			if (vx > 0 || nx > 0)
+				SetAni(MARIO_ANI_BIG_CROUCH_RIGHT);
+			else
+				SetAni(MARIO_ANI_BIG_CROUCH_LEFT);
+		}
+		else if (level == MARIO_LEVEL_TAIL)
+		{
+			if (vx > 0 || nx > 0)
+				SetAni(MARIO_ANI_TAIL_CROUCH_RIGHT);
+			else
+				SetAni(MARIO_ANI_TAIL_CROUCH_LEFT);
+		}
 	}
 
 
@@ -368,7 +414,14 @@ void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 	if (level == MARIO_LEVEL_BIG || level == MARIO_LEVEL_FIRE)
 	{
 		right = x + MARIO_BIG_BBOX_WIDTH;
-		bottom = y + MARIO_BIG_BBOX_HEIGHT;
+		if (isCrouch)
+		{
+			bottom = y + MARIO_CROUCH_BBOX_HEIGHT;
+		}
+		else
+		{
+			bottom = y + MARIO_BIG_BBOX_HEIGHT;		
+		}		
 	}
 	else if (level == MARIO_LEVEL_SMALL)
 	{
@@ -381,7 +434,15 @@ void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 			right = x + MARIO_TAIL_SWING_BBOX_WIDTH;
 		else
 			right = x + MARIO_TAIL_BBOX_WIDTH;
-		bottom = y + MARIO_TAIL_BBOX_HEIGHT;
+
+		if (isCrouch)
+		{
+			bottom = y + MARIO_CROUCH_BBOX_HEIGHT;
+		}
+		else
+		{
+			bottom = y + MARIO_TAIL_BBOX_HEIGHT;
+		}
 	}
 
 }

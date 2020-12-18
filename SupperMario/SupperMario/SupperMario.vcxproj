@@ -152,6 +152,7 @@
     <ClCompile Include="BrickColor.cpp" />
     <ClCompile Include="BrickGold.cpp" />
     <ClCompile Include="BrickQuesion.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="Event.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="BrickColor.h" />
     <ClInclude Include="BrickGold.h" />
     <ClInclude Include="BrickQuesion.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="Event.h" />

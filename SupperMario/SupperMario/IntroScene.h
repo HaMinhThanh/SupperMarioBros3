@@ -47,7 +47,7 @@ public:
 	Mario* GetPlayer1() { return player1; }
 	Mario* GetPlayer2() { return player2; }
 
-	int addition = 1;
+	int addition = 10;
 };
 
 class IntroSceneKeyHandler :public ScenceKeyHandler

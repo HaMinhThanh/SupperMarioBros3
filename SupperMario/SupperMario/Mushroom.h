@@ -4,7 +4,7 @@
 #define	MUSHROOM_BBOX_WIDTH 16
 #define MUSHROOM_BBOX_HEIGHT 16
 
-#define MUSHROOM_GRAVITY	0.005f
+#define MUSHROOM_GRAVITY	0.002f
 
 class Mushroom: public GameObject
 {

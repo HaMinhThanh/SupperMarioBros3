@@ -15,6 +15,7 @@
 #include "Coin.h"
 #include "Mushroom.h"
 #include "Star.h"
+#include "Button.h"
 
 
 #include <map>
@@ -48,6 +49,7 @@ using namespace std;
 #define ITEM_TYPE_LEAF		2	
 #define ITEM_TYPE_MUSHROOM	3
 #define ITEM_TYPE_STAR		4
+#define ITEM_TYPE_BUTTON	5	
 
 // ENEMY
 #define ENEMY_TYPE_GOOMBA 1
@@ -331,6 +333,10 @@ void PlayScene::ParseSection_Items(string line)
 
 	case ITEM_TYPE_STAR:
 		item = new Star();
+		break;
+
+	case ITEM_TYPE_BUTTON:
+		item = new Button();
 		break;
 
 	default:
@@ -731,6 +737,16 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 	{
 		mario->isWagging = false;
 	}
+
+	if (game->IsKeyDown(DIK_DOWN))
+	{
+		mario->isCrouch = true;
+		mario->isTurnBack = 1;
+	}
+	else
+	{
+		mario->isCrouch = false;
+	}
 }
 
 void PlayScenceKeyHandler::OnKeyUp(int KeyCode)
@@ -779,10 +795,8 @@ void PlayScene::checkCollisionWithItem()
 
 					if (mario->level == MARIO_LEVEL_SMALL) {
 						mario->isTurnToBig = true;
-					}
-
-					if (mario->level != MARIO_LEVEL_BIG)
 						mario->level = MARIO_LEVEL_BIG;
+					}					
 
 					mario->score += 1000;
 				}
@@ -792,6 +806,29 @@ void PlayScene::checkCollisionWithItem()
 					mario->score += 100;
 					mario->dola += 1;
 
+				}
+				else if (dynamic_cast<Button*>(obj)) 
+				{
+					if (dynamic_cast<Button*>(obj)->isFinish == false)
+					{
+						mario->vx = -0.2;
+					}
+					dynamic_cast<Button*>(obj)->isFinish = true;
+
+					for (int i = 0; i < Objects.size(); i++)
+					{
+						if (dynamic_cast<BrickGold*>(Objects[i])&& 	(dynamic_cast<BrickGold*>(Objects[i])->item==0))
+							//|| dynamic_cast<BrickGold*>(Objects[i])->item==2)) {
+						{
+							Objects[i]->isFinish = true;
+
+							Coin* coin = new Coin();
+							coin->SetPosition(obj->x, obj->y);
+							coin->isNoCollision = false;
+							coin->SetAnimationSet(AnimationSets::GetInstance()->Get(32));
+							Items.push_back(coin);
+						}
+					}
 				}
 			}
 		}
@@ -1097,19 +1134,43 @@ void PlayScene::checkCollisionWithBrick()
 
 		if (dynamic_cast<Brick*>(obj)) {
 
-
-
+			// 
 		}
 
 		else if (dynamic_cast<BrickGold*>(obj)) {
 
 			LPCOLLISIONEVENT e = mario->SweptAABBEx(obj);
+			BrickGold* bg = dynamic_cast<BrickGold*>(obj);
 
 			if (e->t > 0 && e->t <= 1) {
 
-				if ((obj->GetFinish() == false && mario->isAllowSwing == true) || e->ny > 0) {
+				if (obj->GetFinish() == false && (mario->isAllowSwing == true || e->ny > 0))
+				{
 
 					obj->isFinish = true;
+
+					if (bg->item == 0) {
+
+						//obj->isFinish = true;
+
+						Coin* coin = new Coin();
+						coin->SetPosition(obj->x, obj->y);
+						coin->isNoCollision = false;
+						coin->SetAnimationSet(AnimationSets::GetInstance()->Get(32));
+						Items.push_back(coin);
+					}
+					else if (bg->item == 1) {
+						Mushroom* mr = new Mushroom();
+						mr->SetPosition(obj->x, obj->y - 36);
+						mr->SetAnimationSet(AnimationSets::GetInstance()->Get(38));
+						Items.push_back(mr);
+					}
+					else if (bg->item == 2) {
+						Button* bt = new Button();
+						bt->SetPosition(obj->x, obj->y - 16);
+						bt->SetAnimationSet(AnimationSets::GetInstance()->Get(39));
+						Items.push_back(bt);
+					}
 				}
 			}
 		}
@@ -1155,10 +1216,10 @@ void PlayScene::checkCollisionWithBrick()
 						coin->SetPosition(obj->x, obj->y - 16);
 						coin->isNoCollision = true;
 
-						AnimationSets* animation_sets = AnimationSets::GetInstance();
-						LPANIMATION_SET ani_set = animation_sets->Get(32);
+						//AnimationSets* animation_sets = AnimationSets::GetInstance();
+						//LPANIMATION_SET ani_set = animation_sets->Get(32);
 
-						coin->SetAnimationSet(ani_set);
+						coin->SetAnimationSet(AnimationSets::GetInstance()->Get(32));
 						Items.push_back(coin);
 					}
 				}

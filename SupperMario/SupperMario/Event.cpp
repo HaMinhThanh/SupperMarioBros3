@@ -41,9 +41,18 @@ void Event::DrawPower(float x, float y, int m) {
 
 		if (i != 6)
 			Sprites::GetInstance()->Get(SPRITE_POWER_WHITE)->Draw(x, y);
-		else if (i == 6)
-			//Sprites::GetInstance()->Get(SPRITE_P_CHARACTER_WHITE)->Draw(x, y);
-		Animations::GetInstance()->Get(915)->Render(x, y);
+		else
+		{
+			if (Mario::GetInstance(0, 0)->isFlying)
+			{
+				Animations::GetInstance()->Get(915)->Render(x, y);
+			}
+			else
+			{
+				Sprites::GetInstance()->Get(SPRITE_P_CHARACTER_WHITE)->Draw(x, y);
+			}
+		}	
+
 		x += 8;
 	}
 
@@ -53,7 +62,7 @@ void Event::DrawPower(float x, float y, int m) {
 
 		if (i != 6)
 			Sprites::GetInstance()->Get(SPRITE_POWER_BLACK)->Draw(x, y);
-		else if (i == 6)
+		else
 			Sprites::GetInstance()->Get(SPRITE_P_CHARACTER_BLACK)->Draw(x, y);
 		x += 8;
 	}

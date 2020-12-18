@@ -139,6 +139,7 @@ void IntroScene::ParseSection_OBJECTS(string line)
 	float y = atof(tokens[2].c_str());
 
 	int type, level;
+	bool object = false;
 
 	int ani_set_id = atoi(tokens[3].c_str());
 
@@ -153,11 +154,13 @@ void IntroScene::ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_RED_MARIO:
 		obj = new Mario(x, y);
 		player1 = (Mario*)obj;
+		object = true;
 		//DebugOut(L"[INFO] Player1 object created!\n");
 		break;
 	case OBJECT_TYPE_GREEN_MARIO:
 		obj = new Mario(x, y);
 		player2 = (Mario*)obj;
+		object = true;
 		//DebugOut(L"[INFO] Player2 object created!\n");
 		break;
 
@@ -206,8 +209,8 @@ void IntroScene::ParseSection_OBJECTS(string line)
 	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 
 	obj->SetAnimationSet(ani_set);
-
-	objects.push_back(obj);
+	if (object == false)
+		objects.push_back(obj);
 }
 
 void IntroScene::Load()
@@ -274,31 +277,31 @@ void IntroScene::Update(DWORD dt)
 		player2->SetState(MARIO_STATE_IDLE);
 		player2->SetLevel(MARIO_LEVEL_BIG);
 
-		HidenWall* hd = new HidenWall();
-
 		time_start = GetTickCount();
 		isStart = true;
 	}
-	else if (GetTickCount() - time_start > 2000)
+	else if (GetTickCount() - time_start > 1000)
 	{
-		player1->SetState(MARIO_STATE_WALKING_RIGHT);
-		player2->SetState(MARIO_STATE_WALKING_LEFT);
-
-		player1->vx = 0;
-		player2->vx = 0;
-
-	}
-
-	if (GetTickCount() - time_start > 3000)
-	{
-		player1->SetState(MARIO_STATE_WALKING_LEFT);
+		/*player1->SetState(MARIO_STATE_WALKING_LEFT);
 		player2->SetState(MARIO_STATE_WALKING_RIGHT);
 
+		player1->vx = 0;
+		player2->vx = 0;*/
+
 	}
 
-	if (GetTickCount() - time_start > 3300)
+	if (GetTickCount() - time_start > 2000)
 	{
-		player2->SetState(MARIO_STATE_JUMP);
+		/*player1->SetState(MARIO_STATE_WALKING_LEFT);
+		player2->SetState(MARIO_STATE_WALKING_RIGHT);*/
+		player1->vx = -0.15f;
+		player2->vx = 0.15f;
+
+	}
+
+	if (GetTickCount() - time_start > 2200)
+	{
+		player2->vy = -0.3;
 		//player2->SetState(MARIO_STATE_WALKING_RIGHT);
 
 		// Create function for Collision mario with mario
@@ -306,39 +309,84 @@ void IntroScene::Update(DWORD dt)
 		// Create condition if mairo walking through side limit
 	}
 
-	if (GetTickCount() - time_start > 3600)
+	if (GetTickCount() - time_start > 2600)
 	{
 		player2->SetState(MARIO_STATE_IDLE);
 		player2->vy = 0.2f;
 		player2->SetState(MARIO_STATE_WALKING_RIGHT);
+		//player1->SetState(MARIO_STATE_IDLE);
 
 		// Create function for Collision mario with mario
 
 		// Create condition if mairo walking through side limit
 	}	
 
-	//if (GetTickCount() - time_start > 3000)
-	//{
-	//	// rot chu
-	//}
+	if (GetTickCount() - time_start < 3500 && GetTickCount() - time_start > 3000)
+	{
+		if (player1->SweptAABBEx(player2))
+		{
+			player2->vy = -0.32f;
+			player1->isCrouch = true;
+			player1->isTurnBack = 1;
+		}
+	}
 
-	//if (GetTickCount() - time_start > 3500)
-	//{
-	//	// rot cac item va enemy
-	//}
+	else if (GetTickCount() - time_start >= 3500 )
+	{
+		player2->vy = 0.3f;
+		player1->isCrouch = false;
+		player1->vx = 0;
+	
+	}
 
-	//if (GetTickCount() - time_start > 5000)
-	//{
-	//	player1->SetState(MARIO_STATE_JUMP);
+	if (GetTickCount() - time_start > 5000)
+	{
+		// Mushroom
+		if (addition == 10)
+		{
+			Mushroom* mr = new Mushroom();
+			mr->SetAnimationSet(AnimationSets::GetInstance()->Get(37));
+			mr->SetPosition(50, 0);
+			objects.push_back(mr);
+			addition -= 1;
+		}
 
-	//	/*HidenWall* hd = new HidenWall(160, 99, 1, 24);
-	//	objects.push_back(hd);*/
+		// Goomba
+		if (addition == 9)
+		{
+			Goomba* gb = new Goomba();
+			gb->vx = 0;
+			gb->SetAnimationSet(AnimationSets::GetInstance()->Get(4));
+			gb->SetPosition(100, 0);
+			objects.push_back(gb);
+			addition -= 1;
+		}		
 
-	//}
+		// Leaf
+		if (addition == 8)
+		{
+			Leaf* leaf = new Leaf();
+			leaf->SetAnimationSet(AnimationSets::GetInstance()->Get(36));
+			leaf->SetPosition(160, 0);
+			objects.push_back(leaf);
+			addition -= 1;
+		}		
+
+		// Star
+		if (addition == 7)
+		{
+			Star* st = new Star();
+			st->SetAnimationSet(AnimationSets::GetInstance()->Get(34));
+			st->SetPosition(240, 0);
+			objects.push_back(st);
+			Koopas* kp = new Koopas(0, 0, 0);
+			addition -= 1;
+		}		
+	}
 	
 	if (GetTickCount() - time_start > 10000)
 	{
-		if (addition == 1) {
+		if (addition == 6) {
 			Koopas* kp = new Koopas(0, 170, 3);
 			kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
 			kp->SetState(KOOPAS_STATE_WALKING_RIGHT);
@@ -359,6 +407,8 @@ void IntroScene::Update(DWORD dt)
 	{
 		objects[i]->Update(dt, &coObjects);
 	}
+	player1->Update(dt, &coObjects);
+	player2->Update(dt, &coObjects);
 
 	Game::GetInstance()->SetCamPosition(0, 0);
 
@@ -377,7 +427,9 @@ void IntroScene::Render()
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Render();
-	}		
+	}
+	player1->Render();
+	player2->Render();
 }
 
 void IntroScene::Unload()
