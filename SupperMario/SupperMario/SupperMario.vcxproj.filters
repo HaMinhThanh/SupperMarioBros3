@@ -135,6 +135,9 @@
     <ClCompile Include="Button.cpp">
       <Filter>Objects\Item</Filter>
     </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprites.h">
@@ -229,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="Button.h">
       <Filter>Objects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

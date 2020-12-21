@@ -17,6 +17,7 @@
 #include "Star.h"
 #include "Button.h"
 
+#include "Node.h"
 
 #include <map>
 
@@ -58,12 +59,15 @@ using namespace std;
 #define ENEMY_TYPE_PARAKOOPAS	4
 #define ENEMY_TYPE_PARAGOOMBA	5	
 
+#define OBJECT_TYPE_NODES	40
+
 #define MAX_SCENE_LINE 1024
 
 PlayScene::PlayScene(int id, LPCWSTR filePath) :
 	Scene(id, filePath)
 {
 	keyHandler = new PlayScenceKeyHandler(this);
+
 }
 
 
@@ -225,6 +229,7 @@ void PlayScene::ParseSection_Objects(string line)
 
 	float w, h;
 	int item;
+	bool isNode = false;
 
 	int ani_set_id = atoi(tokens[3].c_str());
 
@@ -277,6 +282,19 @@ void PlayScene::ParseSection_Objects(string line)
 
 		break;
 
+	case OBJECT_TYPE_NODES:
+	{
+		float l = atof(tokens[4].c_str());
+		float t = atof(tokens[5].c_str());
+		float r = atof(tokens[6].c_str());
+		float b = atof(tokens[7].c_str());
+		obj = new Node(x, y, l, t, r, b);
+		isNode = true;
+
+		//mario->isNoWeight = true;
+	}
+	break;
+
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
@@ -284,6 +302,7 @@ void PlayScene::ParseSection_Objects(string line)
 		int scene_id = atoi(tokens[6].c_str());
 		obj = new Portal(x, y, r, b, scene_id);
 	}
+
 	break;
 
 	default:
@@ -298,9 +317,14 @@ void PlayScene::ParseSection_Objects(string line)
 
 	obj->SetAnimationSet(ani_set);
 
-	if (dynamic_cast<Mario*>(obj)) {}
-	else Objects.push_back(obj);
-
+	if (isNode)
+	{
+		Nodes.push_back(obj);
+	}
+	else
+	{
+		Objects.push_back(obj);
+	}
 }
 
 void PlayScene::ParseSection_Items(string line)
@@ -523,19 +547,26 @@ void PlayScene::Update(DWORD dt)
 	cx -= game->GetScreenWidth() / 2;
 	cy -= game->GetScreenHeight() / 2;
 
-	//if (cx <= 0)
-	//	cx = 0;
-	//else if (cx + game->GetScreenWidth() >= 2816)
-	//	cx = 2816 - game->GetScreenWidth();
+	if (game->GetCurrentSceneId() == 3)
+	{
+		cx = -20;
+		cy = -10;
+	}
+	else
+	{
+		if (cx <= 0)
+			cx = 0;
+		else if (cx + game->GetScreenWidth() >= 2816)
+			cx = 2816 - game->GetScreenWidth();
 
-	//if (mario->level == MARIO_LEVEL_FLY || mario->level == MARIO_LEVEL_TAIL) {
-	//	if (cy <= 0) cy = 0;
-	//	else if (cy + game->GetScreenHeight() >= 432)
-	//		cy = 432 - game->GetScreenHeight() + 42;
-	//}
-
-	//else //if (cy + game->GetScreenHeight() >= 432)
-	//	cy = 432 - game->GetScreenHeight() + 42;
+		if (mario->level == MARIO_LEVEL_FLY || mario->level == MARIO_LEVEL_TAIL) {
+			if (cy <= 0) cy = 0;
+			else if (cy + game->GetScreenHeight() >= 432)
+				cy = 432 - game->GetScreenHeight() + 42;
+		}
+		else //if (cy + game->GetScreenHeight() >= 432)
+			cy = 432 - game->GetScreenHeight() + 42;
+	}
 
 	Game::GetInstance()->SetCamPosition(cx, cy);
 
@@ -544,6 +575,7 @@ void PlayScene::Update(DWORD dt)
 	checkCollisionWithEnemy();
 	checkCollisionWithBrick();
 	checkCollisionWithItem();
+	checkMarioWorldMap();
 
 }
 
@@ -671,6 +703,19 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 
 		mario->isTurnToBig = true;
 		break;
+
+	case DIK_DOWN:
+		mario->isGoDown = true;
+		break;
+	case DIK_UP:
+		mario->isGoUp = true;
+		break;
+	case DIK_RIGHT:
+		mario->isGoRight = true;
+		break;
+	case DIK_LEFT:
+		mario->isGoLeft = true;
+		break;
 	}
 }
 
@@ -688,20 +733,21 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 	//disable control key when Mario die 
 	if (mario->GetState() == MARIO_STATE_DIE) return;
 
-	if (game->IsKeyDown(DIK_RIGHT))
-	{
-		mario->SetState(MARIO_STATE_WALKING_RIGHT);
-		mario->isPressed = true;
-	}
-	else if (game->IsKeyDown(DIK_LEFT))
-	{
-		mario->SetState(MARIO_STATE_WALKING_LEFT);
-		mario->isPressed = true;
-	}
-	else
-	{
-		mario->SetState(MARIO_STATE_IDLE);
-
+	if (game->GetCurrentSceneId() != 3) {
+		if (game->IsKeyDown(DIK_RIGHT))
+		{
+			mario->SetState(MARIO_STATE_WALKING_RIGHT);
+			mario->isPressed = true;
+		}
+		else if (game->IsKeyDown(DIK_LEFT))
+		{
+			mario->SetState(MARIO_STATE_WALKING_LEFT);
+			mario->isPressed = true;
+		}
+		else
+		{
+			mario->SetState(MARIO_STATE_IDLE);
+		}
 	}
 
 	if (game->IsKeyDown(DIK_H))
@@ -738,7 +784,7 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 		mario->isWagging = false;
 	}
 
-	if (game->IsKeyDown(DIK_DOWN))
+	if (game->IsKeyDown(DIK_DOWN) && game->GetCurrentSceneId() != 3)
 	{
 		mario->isCrouch = true;
 		mario->isTurnBack = 1;
@@ -796,7 +842,7 @@ void PlayScene::checkCollisionWithItem()
 					if (mario->level == MARIO_LEVEL_SMALL) {
 						mario->isTurnToBig = true;
 						mario->level = MARIO_LEVEL_BIG;
-					}					
+					}
 
 					mario->score += 1000;
 				}
@@ -807,7 +853,7 @@ void PlayScene::checkCollisionWithItem()
 					mario->dola += 1;
 
 				}
-				else if (dynamic_cast<Button*>(obj)) 
+				else if (dynamic_cast<Button*>(obj))
 				{
 					if (dynamic_cast<Button*>(obj)->isFinish == false)
 					{
@@ -817,7 +863,7 @@ void PlayScene::checkCollisionWithItem()
 
 					for (int i = 0; i < Objects.size(); i++)
 					{
-						if (dynamic_cast<BrickGold*>(Objects[i])&& 	(dynamic_cast<BrickGold*>(Objects[i])->item==0))
+						if (dynamic_cast<BrickGold*>(Objects[i]) && (dynamic_cast<BrickGold*>(Objects[i])->item == 0))
 							//|| dynamic_cast<BrickGold*>(Objects[i])->item==2)) {
 						{
 							Objects[i]->isFinish = true;
@@ -1237,5 +1283,62 @@ void PlayScene::checkCollisionWithBrick()
 			}
 		}
 
+	}
+}
+
+void PlayScene::checkMarioWorldMap()
+{
+	Mario* mario = Mario::GetInstance(0, 0);
+
+	//mario->vx = 0.1f;
+
+	if (currentNode == NULL)
+	{
+		currentNode = new Node(15, 32, 1, 0, 1, 0);
+		Nodes.push_back(currentNode);
+	}
+
+	if (mario->isGoDown && currentNode->bottom)
+	{
+		mario->vy = 0.1f;
+	}
+	else if (mario->isGoUp && currentNode->top)
+	{
+		mario->vy = -0.1f;
+	}
+	else if (mario->isGoRight && currentNode->right)
+	{
+		mario->vx = 0.1f;
+	}
+	else if (mario->isGoLeft && currentNode->left)
+	{
+		mario->vx = -0.1f;
+	}
+
+	for (int i = 0; i < Nodes.size(); i++)
+	{
+		if (mario->x == Nodes[i]->x && mario->y == Nodes[i]->y
+			&& currentNode->x != Nodes[i]->x && currentNode->y != Nodes[i]->y)
+		{
+			/*mario->x = Nodes[i]->x;
+			mario->y = Nodes[i]->y;*/
+
+			currentNode->x = Nodes[i]->x;
+			currentNode->y = Nodes[i]->y;
+
+			currentNode = (Node*)Nodes[i];
+
+			mario->vx = 0;
+			mario->vy = 0;
+
+			mario->SetPosition(Nodes[i]->x, Nodes[i]->y);
+
+			mario->isGoDown = false;
+			mario->isGoUp = false;
+			mario->isGoRight = false;
+			mario->isGoLeft = false;
+
+		}
+		
 	}
 }

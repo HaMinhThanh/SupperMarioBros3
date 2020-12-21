@@ -109,6 +109,11 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//	SetState(KOOPAS_STATE_WALKING_LEFT);
 	//	//vx *= -1;
 	//}
+	if (isFinish)
+	{
+		vy = 0.2f;
+		vx = 0.05f;
+	}
 
 	GameObject::Update(dt, coObjects);
 
@@ -129,12 +134,12 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	CalcPotentialCollisions(&Bricks, coEvents);
 
-	if (coEvents.size() == 0)
+	if (coEvents.size() == 0|| isFinish)
 	{
 		x += dx;
 		y += dy;
 	}
-	else
+	else if (isFinish == false)
 	{
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx, rdy;
@@ -160,10 +165,10 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x = 0;
 		vx = -vx;
 	}
-	if (vx > 0 && x > 290)
+	if (vx > 0 && x > 320)
 	{
-		x = 290;
-		vx = -vx;
+		x = 320;
+		//vx = -vx;
 	}
 }
 

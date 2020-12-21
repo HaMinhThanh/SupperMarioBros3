@@ -98,6 +98,8 @@
 #define MARIO_ANI_TAIL_CROUCH_RIGHT			55
 #define MARIO_ANI_TAIL_CROUCH_LEFT			56
 
+#define MARIO_ANI_COLLISION_MUSHROOM		57
+
 
 #define	MARIO_LEVEL_SMALL	1
 #define	MARIO_LEVEL_BIG		2
@@ -149,6 +151,9 @@ public:
 	int swing;
 	DWORD swing_start;
 
+	int collisWithMushroom = 0;
+	DWORD collisWithMushroom_start;
+
 	float start_x;
 	float start_y;
 
@@ -164,8 +169,11 @@ public:
 
 	float metter;
 
+	// 
 	bool isCrouch;
 	int isTurnBack = 0;
+
+	bool isCollisionWithMushroom;
 
 public:
 
@@ -213,6 +221,7 @@ public:
 	void StartMomentum() { isMomentum = true; momentable = 1; momentable_start = GetTickCount(); }
 	void StartKick() { isAllowKick = true; kicking = 1; kicking_start = GetTickCount(); }
 	void StartSwing() { swing = 1; swing_start = GetTickCount(); }
+	void StartCollisionWithMushroom() { isCollisionWithMushroom = true; collisWithMushroom = 1; collisWithMushroom_start = GetTickCount(); }
 
 	void Reset();
 
@@ -244,11 +253,16 @@ public:
 
 	void LoadItem(int itm);
 
-protected:
-
 	bool allowJump;
 
 	int currentAni;	
 
+	// world map
+	bool isGoUp;
+	bool isGoDown;
+	bool isGoLeft;
+	bool isGoRight;
+
+	bool isNoWeight;
 };
 

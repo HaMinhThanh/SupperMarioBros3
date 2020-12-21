@@ -172,28 +172,26 @@ void IntroScene::ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_KOOPAS_GREEN:
 		level = atof(tokens[4].c_str());
 		obj = new Koopas(x, y, level);
-		koopasGreen = (Koopas*)obj;
+		//koopasGreen = (Koopas*)obj;
 		break;
 	case OBJECT_TYPE_KOOPAS_RED:
 		level = atof(tokens[4].c_str());
 		obj = new Koopas(x, y, level);
-		koopasRed = (Koopas*)obj;
+		//koopasBlack = (Koopas*)obj;
 		break;
 	case OBJECT_TYPE_GOOMBA:
 		obj = new Goomba();
-		goomba = (Goomba*)obj;
+		//goomba = (Goomba*)obj;
 		break;
 	case OBJECT_TYPE_LEAF:
 		obj = new Leaf();
-		leaf = (Leaf*)obj;
+		//leaf = (Leaf*)obj;
 		break;
 	case OBJECT_TYPE_MUSHROOM:
 		obj = new Mushroom();
-		isBackground = true;
 		break;
 	case OBJECT_TYPE_STAR:
 		obj = new Star();
-		isBackground = true;
 		break;
 	case OBJECT_TYPE_BRICK:
 		obj = new Brick();
@@ -290,7 +288,7 @@ void IntroScene::Update(DWORD dt)
 
 	}
 
-	if (GetTickCount() - time_start > 2000)
+	if (GetTickCount() - time_start > 2000 )
 	{
 		/*player1->SetState(MARIO_STATE_WALKING_LEFT);
 		player2->SetState(MARIO_STATE_WALKING_RIGHT);*/
@@ -299,17 +297,12 @@ void IntroScene::Update(DWORD dt)
 
 	}
 
-	if (GetTickCount() - time_start > 2200)
+	if (GetTickCount() - time_start > 2200 && GetTickCount() - time_start < 2600)
 	{
 		player2->vy = -0.3;
-		//player2->SetState(MARIO_STATE_WALKING_RIGHT);
-
-		// Create function for Collision mario with mario
-
-		// Create condition if mairo walking through side limit
 	}
 
-	if (GetTickCount() - time_start > 2600)
+	if (GetTickCount() - time_start > 2600 && GetTickCount() - time_start < 3500)
 	{
 		player2->SetState(MARIO_STATE_IDLE);
 		player2->vy = 0.2f;
@@ -331,16 +324,22 @@ void IntroScene::Update(DWORD dt)
 		}
 	}
 
-	else if (GetTickCount() - time_start >= 3500 )
+	else if (GetTickCount() - time_start >= 3500 && GetTickCount()- time_start < 5300)
 	{
 		player2->vy = 0.3f;
 		player1->isCrouch = false;
 		player1->vx = 0;
 	
 	}
+	else if(GetTickCount() - time_start > 5300)// && GetTickCount() - time_start < 14000)
+	{
+		player2->vx = 0;
+		player2->nx = -1;
+	}
 
 	if (GetTickCount() - time_start > 5000)
 	{
+		player1->vx = 0;
 		// Mushroom
 		if (addition == 10)
 		{
@@ -360,16 +359,21 @@ void IntroScene::Update(DWORD dt)
 			gb->SetPosition(100, 0);
 			objects.push_back(gb);
 			addition -= 1;
+
+			goomba = gb;
 		}		
 
 		// Leaf
 		if (addition == 8)
 		{
-			Leaf* leaf = new Leaf();
-			leaf->SetAnimationSet(AnimationSets::GetInstance()->Get(36));
-			leaf->SetPosition(160, 0);
-			objects.push_back(leaf);
+			Leaf* leaf1 = new Leaf();
+			leaf1->SetAnimationSet(AnimationSets::GetInstance()->Get(36));
+			leaf1->SetPosition(160, 0);
+			objects.push_back(leaf1);
+
 			addition -= 1;
+
+			leaf = leaf1;
 		}		
 
 		// Star
@@ -377,24 +381,354 @@ void IntroScene::Update(DWORD dt)
 		{
 			Star* st = new Star();
 			st->SetAnimationSet(AnimationSets::GetInstance()->Get(34));
-			st->SetPosition(240, 0);
+			st->SetPosition(280, 0);
 			objects.push_back(st);
 			Koopas* kp = new Koopas(0, 0, 0);
 			addition -= 1;
+		}
+	}
+
+	if (GetTickCount() - time_start > 5200)
+	{
+		// Koopa
+		if (addition == 6)
+		{
+			Koopas* kp = new Koopas(160, 0, 2);
+			kp->vy = 0.2f;
+			kp->SetState(KOOPAS_STATE_IDLE);
+			kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
+			//kp->SetPosition(160, 0);
+			//objects.push_back(kp);
+			addition -= 1;
+
+			koopasGreen = kp;
+		}
+
+		if (addition == 5)
+		{
+			Koopas* kp = new Koopas(220, 0, 2);
+			kp->vy = 0.2f;
+			kp->SetState(KOOPAS_STATE_IDLE);
+			kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
+			//kp->SetPosition(200, 0);
+			//objects.push_back(kp);
+			addition -= 1;
+
+			koopasBlack = kp;
+		}
+	}
+	if (GetTickCount() - time_start > 5300 && GetTickCount() - time_start < 6500)
+	{
+		if (player1->isCollisionWithItem(koopasGreen))
+		{
+			koopasGreen->vy = -0.05f;
+			koopasGreen->vx = -0.2f;
+
+			player1->StartCollisionWithMushroom();
+		}
+	}
+
+	if (GetTickCount() - time_start > 6050 && GetTickCount() - time_start < 6500)
+	{
+		koopasGreen->vy = 0.2f;
+		koopasGreen->vx = 0;
+	}
+
+	if (GetTickCount() - time_start > 6500)
+	{
+
+	}
+
+	if (GetTickCount() - time_start > 7500 && GetTickCount() - time_start < 8000)
+	{
+		player1->vy = -0.2f;		
+	}
+
+	if (GetTickCount() - time_start > 8000)
+	{
+		if (player1->isCollisionWithItem(leaf))
+		{
+			player1->level = MARIO_LEVEL_TAIL;
+			leaf->isFinish = true;
+
+			player1->isJumping = false;
+			player1->isWagging = true;
+
+		}
+	}
+
+	if (GetTickCount() - time_start > 8100 )
+	{
+		player1->vx = -0.05f;
+	}
+
+	if (GetTickCount() - time_start > 9000)
+	{
+		goomba->vx = -0.02f;
+	}
+
+	if (GetTickCount() - time_start > 9500)
+	{
+		player1->vx = 0;
+	}
+
+	if (GetTickCount() - time_start > 9500)
+	{
+		if (player1->isCollisionWithItem(goomba))
+		{
+			player1->vy = -0.1f;
+			player1->vx = -0.2f;
+			goomba->SetState(GOOMBA_STATE_DIE);
 		}		
 	}
-	
+
 	if (GetTickCount() - time_start > 10000)
 	{
-		if (addition == 6) {
+		player1->vx = -0.1f;
+	}
+
+	if (GetTickCount() - time_start > 10300)
+	{
+		player1->vx = 0;
+		player1->nx = 1;
+	}
+
+	if (GetTickCount() - time_start > 11000 && GetTickCount() - time_start < 12000)
+	{
+		player1->vx = 0.1f;
+
+		if (player1->isCollisionWithItem(koopasGreen))
+		{
+			koopasGreen->vx = 0.2f;
+			player1->StartKick();
+		}
+	}
+
+	if (GetTickCount() - time_start > 12000)
+	{
+		player1->vx = 0.1f;
+
+		if (koopasGreen->SweptAABBEx(koopasBlack))
+		{
+			koopasBlack->vy = -0.1f;
+		}
+	}
+
+	if (GetTickCount() - time_start > 12500)
+	{
+		koopasBlack->isFinish = true;
+	}
+
+	if (GetTickCount() - time_start > 13000)
+	{
+		player1->vx = 0;
+		koopasBlack->vy = 0.2f;
+	}
+
+	if (GetTickCount() - time_start > 14000 && GetTickCount() - time_start < 14100)
+	{
+		player2->SetPosition(320, 170);
+		player2->isHoldingItem = true;
+		
+		/*player2->SetHodingItem(koopasGreen);
+		player2->vx = -0.2f;*/
+	}
+
+	if (GetTickCount() - time_start > 14000 && GetTickCount() - time_start < 14800)
+	{
+		koopasGreen->vx = 0;
+		koopasGreen->vy = 0;
+		/*player2->nx = -1;
+		player2->SetHodingItem(koopasGreen);*/
+		player2->vx = -0.05f;
+		koopasGreen->x = player2->x - 10;
+		koopasGreen->y = player2->y + 8;
+	}
+
+	if (GetTickCount() - time_start > 14800 )
+	{
+		player2->vx = 0;
+		player2->nx = -1;		
+	}
+
+	if (GetTickCount() - time_start > 15000 )
+	{
+		player2->isHoldingItem = false;
+		
+		if (GetTickCount() - time_start <= 15700)
+		{
+			player1->vx = -0.2f;
+		}
+		
+		koopasGreen->vx = -0.25f;
+		koopasGreen->vy = 0.2f;
+	}
+
+	if (GetTickCount() - time_start > 15000 && GetTickCount() - time_start < 15200)
+	{
+		player2->StartKick();
+	}
+
+	if (GetTickCount() - time_start > 15500 && GetTickCount() - time_start <= 15700)
+	{
+		player1->vy = -0.2f;
+	}
+
+	if (GetTickCount() - time_start > 15700 && GetTickCount() - time_start < 15800)
+	{
+		player1->vy = 0.2f;
+		player1->vx = -0.05f;
+	}
+
+	if (GetTickCount() - time_start > 15800)// && GetTickCount() - time_start < 16000)
+	{
+		if (player1->isCollisionWithItem(koopasGreen))
+		{
+			/*koopasGreen->vx = 0;
+			player1->nx = 1;
+			player1->vy = -0.1f;*/
+		}
+		koopasGreen->vx = 0;
+
+		if (GetTickCount() - time_start < 16000)
+		{
+			player1->vy = -0.1f;
+			player1->vx = -0.2f;
+		}		
+	}
+
+	if (GetTickCount() - time_start > 16000 && GetTickCount() - time_start < 16500)
+	{
+		player1->vy = 0.2f;
+		player1->vx = 0;
+	}
+
+	if (GetTickCount() - time_start > 16500)
+	{
+		//player1->vy = -0.2f;
+		player1->vx = 0.2f;
+	}
+
+	if (GetTickCount() - time_start > 16650)
+	{
+		if (player1->isCollisionWithItem(koopasGreen) && GetTickCount() - time_start < 17000)
+		{
+			player1->StartKick();
+			koopasGreen->vx = 0.2f;
+			player1->vx = 0;
+		}
+
+		player1->vx = 0;
+		koopasGreen->vx = 0.2f;
+	}
+
+	if (GetTickCount() - time_start > 17500)
+	{
+		player2->vx = 0.2f;
+	}
+
+	if (GetTickCount() - time_start > 18000 && GetTickCount() - time_start < 18100)
+	{
+		koopasGreen->SetPosition(0, 180);
+		
+	}
+
+	if (GetTickCount() - time_start > 18100)
+	{
+		if (player1->isCollisionWithItem(koopasGreen) && player1->level != MARIO_LEVEL_SMALL)
+		{
+			koopasGreen->vx = 0;
+
+			player1->level = MARIO_LEVEL_BIG;
+		}
+	}
+
+	if (GetTickCount() - time_start > 19000)
+	{
+		if (player1->level == MARIO_LEVEL_BIG)
+		{
+			player1->level = MARIO_LEVEL_SMALL;
+		}
+	}
+
+	if (GetTickCount() - time_start > 20000)
+	{
+		player1->vx = 0.15f;
+
+		if (GetTickCount() - time_start > 21400)
+		{
+			player1->vx = 0;
+		}
+
+		if (GetTickCount() - time_start > 21600)
+		{
+			player1->vx = -0.15f;
+		}
+
+		if (GetTickCount() - time_start > 22100)
+		{
+			player1->vx = 0;
+			isHiden = true;
+		}
+
+		if (GetTickCount() - time_start > 23000)
+		{
+			player1->vx = 0.15f;
+		}
+	}
+
+	if (GetTickCount() - time_start > 25000)
+	{
+		isHiden = false;
+	}
+	
+	if (GetTickCount() - time_start > 26000)
+	{
+		if (addition == 4) {
 			Koopas* kp = new Koopas(0, 170, 3);
 			kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
 			kp->SetState(KOOPAS_STATE_WALKING_RIGHT);
-			kp->vx = 0.02f;
+			kp->vx = 0.04f;
 			objects.push_back(kp);
+			addition -= 1;
 		}
-		addition = 0;
-	}	
+	}
+
+	if (GetTickCount() - time_start > 27000)
+	{
+		if (addition == 3) {
+			Koopas* kp = new Koopas(0, 170, 3);
+			kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
+			kp->SetState(KOOPAS_STATE_WALKING_RIGHT);
+			kp->vx = 0.04f;
+			objects.push_back(kp);
+			addition -= 1;
+		}
+	}
+
+	if (GetTickCount() - time_start > 28000)
+	{
+		if (addition == 2) {
+			Koopas* kp = new Koopas(0, 170, 3);
+			kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
+			kp->SetState(KOOPAS_STATE_WALKING_RIGHT);
+			kp->vx = 0.04f;
+			objects.push_back(kp);
+			addition -= 1;
+		}
+	}
+
+	if (GetTickCount() - time_start > 33000)
+	{
+		if (addition == 1) {
+			Koopas* kp = new Koopas(0, 170, 3);
+			kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
+			kp->SetState(KOOPAS_STATE_WALKING_RIGHT);
+			kp->vx = 0.08f;
+			objects.push_back(kp);
+			addition -= 1;
+		}
+	}
 
 	vector<LPGAMEOBJECT> coObjects;
 
@@ -410,12 +744,19 @@ void IntroScene::Update(DWORD dt)
 	player1->Update(dt, &coObjects);
 	player2->Update(dt, &coObjects);
 
+	if (koopasGreen != NULL)
+		koopasGreen->Update(dt, &coObjects);
+
+	if (koopasBlack != NULL)
+		koopasBlack->Update(dt, &coObjects);
+
 	Game::GetInstance()->SetCamPosition(0, 0);
 
 	if (GetTickCount() - time_start > 40000)
 	{
 		time_start = 0;
 		isStart = false;
+		addition = 10;
 
 		Game::GetInstance()->SwitchScene(4);
 	}
@@ -430,6 +771,17 @@ void IntroScene::Render()
 	}
 	player1->Render();
 	player2->Render();
+
+	if (koopasGreen != NULL)
+		koopasGreen->Render();
+
+	if (koopasBlack != NULL)
+		koopasBlack->Render();
+
+	if (isHiden)
+	{
+		Sprites::GetInstance()->Get(20024)->Draw(245,96);
+	}
 }
 
 void IntroScene::Unload()
@@ -444,17 +796,30 @@ void IntroScene::Unload()
 		delete objects[i];
 	}
 
+	delete player1;
+	delete player2;
+	delete koopasGreen;
+	delete koopasBlack;
+
 	background.clear();
 	objects.clear();
 	player1 = NULL;
 	player2 = NULL;
+	koopasGreen = NULL;
+	koopasBlack = NULL;
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
 void IntroSceneKeyHandler::OnKeyDown(int KeyCode)
 {
+	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 
+	switch (KeyCode)
+	{
+	case DIK_W:
+		Game::GetInstance()->SwitchScene(3);
+	}
 }
 
 void IntroSceneKeyHandler::OnKeyUp(int KeyCode)

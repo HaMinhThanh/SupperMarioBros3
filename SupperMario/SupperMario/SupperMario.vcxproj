@@ -170,6 +170,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mario.cpp" />
     <ClCompile Include="Mushroom.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="ParaGoomba.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Portal.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="Leaf.h" />
     <ClInclude Include="mario.h" />
     <ClInclude Include="Mushroom.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="ParaGoomba.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Portal.h" />

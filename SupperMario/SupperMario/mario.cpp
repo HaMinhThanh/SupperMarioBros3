@@ -32,8 +32,8 @@ Mario::Mario(float x, float y) :GameObject()
 
 	start_x = x;
 	start_y = y;
-	this->vx = x;
-	this->vy = y;
+	this->vx = 0;
+	this->vy = 0;
 
 	score = 0;
 	live = 4;
@@ -74,12 +74,10 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (vy == 0 && isFlying == false)
 		isJumping = true;
 
-	if (vy > 0 && isWagging && level == MARIO_LEVEL_TAIL && isJumping== false) {
+	if (vy > 0 && isWagging && level == MARIO_LEVEL_TAIL && isJumping== false) 
+	{
 		vy -= 0.00075f * dt;
 	}
-	/*else if (vy < 0 && isWagging) {
-		vy = 0;
-	}*/
 	else
 		isWagging = false;
 	
@@ -108,7 +106,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	GameObject::Update(dt);
 	
-	vy += MARIO_GRAVITY * dt;
+	/*if (isNoWeight == false)
+		vy += MARIO_GRAVITY * dt;*/
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -175,6 +174,13 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		swing = 0;
 		swing_start = 0;
 		isAllowSwing = false;
+	}
+
+	if (GetTickCount() - collisWithMushroom_start > 1100)
+	{
+		collisWithMushroom = 0;
+		collisWithMushroom_start = 0;
+		isCollisionWithMushroom = false;
 	}
 
 	if (coEvents.size() == 0)
@@ -343,6 +349,10 @@ void Mario::Render()
 		}
 	}
 
+	else if (isCollisionWithMushroom)
+	{
+		SetAni(MARIO_ANI_COLLISION_MUSHROOM);
+	}
 
 	int alpha = 255;
 	if (untouchable) alpha = 128;
@@ -669,7 +679,7 @@ bool Mario::isCollisionWithItem(LPGAMEOBJECT item)
 void Mario::SetHodingItem(LPGAMEOBJECT item)
 {
 	if (vx > 0 || nx > 0) {
-		item->x = x + MARIO_BIG_BBOX_WIDTH - 5;
+		item->x = x + MARIO_BIG_BBOX_WIDTH - 3;
 		item->y = y + 8;
 	}
 	else {

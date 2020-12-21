@@ -23,6 +23,7 @@
 
 #include "FireBall.h"
 
+#include "Node.h"
 
 #include "Utils.h"
 
@@ -42,6 +43,9 @@ public:
 	vector<LPGAMEOBJECT> Enemy;	
 	vector<LPGAMEOBJECT> Weapon;
 	vector<LPGAMEOBJECT> Bicks;
+
+	vector<LPGAMEOBJECT> Nodes;
+	Node* currentNode = NULL;
 
 	std::map<int, bool> keys;
 
@@ -70,6 +74,9 @@ public:
 	void checkCollisionWithBrick();
 
 	void useFireBall();
+
+	void checkMarioWorldMap();
+	bool isNoWeight = false;
 
 	Mario* GetPlayer() { return mario; }
 

@@ -18,7 +18,7 @@ protected:
 	Mario* player1;
 	Mario* player2;
 	Koopas* koopasGreen;
-	Koopas* koopasRed;
+	Koopas* koopasBlack;
 	Goomba* goomba;
 	Leaf* leaf;
 
@@ -48,6 +48,8 @@ public:
 	Mario* GetPlayer2() { return player2; }
 
 	int addition = 10;
+	bool isHiden = false;
+	bool isChangeMap = false;
 };
 
 class IntroSceneKeyHandler :public ScenceKeyHandler

@@ -57,7 +57,7 @@ void Goomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		x += min_tx * dx + nx * 0.04f;
+		x += min_tx * dx;// +nx * 0.04f;
 		y += min_ty * dy + ny * 0.04f;
 
 		if (nx != 0) {
