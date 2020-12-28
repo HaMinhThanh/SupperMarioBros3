@@ -106,8 +106,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	GameObject::Update(dt);
 	
-	/*if (isNoWeight == false)
-		vy += MARIO_GRAVITY * dt;*/
+	if (Game::GetInstance()->GetCurrentSceneId() != 3)
+		vy += MARIO_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -421,38 +421,46 @@ void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 	left = x;
 	top = y;
 
-	if (level == MARIO_LEVEL_BIG || level == MARIO_LEVEL_FIRE)
+	if (Game::GetInstance()->GetCurrentSceneId() != 3)
 	{
-		right = x + MARIO_BIG_BBOX_WIDTH;
-		if (isCrouch)
+		if (level == MARIO_LEVEL_BIG || level == MARIO_LEVEL_FIRE)
 		{
-			bottom = y + MARIO_CROUCH_BBOX_HEIGHT;
+			right = x + MARIO_BIG_BBOX_WIDTH;
+			if (isCrouch)
+			{
+				bottom = y + MARIO_CROUCH_BBOX_HEIGHT;
+			}
+			else
+			{
+				bottom = y + MARIO_BIG_BBOX_HEIGHT;
+			}
 		}
-		else
+		else if (level == MARIO_LEVEL_SMALL)
 		{
-			bottom = y + MARIO_BIG_BBOX_HEIGHT;		
-		}		
-	}
-	else if (level == MARIO_LEVEL_SMALL)
-	{
-		right = x + MARIO_SMALL_BBOX_WIDTH;
-		bottom = y + MARIO_SMALL_BBOX_HEIGHT;
-	}
-	else if (level == MARIO_LEVEL_TAIL || level == MARIO_LEVEL_FLY)
-	{
-		if (isAllowSwing)
-			right = x + MARIO_TAIL_SWING_BBOX_WIDTH;
-		else
-			right = x + MARIO_TAIL_BBOX_WIDTH;
+			right = x + MARIO_SMALL_BBOX_WIDTH;
+			bottom = y + MARIO_SMALL_BBOX_HEIGHT;
+		}
+		else if (level == MARIO_LEVEL_TAIL || level == MARIO_LEVEL_FLY)
+		{
+			if (isAllowSwing)
+				right = x + MARIO_TAIL_SWING_BBOX_WIDTH;
+			else
+				right = x + MARIO_TAIL_BBOX_WIDTH;
 
-		if (isCrouch)
-		{
-			bottom = y + MARIO_CROUCH_BBOX_HEIGHT;
+			if (isCrouch)
+			{
+				bottom = y + MARIO_CROUCH_BBOX_HEIGHT;
+			}
+			else
+			{
+				bottom = y + MARIO_TAIL_BBOX_HEIGHT;
+			}
 		}
-		else
-		{
-			bottom = y + MARIO_TAIL_BBOX_HEIGHT;
-		}
+	}
+	else
+	{
+		right = x + 14;
+		bottom = y + 16;
 	}
 
 }
@@ -661,13 +669,16 @@ void Mario::NoCollisionWithAxisY()
 bool Mario::isCollisionWithItem(LPGAMEOBJECT item)
 {
 	if (item->GetFinish() == true)
+	{
 		return false;
+	}		
 
 	float l, t, r, b;
 	float l1, t1, r1, b1;
-	this->GetBoundingBox(l, t, r, b);  // lấy BBOX của mario
 
-	item->GetBoundingBox(l1, t1, r1, b1);
+	this->GetBoundingBox(l, t, r, b);		// lấy BBOX của mario
+	item->GetBoundingBox(l1, t1, r1, b1);	// lấy BBOX của item
+
 	if (Game::GetInstance()->checkAABB(l, t, r, b, l1, t1, r1, b1) == true)
 	{
 		return true; // check with AABB

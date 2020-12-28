@@ -20,6 +20,7 @@
 #include "Node.h"
 
 #include <map>
+#include <iostream>
 
 using namespace std;
 
@@ -321,6 +322,10 @@ void PlayScene::ParseSection_Objects(string line)
 	{
 		Nodes.push_back(obj);
 	}
+	else if (dynamic_cast<Mario*>(obj))
+	{
+
+	}
 	else
 	{
 		Objects.push_back(obj);
@@ -524,6 +529,11 @@ void PlayScene::Update(DWORD dt)
 		Items[i]->Update(dt, &coObjects);
 	}
 
+	for (int i = 0; i < Nodes.size(); i++)
+	{
+		Nodes[i]->Update(dt, &coObjects);
+	}
+
 	for (size_t i = 0; i < Objects.size(); i++)
 	{
 		Objects[i]->Update(dt, &coObjects);
@@ -575,18 +585,23 @@ void PlayScene::Update(DWORD dt)
 	checkCollisionWithEnemy();
 	checkCollisionWithBrick();
 	checkCollisionWithItem();
-	checkMarioWorldMap();
+
+	if (game->GetCurrentSceneId() == 3)
+		checkMarioWorldMap();
 
 }
 
 void PlayScene::Render()
 {
 
-	//Sprites::GetInstance()->Get(1)->Draw(0, 0);	
+	if (Game::GetInstance()->GetCurrentSceneId() == 3)
+	{
+		Sprites::GetInstance()->Get(11111)->Draw(0, 0);
+	}
 
 	for (int i = 0; i < BackGround.size(); i++)
 		BackGround[i]->Render();
-
+	
 	for (int i = 0; i < Enemy.size(); i++)
 		Enemy[i]->Render();
 
@@ -599,6 +614,11 @@ void PlayScene::Render()
 	for (size_t i = 0; i < Weapon.size(); i++)
 	{
 		Weapon[i]->Render();
+	}
+
+	for (int i = 0; i < Nodes.size(); i++)
+	{
+		Nodes[i]->Render();
 	}
 
 	mario->Render();
@@ -703,19 +723,48 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 
 		mario->isTurnToBig = true;
 		break;
+	}
 
-	case DIK_DOWN:
-		mario->isGoDown = true;
-		break;
-	case DIK_UP:
-		mario->isGoUp = true;
-		break;
-	case DIK_RIGHT:
-		mario->isGoRight = true;
-		break;
-	case DIK_LEFT:
-		mario->isGoLeft = true;
-		break;
+	if (Game::GetInstance()->GetCurrentSceneId() == 3)
+	{
+		switch (KeyCode)
+		{
+		case DIK_DOWN:			
+			/*if (mario->isGoDown)
+			{
+				mario->vy = 0.1f;
+			}*/
+			mario->isGoDown = true;
+			break;
+		case DIK_UP:			
+			/*if (mario->isGoUp)
+			{
+				mario->vy = -0.1f;
+			}*/
+			mario->isGoUp = true;
+			break;
+		case DIK_RIGHT:
+			
+			/*if (mario->isGoRight)
+			{
+				mario->vx = 0.1f;
+			}*/
+			mario->isGoRight = true;
+			break;
+		case DIK_LEFT:
+			/*if (mario->isGoLeft)
+			{
+				mario->vx = -0.1f;
+			}*/
+			mario->isGoLeft = true;
+			break;
+		default:
+			mario->isGoDown = false;
+			mario->isGoUp = false;
+			mario->isGoRight = false;
+			mario->isGoLeft = false;
+			break;
+		}
 	}
 }
 
@@ -778,6 +827,11 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 	{
 		if (mario->level == MARIO_LEVEL_TAIL)
 			mario->isWagging = true;
+
+		if (Game::GetInstance()->GetCurrentSceneId() == 3)
+		{
+			Game::GetInstance()->SwitchScene(1);
+		}
 	}
 	else
 	{
@@ -1288,57 +1342,77 @@ void PlayScene::checkCollisionWithBrick()
 
 void PlayScene::checkMarioWorldMap()
 {
-	Mario* mario = Mario::GetInstance(0, 0);
+	Mario* mario = Mario::GetInstance(15, 32);
 
 	//mario->vx = 0.1f;
 
 	if (currentNode == NULL)
 	{
-		currentNode = new Node(15, 32, 1, 0, 1, 0);
-		Nodes.push_back(currentNode);
-	}
+		currentNode = new Node(15, 32, 0, 0, 1, 0);
+		//Nodes.push_back(currentNode);
 
-	if (mario->isGoDown && currentNode->bottom)
-	{
-		mario->vy = 0.1f;
+		DebugOut(L"currentNode == NULL\n");
 	}
-	else if (mario->isGoUp && currentNode->top)
+	else //if (mario->isCollisionWithItem(currentNode))
 	{
-		mario->vy = -0.1f;
-	}
-	else if (mario->isGoRight && currentNode->right)
-	{
-		mario->vx = 0.1f;
-	}
-	else if (mario->isGoLeft && currentNode->left)
-	{
-		mario->vx = -0.1f;
-	}
+		//DebugOut(L"currentNode->x = %d\n", currentNode->x);
 
-	for (int i = 0; i < Nodes.size(); i++)
-	{
-		if (mario->x == Nodes[i]->x && mario->y == Nodes[i]->y
-			&& currentNode->x != Nodes[i]->x && currentNode->y != Nodes[i]->y)
+		if (currentNode->bottom && mario->isGoDown)
 		{
-			/*mario->x = Nodes[i]->x;
-			mario->y = Nodes[i]->y;*/
-
-			currentNode->x = Nodes[i]->x;
-			currentNode->y = Nodes[i]->y;
-
-			currentNode = (Node*)Nodes[i];
-
+			mario->vy = 0.1f;
+		}
+		else if (currentNode->top && mario->isGoUp)
+		{
+			mario->vy = -0.1f;
+		}
+		else if (currentNode->right && mario->isGoRight)
+		{
+			mario->vx = 0.1f;
+		}
+		else if (currentNode->left && mario->isGoLeft)
+		{
+			mario->vx = -0.1;
+		}
+		else
+		{
 			mario->vx = 0;
 			mario->vy = 0;
-
-			mario->SetPosition(Nodes[i]->x, Nodes[i]->y);
 
 			mario->isGoDown = false;
 			mario->isGoUp = false;
 			mario->isGoRight = false;
 			mario->isGoLeft = false;
-
 		}
+	}
+
+	for (int i = 0; i < Nodes.size(); i++)
+	{
 		
+		GameObject* obj = dynamic_cast<GameObject*> (Nodes[i]);
+
+		if (dynamic_cast<Node*>(obj)) {
+
+			LPCOLLISIONEVENT e = mario->SweptAABBEx(obj);
+			Node* bg = dynamic_cast<Node*>(obj);
+
+			if (e->t > 0 && e->t <= 1) /*&& currentNode->x != bg->x && currentNode->y != bg->y) */
+			{
+
+				currentNode->SetDirectNode(bg->x, bg->y, bg->left, bg->top, bg->right, bg->bottom);
+
+				mario->vx = 0;
+				mario->vy = 0;
+
+				mario->SetPosition(Nodes[i]->x, Nodes[i]->y);
+
+				mario->isGoDown = false;
+				mario->isGoUp = false;
+				mario->isGoRight = false;
+				mario->isGoLeft = false;
+
+				break;
+			}
+		}
+
 	}
 }

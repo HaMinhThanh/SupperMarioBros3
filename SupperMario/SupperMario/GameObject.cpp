@@ -257,6 +257,3 @@ void GameObject::ReSetAnimationSet(int re)
 
 	this->SetAnimationSet(ani_set);
 }
-
-
-
