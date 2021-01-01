@@ -17,7 +17,9 @@
 #include "Star.h"
 #include "Button.h"
 
+// world map
 #include "Node.h"
+#include "person.h"
 
 #include <map>
 #include <iostream>
@@ -61,6 +63,7 @@ using namespace std;
 #define ENEMY_TYPE_PARAGOOMBA	5	
 
 #define OBJECT_TYPE_NODES	40
+#define OBJECT_TYPE_PERSON	41
 
 #define MAX_SCENE_LINE 1024
 
@@ -293,6 +296,16 @@ void PlayScene::ParseSection_Objects(string line)
 		isNode = true;
 
 		//mario->isNoWeight = true;
+	}
+	break;
+
+	case OBJECT_TYPE_PERSON:
+	{
+		float max = atof(tokens[4].c_str());
+		float min = atof(tokens[5].c_str());
+		
+		obj = new person(max, min);
+		
 	}
 	break;
 
@@ -790,12 +803,14 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 		}
 		else if (game->IsKeyDown(DIK_LEFT))
 		{
+			
 			mario->SetState(MARIO_STATE_WALKING_LEFT);
 			mario->isPressed = true;
 		}
 		else
 		{
-			mario->SetState(MARIO_STATE_IDLE);
+			if (mario->vy == 0)
+				mario->SetState(MARIO_STATE_IDLE);
 		}
 	}
 
@@ -825,17 +840,19 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 
 	if (game->IsKeyDown(DIK_S))
 	{
-		if (mario->level == MARIO_LEVEL_TAIL)
-			mario->isWagging = true;
+		/*if (mario->level == MARIO_LEVEL_TAIL)
+			mario->isWagging = true;*/
+		
 
 		if (Game::GetInstance()->GetCurrentSceneId() == 3)
 		{
 			Game::GetInstance()->SwitchScene(1);
 		}
+		
 	}
 	else
 	{
-		mario->isWagging = false;
+		//mario->isWagging = false;
 	}
 
 	if (game->IsKeyDown(DIK_DOWN) && game->GetCurrentSceneId() != 3)

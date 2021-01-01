@@ -14,13 +14,15 @@
 
 class IntroScene: public Scene
 {
+	static IntroScene* instance;
+
 protected:
 	Mario* player1;
 	Mario* player2;
 	Koopas* koopasGreen;
 	Koopas* koopasBlack;
 	Goomba* goomba;
-	Leaf* leaf;
+	Leaf* leaf;	
 
 	vector<LPGAMEOBJECT> objects;
 	vector<LPGAMEOBJECT> background;
@@ -29,6 +31,10 @@ protected:
 	DWORD time_start;
 	bool isStart = false;
 
+	DWORD time_switch = 0;
+	int Switchable = 0;
+	int isSwitch = 2;
+
 	void ParseSection_TEXTURES(string line);
 	void ParseSection_SPRITES(string line);
 	void ParseSection_ANIMATIONS(string line);
@@ -36,6 +42,7 @@ protected:
 	void ParseSection_OBJECTS(string line);
 
 public:
+	static IntroScene* GetInstance(int id, LPCWSTR filePath);
 	IntroScene(int id, LPCWSTR filePath);
 
 	virtual void Load();
@@ -47,9 +54,12 @@ public:
 	Mario* GetPlayer1() { return player1; }
 	Mario* GetPlayer2() { return player2; }
 
-	int addition = 10;
+	int addition = 11;
 	bool isHiden = false;
 	bool isChangeMap = false;
+	bool swichScene = false;
+
+	void SwitchScene() { Switchable = 1; time_switch = GetTickCount(); }
 };
 
 class IntroSceneKeyHandler :public ScenceKeyHandler

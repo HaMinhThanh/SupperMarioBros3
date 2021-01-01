@@ -6,7 +6,7 @@
 
 #include "BrickColor.h"
 
-#define MARIO_WALKING_SPEED		0.15f 
+#define MARIO_WALKING_SPEED		0.1f 
 #define MARIO_WALKING_MAX_SPEED	0.15f
 
 //0.1f
@@ -100,6 +100,9 @@
 
 #define MARIO_ANI_COLLISION_MUSHROOM		57
 
+#define MARIO_ANI_SPEED_UP_RIGHT			58
+#define MARIO_ANI_SPEED_UP_LEFT				59
+
 
 #define	MARIO_LEVEL_SMALL	1
 #define	MARIO_LEVEL_BIG		2
@@ -119,6 +122,7 @@
 #define MARIO_TAIL_BBOX_WIDTH  23
 #define MARIO_TAIL_BBOX_HEIGHT 27
 #define MARIO_TAIL_SWING_BBOX_WIDTH	34
+#define MARIO_TAIL_SWING_BBOX_WIDTH_LEFT 9
 
 #define MARIO_CROUCH_BBOX_HEIGHT	18
 
@@ -175,6 +179,9 @@ public:
 
 	bool isCollisionWithMushroom;
 
+	//
+	bool isSpeedUp;
+
 public:
 
 	bool isTurnToSmall;
@@ -205,6 +212,11 @@ public:
 
 	bool isMomentum;
 
+	bool isDecreaseX;
+	bool isDecreaseY;
+	bool isTurnBackX;
+	bool isTurnBackY;
+
 	static Mario* GetInstance(float x, float y);
 	Mario(float x = 0.0f, float y = 0.0f);
 
@@ -220,7 +232,7 @@ public:
 	void StartFlyable() { isFlying = true; flyable_start = GetTickCount(); level = MARIO_LEVEL_FLY; }
 	void StartMomentum() { isMomentum = true; momentable = 1; momentable_start = GetTickCount(); }
 	void StartKick() { isAllowKick = true; kicking = 1; kicking_start = GetTickCount(); }
-	void StartSwing() { swing = 1; swing_start = GetTickCount(); }
+	void StartSwing() { isDecreaseX = true; swing = 1; swing_start = GetTickCount(); }
 	void StartCollisionWithMushroom() { isCollisionWithMushroom = true; collisWithMushroom = 1; collisWithMushroom_start = GetTickCount(); }
 
 	void Reset();

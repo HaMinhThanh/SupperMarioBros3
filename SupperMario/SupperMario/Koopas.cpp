@@ -149,27 +149,27 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x += min_tx * dx;// +nx * 0.04f;
 		y += min_ty * dy + ny * 0.04f;
 
-		/*if (nx > 0) {
+		if (nx > 0) {
 			SetState(KOOPAS_STATE_WALKING_RIGHT);
 		}
 		else if (nx < 0) {
 			SetState(KOOPAS_STATE_WALKING_LEFT);
-		}*/
+		}
 
 	}
 	for (UINT i = 0; i < coEvents.size(); i++)
 		delete coEvents[i];
 
-	if (vx < 0 && x < 0)
-	{
-		x = 0;
-		vx = -vx;
-	}
-	if (vx > 0 && x > 320)
-	{
-		x = 320;
-		//vx = -vx;
-	}
+	//if (vx < 0 && x < 0)
+	//{
+	//	x = 0;
+	//	vx = -vx;
+	//}
+	//if (vx > 0 && x > 320)
+	//{
+	//	x = 320;
+	//	//vx = -vx;
+	//}
 }
 
 void Koopas::Render()
