@@ -5,6 +5,19 @@
 ParaGoomba::ParaGoomba()
 {
 	SetState(PARAGOOMBA_STATE_WING);
+
+	time_walking = 0;
+	walking = 0;
+
+	time_jumping = 0;
+	jumping = 0;
+
+	time_momenting = 0;
+	momentable = 0;
+
+	isWalking = false;
+	isJumping = false;
+	isMomentable = false;
 }
 
 void ParaGoomba::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -33,6 +46,62 @@ void ParaGoomba::GetBoundingBox(float& left, float& top, float& right, float& bo
 
 void ParaGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (GetTickCount() - time_walking > PARAGOOMBA_TIME_WALKING)
+	{
+		time_walking = 0;
+		walking = 0;
+
+		isMomentable = true;		
+	}
+
+	if (GetTickCount() - time_momenting > PARAGOOMBA_TIME_MOMENT)
+	{
+		time_momenting = 0;
+		momentable = 0;
+
+		isJumping = true;
+	}
+
+	if (GetTickCount() - time_jumping > PARAGOOMBA_TIME_JUMPING)
+	{
+		time_jumping = 0;
+		jumping = 0;
+	}
+
+
+	if (walking == 1)
+	{
+		vy = 0;
+	}
+
+
+	if (momentable == 1)
+	{
+		vy = -0.05f;
+	}
+
+
+	if (jumping == 1)
+	{
+		vy = -0.1f;
+	}
+
+	if (isWalking)
+	{
+		StartWalking();
+		isWalking = false;
+	}
+	else if (isMomentable)
+	{
+		StartMoment();
+		isMomentable = false;
+	}
+	else if (isJumping)
+	{
+		StartJumping();
+		isJumping = false;
+	}
+
 	GameObject::Update(dt, coObjects);
 
 	vy += PARAGOOMBA_GRAVITY * dt;
@@ -58,24 +127,45 @@ void ParaGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	else
 	{
-		if (state == PARAGOOMBA_STATE_WING)
-			vy = -0.1f;
+		vy = -0.1f;
+		/*if (isJumping)
+		{
+			if (state == PARAGOOMBA_STATE_WING)
+				vy = -0.1f;
+
+				isJumping = false;
+		}*/
 
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx, rdy;
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		x += min_tx * dx + nx * 0.04f;
-		y += min_ty * dy + ny * 0.04f;
+		//if (ny != 0)vy = 0;
 
+		x += min_tx * dx + nx * 0.04f;
+		y += min_ty * dy + ny * 0.04f;		
+
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			if (nx != 0)
+			{
+				nx = -nx;
+				vx = -vx;
+			}
+		}
+
+		if (ny != 0)
+		{
+			isWalking = true;
+		}
 	}
 	for (UINT i = 0; i < coEvents.size(); i++)
 		delete coEvents[i];
 
-	if (vx < 0 && x < 624)
+	if (vx < 0 && x < 672)
 	{
-		x = 624;
+		x = 672;
 		vx = -vx;
 	}
 	if (vx > 0 && x > 1088)

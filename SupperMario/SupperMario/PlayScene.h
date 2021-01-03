@@ -72,6 +72,8 @@ public:
 	void checkCollisionWithItem();
 	void checkCollisionWithEnemy();
 	void checkCollisionWithBrick();
+	void checkCollisionEnemyWithBrick();
+	void checkCollisionEnemyWithEnemy();
 
 	void useFireBall();
 

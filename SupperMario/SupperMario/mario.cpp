@@ -117,6 +117,19 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		y -= 10;
 	}
 
+	if (isAllowSwing)
+	{
+		isAllowHold = false;
+		isAllowMoment = false;
+	}
+
+	if (isHoldingItem)
+	{
+		isAllowMoment = false;
+		isFlying = false;
+		momentable = 0;
+	}
+
 	GameObject::Update(dt);
 
 	if (Game::GetInstance()->GetCurrentSceneId() != 3)

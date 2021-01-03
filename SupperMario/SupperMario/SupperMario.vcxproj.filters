@@ -139,7 +139,7 @@
       <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="person.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -240,7 +240,7 @@
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="person.h">
-      <Filter>Header Files</Filter>
+      <Filter>Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

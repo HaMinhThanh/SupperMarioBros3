@@ -144,7 +144,7 @@ void GameObject::FilterCollisionKoopa(
 			ny = c->ny;
 			min_iy = i;
 			rdy = c->dy;
-		}
+		}		
 	}
 
 	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);

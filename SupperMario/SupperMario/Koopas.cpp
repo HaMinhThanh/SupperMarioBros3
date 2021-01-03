@@ -10,7 +10,8 @@ Koopas::Koopas(float x, float y, int level)
 	SetPosition(x, y);
 	this->level = level;
 	isWait = false;
-	SetState(KOOPAS_STATE_WALKING_RIGHT);
+	//SetState(KOOPAS_STATE_WALKING_RIGHT);
+	vx = 0.025f;
 }
 
 void Koopas::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -123,9 +124,15 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	Bricks.clear();
 
 	for (UINT i = 0; i < coObjects->size(); i++)
-		if (dynamic_cast<Brick*>(coObjects->at(i)) || dynamic_cast<BrickColor*>(coObjects->at(i))
-			|| dynamic_cast<BrickGold*>(coObjects->at(i)) || dynamic_cast<BrickQuesion*>(coObjects->at(i)))
+	{
+		if (dynamic_cast<Brick*>(coObjects->at(i)) 
+			|| dynamic_cast<BrickColor*>(coObjects->at(i))
+			|| dynamic_cast<BrickGold*>(coObjects->at(i)) 
+			|| dynamic_cast<BrickQuesion*>(coObjects->at(i)))
+		{
 			Bricks.push_back(coObjects->at(i));
+		}
+	}
 
 	vector<LPCOLLISIONEVENT>  coEvents;
 	vector<LPCOLLISIONEVENT>  coEventsResult;
@@ -139,22 +146,85 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x += dx;
 		y += dy;
 	}
-	else if (isFinish == false)
+	else 
 	{
+		if (level == KOOPAS_LEVEL_WING)
+		{
+			vy = -0.3f;
+		}
+
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx, rdy;
+
+		float max = 0, min = 999999999;
+
+		float l, t, r, b;
+		float l1, t1, r1, b1;
+		GetBoundingBox(l1, t1, r1, b1);
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 		x += min_tx * dx;// +nx * 0.04f;
 		y += min_ty * dy + ny * 0.04f;
 
-		if (nx > 0) {
-			SetState(KOOPAS_STATE_WALKING_RIGHT);
+		if (ny != 0)
+		{
+			if (level < KOOPAS_LEVEL_WING)
+			{
+				vy = 0;
+			}			
 		}
-		else if (nx < 0) {
-			SetState(KOOPAS_STATE_WALKING_LEFT);
+
+		for (UINT i = 0; i < coEvents.size(); i++)
+		{
+			
+			coEvents[i]->obj->GetBoundingBox(l, t, r, b);
+
+			if (r > max)
+			{
+				max = r;
+			}
+			if (l < min)
+			{
+				min = l;
+			}
+
 		}
+
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			if (nx != 0 && ny == 0)
+			{
+				nx = -nx;
+				vx = -vx;
+			}
+		}
+
+		if (nx > 0 && vx < 0 && ny == 0)
+		{
+			//vx = 0.05f;
+		}
+		else if (nx < 0 && vx>0 && ny == 0)
+		{
+			//vx = -0.05f;
+		}
+
+		if (level >= KOOPAS_LEVEL_NORMAL)
+		{
+			if (r1 - 10 > max && vx > 0)
+			{
+				//x = max;
+				SetState(KOOPAS_STATE_WALKING_LEFT);
+			}
+			else if (l1 + 10 < min && vx < 0)
+			{
+				//x = min;
+				SetState(KOOPAS_STATE_WALKING_RIGHT);
+			}
+		}
+
+		min = 0;
+		max = 9999999;
 
 	}
 	for (UINT i = 0; i < coEvents.size(); i++)
@@ -178,32 +248,37 @@ void Koopas::Render()
 
 	int state = this->GetState();
 
-	if (level == KOOPAS_LEVEL_WING) {
+	if (level == KOOPAS_LEVEL_WING) 
+	{
 		if (vx > 0)
 			ani = KOOPAS_ANI_WING_RIGHT;
 		else
 			ani = KOOPAS_ANI_WING_LEFT;
 	}
-	else if (level == KOOPAS_LEVEL_NORMAL) {
+	else if (level == KOOPAS_LEVEL_NORMAL) 
+	{
 		if (vx > 0)
 			ani = KOOPAS_ANI_NORMAL_RIGHT;
 		else
 			ani = KOOPAS_ANI_NORMAL_LEFT;
 	}
-	else if (level == KOOPAS_LEVEL_DIE_DOWN) {
+	else if (level == KOOPAS_LEVEL_DIE_DOWN) 
+	{
 		if (vx == 0)
 			ani = KOOPAS_ANI_DIE_DOWN;
 		else
 			ani = KOOPAS_ANI_DIE_RUNNING_DOWN;
 	}
-	else if (level == KOOPAS_LEVEL_DIE_UP) {
+	else if (level == KOOPAS_LEVEL_DIE_UP) 
+	{
 		if (vx == 0)
 			ani = KOOPAS_ANI_DIE_UP;
 		else
 			ani = KOOPAS_ANI_DIE_RUNNING_UP;
 	}
 
-	if (isWait) {
+	if (isWait) 
+	{
 		if (level == KOOPAS_LEVEL_DIE_DOWN)
 			ani = KOOPAS_ANI_WAIT_DOWN;
 		else if (level == KOOPAS_LEVEL_DIE_UP)
@@ -219,11 +294,13 @@ void Koopas::Render()
 void Koopas::SetState(int state)
 {
 	GameObject::SetState(state);
+
 	switch (state)
 	{
 	case KOOPAS_STATE_WALKING_RIGHT:
+
 		if (level == KOOPAS_LEVEL_DIE_DOWN || level == KOOPAS_LEVEL_DIE_UP) {
-			vx = KOOPAS_WALKING_SPEED + 0.02f;
+			vx = KOOPAS_DIE_SPEED ;
 		}
 		else {
 			vx = KOOPAS_WALKING_SPEED;
@@ -231,16 +308,21 @@ void Koopas::SetState(int state)
 		break;
 
 	case KOOPAS_STATE_WALKING_LEFT:
+
 		if (level == KOOPAS_LEVEL_DIE_DOWN || level == KOOPAS_LEVEL_DIE_UP) {
-			vx = -(KOOPAS_WALKING_SPEED + 0.02f);
+			vx = -(KOOPAS_DIE_SPEED);
 		}
 		else {
 			vx = -KOOPAS_WALKING_SPEED;
 		}
 		break;
 	case KOOPAS_STATE_IDLE:
+
 		if (level == KOOPAS_LEVEL_DIE_UP)
-			vy = -0.4;
+		{
+			vy = -0.5;
+		}
+			
 		vx = 0;
 
 		//StartWaitToNormal();

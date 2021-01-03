@@ -438,12 +438,12 @@ void IntroScene::Update(DWORD dt)
 				koopasBlack = kp;
 			}
 		}
-		if (GetTickCount() - time_start > 5300 && GetTickCount() - time_start < 6500)
+		if (GetTickCount() - time_start > 5300 && GetTickCount() - time_start < 6050)
 		{
 			if (player1->isCollisionWithItem(koopasGreen))
 			{
 				koopasGreen->vy = -0.05f;
-				koopasGreen->vx = -0.2f;
+				koopasGreen->vx = -0.05f;
 
 				player1->StartCollisionWithMushroom();
 			}

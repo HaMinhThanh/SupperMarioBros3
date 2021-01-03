@@ -18,6 +18,10 @@
 #define PARAGOOMBA_ANI_NORMAL		3
 #define PARAGOOMBA_ANI_DIE			4
 
+#define PARAGOOMBA_TIME_WALKING		1000
+#define PARAGOOMBA_TIME_JUMPING		500
+#define PARAGOOMBA_TIME_MOMENT		200
+
 class ParaGoomba: public GameObject
 {
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
@@ -27,5 +31,22 @@ public:
 
 	ParaGoomba();
 	virtual void SetState(int state);
+
+	DWORD time_walking ;
+	int walking ;
+
+	DWORD time_jumping;
+	int jumping;
+
+	DWORD time_momenting;
+	int momentable;
+
+	bool isJumping;
+	bool isWalking;
+	bool isMomentable;
+
+	void StartWalking() { walking = 1; time_walking = GetTickCount(); }
+	void StartJumping() { jumping = 1; time_jumping = GetTickCount(); }
+	void StartMoment() { momentable = 1; time_momenting = GetTickCount(); }
 };
 

@@ -130,7 +130,7 @@
 #define MARIO_FLY_TIME			4000	
 #define MARIO_MOMENTUM_TIME		2000
 #define MARIO_KICKING_TIME		200
-#define MARIO_SWING_TIME		400
+#define MARIO_SWING_TIME		300
 
 
 class Mario: public GameObject
