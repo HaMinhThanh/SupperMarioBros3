@@ -10,9 +10,12 @@
 #define PARAGOOMBA_BBOX_WIDTH_NORMAL	16
 #define PARAGOOMBA_BBOX_HEIGHT_NORMAL	16
 
-#define PARAGOOMBA_STATE_WING		1
-#define PARAGOOMBA_STATE_NORMAL		2
-#define PARAGOOMBA_STATE_DIE		9
+#define PARAGOOMBA_LEVEL_WING		1
+#define PARAGOOMBA_LEVEL_NORMAL		2
+#define PARAGOOMBA_LEVEL_DIE		9
+
+#define PARAGOOMBA_STATE_WALKING_RIGHT	1
+#define PARAGOOMBA_STATE_WALKING_LEFT	2
 
 #define PARAGOOMBA_ANI_WING			2
 #define PARAGOOMBA_ANI_NORMAL		3
@@ -40,6 +43,11 @@ public:
 
 	DWORD time_momenting;
 	int momentable;
+
+	bool isDie = false;
+
+	int level;
+	void SetLevel(int l) { level = l; }
 
 	bool isJumping;
 	bool isWalking;

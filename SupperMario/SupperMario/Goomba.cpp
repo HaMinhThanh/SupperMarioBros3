@@ -1,9 +1,21 @@
 #include "Goomba.h"
 #include "PlayScene.h"
 
-Goomba::Goomba()
+Goomba::Goomba(float max, float min)
 {
-	SetState(GOOMBA_STATE_WALKING);	
+	maxX = max;
+	minX = min;
+
+	//SetState(GOOMBA_STATE_WALKING);	
+	vx = -0.025f;
+
+	time_die = 0;
+	_die = 0;
+
+	time_fly = 0;
+	_fly = 0;
+
+	isFinish = false;
 }
 
 void Goomba::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -23,9 +35,23 @@ void Goomba::GetBoundingBox(float& left, float& top, float& right, float& bottom
 
 void Goomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (_die == 1)
+	{
+		if (GetTickCount() - time_die > GOOMBA_TIME_DIE)
+		{
+			time_die = 0;
+			_die = 0;
+
+			isFinish = true;
+		}
+	}
+
 	GameObject::Update(dt, coObjects);
 
-	vy += KOOPAS_GRAVITY * dt;
+	if (state != GOOMBA_STATE_DIE)
+	{
+		vy += KOOPAS_GRAVITY * dt;
+	}	
 
 	vector<LPGAMEOBJECT> Bricks;
 	Bricks.clear();
@@ -80,16 +106,7 @@ void Goomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				min = l;
 			}
-		}
-
-		if (nx > 0 && vx < 0 && ny == 0)
-		{
-			vx = 0.025f;
-		}
-		else if (nx < 0 && vx>0 && ny == 0)
-		{
-			vx = -0.025f;
-		}
+		}		
 
 		if (x + 16 > max && vx > 0)
 		{
@@ -102,26 +119,40 @@ void Goomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vx = 0.025f;
 		}
 
-		x += min_tx * dx + nx * 0.04f;
+		x += min_tx * dx;// +nx * 0.04f;
 		y += min_ty * dy + ny * 0.04f;
 		
 	}
 	for (UINT i = 0; i < coEvents.size(); i++)
 		delete coEvents[i];
 
-	
+	if (x >= maxX) 
+	{	
+		x = maxX;
+		vx = -vx;
+	}
+	else if (x <= minX)
+	{
+		x = minX;
+		vx = -vx;
+	}
 }
 
 void Goomba::Render()
 {
 	int ani = GOOMBA_ANI_WALKING;
-	if (state == GOOMBA_STATE_DIE) 
+
+	if (isFinish == false)
 	{
-		animation_set->at(ani)->Render(x, y);
-	}
-	else
-	{
-		animation_set->at(ani)->Render(x, y);
+		if (_die == 1)
+		{
+			ani = GOOMBA_ANI_DIE;
+			animation_set->at(ani)->Render(x, y);
+		}
+		else
+		{
+			animation_set->at(ani)->Render(x, y);
+		}
 	}
 	
 }
@@ -134,8 +165,9 @@ void Goomba::SetState(int state)
 	case GOOMBA_STATE_DIE:
 		y += GOOMBA_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE + 1;
 		vx = 0;
-		vy = -0.5f;
-		this->SetId(-1);
+		
+		StartDie();
+		
 		break;
 	case GOOMBA_STATE_WALKING:
 		vx = -GOOMBA_WALKING_SPEED;

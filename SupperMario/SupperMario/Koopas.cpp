@@ -5,13 +5,20 @@
 #include "BrickGold.h"
 #include "mario.h"
 
-Koopas::Koopas(float x, float y, int level)
+Koopas::Koopas(float x, float y, int lvl, int t)
 {
 	SetPosition(x, y);
-	this->level = level;
+	level = lvl;
+	type = t;
 	isWait = false;
 	//SetState(KOOPAS_STATE_WALKING_RIGHT);
-	vx = 0.025f;
+	vx = -0.025f;
+
+	backupX = x;
+	backupY = y;
+
+	jumping = 0;
+	time_jumping = 0;
 }
 
 void Koopas::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -58,76 +65,39 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//	vy = -0.3;
 	//}
 
-	//GameObject::Update(dt, coObjects);
 
-	////vy += KOOPAS_GRAVITY * dt;
-
-	//vector<LPGAMEOBJECT> Bricks;
-	//Bricks.clear();
-
-	//for (UINT i = 0; i < coObjects->size(); i++)
-	//	if (dynamic_cast<Brick*>(coObjects->at(i)) || dynamic_cast<BrickColor*>(coObjects->at(i))
-	//		|| dynamic_cast<BrickGold*>(coObjects->at(i)) || dynamic_cast<BrickQuesion*>(coObjects->at(i)))
-	//		Bricks.push_back(coObjects->at(i));
-
-	//vector<LPCOLLISIONEVENT>  coEvents;
-	//vector<LPCOLLISIONEVENT>  coEventsResult;
-
-	//coEvents.clear();
-
-	//CalcPotentialCollisions(&Bricks, coEvents);
-
-	//if (coEvents.size() == 0)
-	//{
-	//	x += dx;
-	//	y += dy;
-	//}
-	//else
-	//{
-	//	float min_tx, min_ty, nx = 0, ny;
-	//	float rdx, rdy;
-
-	//	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-
-	//	x += min_tx * dx + nx * 0.04f;
-	//	y += min_ty * dy + ny * 0.04f;
-
-	//	if (nx != 0) {
-	//		//vx = -vx;
-	//	}
-
-	//}
-
-
-	//if (vx < 0 && x < 1152)
-	//{
-	//	//SetState(KOOPAS_STATE_WALKING_RIGHT);
-	//	x = 1152;
-	//	vx = KOOPAS_WALKING_SPEED;
-	//}
-	//if (vx > 0 && x > 1488)
-	//{
-	//	SetState(KOOPAS_STATE_WALKING_LEFT);
-	//	//vx *= -1;
-	//}
 	if (isFinish)
 	{
 		vy = 0.2f;
 		vx = 0.05f;
 	}
 
+	if (jumping == 1)
+	{
+		if (GetTickCount() - time_jumping > 500)
+		{
+			jumping = 0;
+			time_jumping = 0;
+		}
+	}
+
+	if (jumping == 1)
+	{
+		vy = -0.05f;
+	}
+
 	GameObject::Update(dt, coObjects);
 
-	vy += KOOPAS_GRAVITY * dt;
+	vy += KOOPAS_GRAVITY * dt;	
 
 	vector<LPGAMEOBJECT> Bricks;
 	Bricks.clear();
 
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
-		if (dynamic_cast<Brick*>(coObjects->at(i)) 
+		if (dynamic_cast<Brick*>(coObjects->at(i))
 			|| dynamic_cast<BrickColor*>(coObjects->at(i))
-			|| dynamic_cast<BrickGold*>(coObjects->at(i)) 
+			|| dynamic_cast<BrickGold*>(coObjects->at(i))
 			|| dynamic_cast<BrickQuesion*>(coObjects->at(i)))
 		{
 			Bricks.push_back(coObjects->at(i));
@@ -141,17 +111,13 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	CalcPotentialCollisions(&Bricks, coEvents);
 
-	if (coEvents.size() == 0|| isFinish)
+	if (coEvents.size() == 0 || isFinish)
 	{
 		x += dx;
 		y += dy;
 	}
-	else 
+	else
 	{
-		if (level == KOOPAS_LEVEL_WING)
-		{
-			vy = -0.3f;
-		}
 
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx, rdy;
@@ -169,26 +135,52 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		if (ny != 0)
 		{
-			if (level < KOOPAS_LEVEL_WING)
+			if (level == KOOPAS_LEVEL_WING)
+			{
+				StartJumping();
+			}
+			else
 			{
 				vy = 0;
-			}			
+			}
 		}
 
 		for (UINT i = 0; i < coEvents.size(); i++)
 		{
-			
-			coEvents[i]->obj->GetBoundingBox(l, t, r, b);
-
-			if (r > max)
+			if (dynamic_cast<BrickColor*>(coEvents[i]->obj))
 			{
-				max = r;
-			}
-			if (l < min)
-			{
-				min = l;
-			}
+				if (type == 2)
+				{
+					coEvents[i]->obj->GetBoundingBox(l, t, r, b);
 
+					if (r > max)
+					{
+						max = r;
+					}
+					if (l < min)
+					{
+						min = l;
+					}
+				}
+				else
+				{
+					min = 0;
+					max = 9999999;
+				}
+			}
+			else
+			{
+				coEvents[i]->obj->GetBoundingBox(l, t, r, b);
+
+				if (r > max && t1 < t)
+				{
+					max = r;
+				}
+				if (l < min && t1 < t)
+				{
+					min = l;
+				}
+			}
 		}
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
@@ -211,7 +203,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		if (level >= KOOPAS_LEVEL_NORMAL)
 		{
-			if (r1 - 10 > max && vx > 0)
+			if (r1 - 10 > max && vx > 0 )
 			{
 				//x = max;
 				SetState(KOOPAS_STATE_WALKING_LEFT);
@@ -220,6 +212,12 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				//x = min;
 				SetState(KOOPAS_STATE_WALKING_RIGHT);
+
+				if (level == KOOPAS_LEVEL_WING)
+				{
+					SetPosition(1424, 250);
+					SetState(KOOPAS_STATE_WALKING_LEFT);
+				}
 			}
 		}
 
@@ -230,16 +228,10 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	for (UINT i = 0; i < coEvents.size(); i++)
 		delete coEvents[i];
 
-	//if (vx < 0 && x < 0)
-	//{
-	//	x = 0;
-	//	vx = -vx;
-	//}
-	//if (vx > 0 && x > 320)
-	//{
-	//	x = 320;
-	//	//vx = -vx;
-	//}
+	if (y > 1000 && level== KOOPAS_LEVEL_WING)
+	{
+		SetPosition(backupX, backupY);
+	}
 }
 
 void Koopas::Render()
@@ -248,28 +240,28 @@ void Koopas::Render()
 
 	int state = this->GetState();
 
-	if (level == KOOPAS_LEVEL_WING) 
+	if (level == KOOPAS_LEVEL_WING)
 	{
 		if (vx > 0)
 			ani = KOOPAS_ANI_WING_RIGHT;
 		else
 			ani = KOOPAS_ANI_WING_LEFT;
 	}
-	else if (level == KOOPAS_LEVEL_NORMAL) 
+	else if (level == KOOPAS_LEVEL_NORMAL)
 	{
 		if (vx > 0)
 			ani = KOOPAS_ANI_NORMAL_RIGHT;
 		else
 			ani = KOOPAS_ANI_NORMAL_LEFT;
 	}
-	else if (level == KOOPAS_LEVEL_DIE_DOWN) 
+	else if (level == KOOPAS_LEVEL_DIE_DOWN)
 	{
 		if (vx == 0)
 			ani = KOOPAS_ANI_DIE_DOWN;
 		else
 			ani = KOOPAS_ANI_DIE_RUNNING_DOWN;
 	}
-	else if (level == KOOPAS_LEVEL_DIE_UP) 
+	else if (level == KOOPAS_LEVEL_DIE_UP)
 	{
 		if (vx == 0)
 			ani = KOOPAS_ANI_DIE_UP;
@@ -277,7 +269,7 @@ void Koopas::Render()
 			ani = KOOPAS_ANI_DIE_RUNNING_UP;
 	}
 
-	if (isWait) 
+	if (isWait)
 	{
 		if (level == KOOPAS_LEVEL_DIE_DOWN)
 			ani = KOOPAS_ANI_WAIT_DOWN;
@@ -300,7 +292,7 @@ void Koopas::SetState(int state)
 	case KOOPAS_STATE_WALKING_RIGHT:
 
 		if (level == KOOPAS_LEVEL_DIE_DOWN || level == KOOPAS_LEVEL_DIE_UP) {
-			vx = KOOPAS_DIE_SPEED ;
+			vx = KOOPAS_DIE_SPEED;
 		}
 		else {
 			vx = KOOPAS_WALKING_SPEED;
@@ -322,7 +314,7 @@ void Koopas::SetState(int state)
 		{
 			vy = -0.5;
 		}
-			
+
 		vx = 0;
 
 		//StartWaitToNormal();

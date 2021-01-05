@@ -74,6 +74,7 @@ public:
 	void checkCollisionWithBrick();
 	void checkCollisionEnemyWithBrick();
 	void checkCollisionEnemyWithEnemy();
+	void checkEndScene();
 
 	void useFireBall();
 
@@ -82,8 +83,15 @@ public:
 
 	Mario* GetPlayer() { return mario; }
 
-	bool isCollision;
-	bool isNotDie;
+	bool isCollision = false;
+	//bool isNotDie;
+	//bool isEndScene = false;
+
+	DWORD time_endscene = 0;
+	int endscene = 0;
+	int addtext = 3;
+
+	void StartEndScene() { endscene = 1; time_endscene = GetTickCount(); }
 	
 };
 

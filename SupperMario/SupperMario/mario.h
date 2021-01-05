@@ -181,6 +181,7 @@ public:
 
 	//
 	bool isSpeedUp;
+	bool isComeUp = false;
 
 public:
 

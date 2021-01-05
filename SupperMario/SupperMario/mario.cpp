@@ -63,13 +63,20 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		isTurnToTail = false;
 	}
 
+	if (isComeUp)
+	{
+		SetPosition(2325, 350);
+
+		isComeUp = false;
+	}
+
 	if (isAutoGo)
 		SetState(MARIO_STATE_WALKING_RIGHT);
 
-	if (x >= 2816 && isAutoGo) {
+	/*if (x >= 2816 && isAutoGo) {
 		isAutoGo = false;
 		Reset();
-	}
+	}*/
 
 	if (vy == 0 && isFlying == false)
 		isJumping = true;
@@ -563,24 +570,20 @@ void Mario::changeAni()
 					SetAni(MARIO_ANI_BIG_WALKING_RIGHT);
 				else SetAni(MARIO_ANI_BIG_WALKING_LEFT);
 			}
-
-			else if (vy < 0) {
+			else if (vy < 0) 
+			{
 				if (vx > 0 || nx > 0)
 				{
 					SetAni(MARIO_ANI_BIG_JUMPING_RIGHT);
 				}
 				else SetAni(MARIO_ANI_BIG_JUMPING_LEFT);
 			}
-
-
-			else if (vy > 0 && noCollision == true) {
+			else if (vy > 0 ) {
 
 				if (vx > 0 || nx > 0)
 				{
 					SetAni(MARIO_ANI_BIG_FALLING_RIGHT);
-
 				}
-
 				else SetAni(MARIO_ANI_BIG_FALLING_LEFT);
 			}
 			else {

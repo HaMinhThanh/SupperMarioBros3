@@ -20,6 +20,7 @@
 170	textures\mario2.png	68	145	190
 180	textures\enemies-6.png	64	144	192
 190	textures\enemies-7.png	64	144	192
+200	textures\misc2.png	176	224	248
 
 # id	left	top	right	bottom	texture_id
 
@@ -251,6 +252,7 @@
 80013	390	189	406	205	20
 # LEAF
 80007	300	208	316	222	20
+80017	323	208	339	222	200
 # Mushroom
 80008	300	189	316	205	20
 
@@ -522,6 +524,7 @@
 912	80000	100	80001	100	80002	100	80003	100
 # Leaf
 913	80007	100
+9131	80017	100
 # Mushroom
 914	80008	100
 # Chữ P khi bay
@@ -592,7 +595,7 @@
 # fire
 35	912
 # Leaf
-36	913
+36	913	9131
 # Mushroom
 37	914
 # Mushroom fake

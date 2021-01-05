@@ -127,6 +127,8 @@ public:
 		float& ny,
 		float& rdx,
 		float& rdy);
+
+	bool isCollisionWithObject(LPGAMEOBJECT obj);
 	
 	GameObject();
 

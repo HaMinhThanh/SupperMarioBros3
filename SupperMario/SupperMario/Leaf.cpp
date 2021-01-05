@@ -34,7 +34,15 @@ void Leaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void Leaf::Render()
 {
 	if (isFinish) return;
-	animation_set->at(0)->Render(x, y);
+
+	if (vx < 0)
+	{
+		animation_set->at(0)->Render(x, y);
+	}	
+	else
+	{
+		animation_set->at(1)->Render(x, y);
+	}
 	
 }
 

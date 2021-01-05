@@ -3,6 +3,7 @@
 #include "BrickQuesion.h"
 #include "BrickGold.h"
 #include "BrickColor.h"
+#include "BrickGreen.h"
 #include "mario.h"
 
 Mushroom::Mushroom()
@@ -16,7 +17,7 @@ Mushroom::~Mushroom()
 
 }
 
-void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects) 
+void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (start) {
 		Mario* mario = Mario::GetInstance(0, 0);
@@ -30,8 +31,8 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			vx = 0.05f;
 		}
 		start = false;
-	}	
-	
+	}
+
 	GameObject::Update(dt, coObjects);
 
 	vy += MUSHROOM_GRAVITY * dt;
@@ -40,8 +41,10 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	Bricks.clear();
 
 	for (UINT i = 0; i < coObjects->size(); i++)
-		if (dynamic_cast<Brick*>(coObjects->at(i)) || dynamic_cast<BrickColor*>(coObjects->at(i))
-			|| dynamic_cast<BrickGold*>(coObjects->at(i)) || dynamic_cast<BrickQuesion*>(coObjects->at(i)))
+		if (dynamic_cast<Brick*>(coObjects->at(i)) 
+			|| dynamic_cast<BrickColor*>(coObjects->at(i))
+			|| dynamic_cast<BrickGold*>(coObjects->at(i)) 			
+			|| dynamic_cast<BrickGreen*>(coObjects->at(i)))
 			Bricks.push_back(coObjects->at(i));
 
 	vector<LPCOLLISIONEVENT>  coEvents;
@@ -67,10 +70,24 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		x += min_tx * dx +nx * 0.04f;
 		y += min_ty * dy + ny * 0.04f;
 
-		if (nx != 0 && ny==0) {
-			vx = -vx;
-		}
+		for (int i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
 
+			if (nx != 0 && ny == 0)
+			{
+				nx = -nx;
+				vx = -vx;
+			}
+
+			if (this->isCollisionWithObject(e->obj))
+			{
+				if (dynamic_cast<BrickGreen*>(e->obj))
+				{
+					vx *= -1;
+				}
+			}
+		}
 	}
 	for (UINT i = 0; i < coEvents.size(); i++)
 		delete coEvents[i];

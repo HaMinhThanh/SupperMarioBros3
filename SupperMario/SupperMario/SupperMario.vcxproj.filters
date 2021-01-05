@@ -31,11 +31,14 @@
     <Filter Include="Objects\Player">
       <UniqueIdentifier>{505501f4-befa-4e36-898b-4f4dbc116948}</UniqueIdentifier>
     </Filter>
-    <Filter Include="HUD">
-      <UniqueIdentifier>{aa3aa857-3611-4ae8-acd0-845f8176e3ce}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Framework\SceneManager">
       <UniqueIdentifier>{eb7fe5d7-e3eb-4c71-8302-2f83b95a1077}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\BackGround">
+      <UniqueIdentifier>{b770c61a-36b3-43b0-8c98-4c949bd7c5b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\HUD">
+      <UniqueIdentifier>{aa3aa857-3611-4ae8-acd0-845f8176e3ce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -93,9 +96,6 @@
     <ClCompile Include="Mushroom.cpp">
       <Filter>Objects\Item</Filter>
     </ClCompile>
-    <ClCompile Include="HidenWall.cpp">
-      <Filter>Objects\Brick</Filter>
-    </ClCompile>
     <ClCompile Include="Star.cpp">
       <Filter>Objects\Item</Filter>
     </ClCompile>
@@ -118,10 +118,10 @@
       <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="HUD.cpp">
-      <Filter>HUD</Filter>
+      <Filter>Framework\HUD</Filter>
     </ClCompile>
     <ClCompile Include="Event.cpp">
-      <Filter>HUD</Filter>
+      <Filter>Framework\HUD</Filter>
     </ClCompile>
     <ClCompile Include="IntroScene.cpp">
       <Filter>Framework\SceneManager</Filter>
@@ -140,6 +140,12 @@
     </ClCompile>
     <ClCompile Include="person.cpp">
       <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="BrickGreen.cpp">
+      <Filter>Objects\Brick</Filter>
+    </ClCompile>
+    <ClCompile Include="HidenWall.cpp">
+      <Filter>Objects\BackGround</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -197,9 +203,6 @@
     <ClInclude Include="Mushroom.h">
       <Filter>Objects\Item</Filter>
     </ClInclude>
-    <ClInclude Include="HidenWall.h">
-      <Filter>Objects\Brick</Filter>
-    </ClInclude>
     <ClInclude Include="Star.h">
       <Filter>Objects\Item</Filter>
     </ClInclude>
@@ -219,10 +222,10 @@
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="HUD.h">
-      <Filter>HUD</Filter>
+      <Filter>Framework\HUD</Filter>
     </ClInclude>
     <ClInclude Include="Event.h">
-      <Filter>HUD</Filter>
+      <Filter>Framework\HUD</Filter>
     </ClInclude>
     <ClInclude Include="IntroScene.h">
       <Filter>Framework\SceneManager</Filter>
@@ -241,6 +244,12 @@
     </ClInclude>
     <ClInclude Include="person.h">
       <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="BrickGreen.h">
+      <Filter>Objects\Brick</Filter>
+    </ClInclude>
+    <ClInclude Include="HidenWall.h">
+      <Filter>Objects\BackGround</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

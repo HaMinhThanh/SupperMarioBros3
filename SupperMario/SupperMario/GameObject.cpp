@@ -1,4 +1,4 @@
-#include <d3dx9.h>
+﻿#include <d3dx9.h>
 #include <algorithm>
 
 #include "Game.h"
@@ -256,4 +256,26 @@ void GameObject::ReSetAnimationSet(int re)
 	delete this->animation_set;
 
 	this->SetAnimationSet(ani_set);
+}
+
+bool GameObject::isCollisionWithObject(LPGAMEOBJECT obj)
+{
+
+	if (obj->GetFinish() == true)
+	{
+		return false;
+	}
+
+	float l, t, r, b;
+	float l1, t1, r1, b1;
+
+	this->GetBoundingBox(l, t, r, b);		// lấy BBOX của mario
+	obj->GetBoundingBox(l1, t1, r1, b1);	// lấy BBOX của item
+
+	if (Game::GetInstance()->checkAABB(l, t, r, b, l1, t1, r1, b1) == true)
+	{
+		return true; // check with AABB
+	}
+
+	return false;
 }

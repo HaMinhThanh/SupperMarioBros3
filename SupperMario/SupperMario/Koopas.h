@@ -4,7 +4,7 @@
 
 #define KOOPAS_WALKING_SPEED 0.03f
 #define KOOPAS_GRAVITY 0.01f
-#define KOOPAS_DIE_SPEED	0.1f
+#define KOOPAS_DIE_SPEED	0.2f
 
 #define KOOPAS_BBOX_WIDTH 16
 #define KOOPAS_BBOX_HEIGHT 26
@@ -41,14 +41,18 @@ public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
 public:
-	Koopas(float x,float y,int level);
+	Koopas(float x,float y,int level, int type);
 	virtual void SetState(int state);
+
+	float backupX;
+	float backupY;
 
 	bool isDie;
 
 	int ani_set;
 
 	int level;
+	int type;
 	void SetLevel(int l) { level = l; }
 
 	bool isWait;
@@ -56,6 +60,11 @@ public:
 
 	int isWaiting;
 	DWORD isWaiting_start;
+
+	int jumping;
+	DWORD time_jumping;
+
+	void StartJumping() { jumping = 1; time_jumping = GetTickCount(); }
 	void StartWaitToNormal() { isWaiting = 1; isWaiting_start = GetTickCount(); }
 
 };

@@ -181,12 +181,12 @@ void IntroScene::ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_KOOPAS_GREEN:
 		level = atof(tokens[4].c_str());
-		obj = new Koopas(x, y, level);
+		obj = new Koopas(x, y, level,1);
 		//koopasGreen = (Koopas*)obj;
 		break;
 	case OBJECT_TYPE_KOOPAS_RED:
 		level = atof(tokens[4].c_str());
-		obj = new Koopas(x, y, level);
+		obj = new Koopas(x, y, level,2);
 		//koopasBlack = (Koopas*)obj;
 		break;
 	case OBJECT_TYPE_GOOMBA:
@@ -414,7 +414,7 @@ void IntroScene::Update(DWORD dt)
 			// Koopa
 			if (addition == 6)
 			{
-				Koopas* kp = new Koopas(160, 0, 2);
+				Koopas* kp = new Koopas(160, 0, 2,1);
 				kp->vy = 0.2f;
 				kp->SetState(KOOPAS_STATE_IDLE);
 				kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
@@ -427,7 +427,7 @@ void IntroScene::Update(DWORD dt)
 
 			if (addition == 5)
 			{
-				Koopas* kp = new Koopas(220, 0, 2);
+				Koopas* kp = new Koopas(220, 0, 2,1);
 				kp->vy = 0.2f;
 				kp->SetState(KOOPAS_STATE_IDLE);
 				kp->SetAnimationSet(AnimationSets::GetInstance()->Get(311));
@@ -711,7 +711,7 @@ void IntroScene::Update(DWORD dt)
 			HidenWall* arrow = new HidenWall(90, 157, 0, 40);
 			objects.push_back(arrow);
 
-			Koopas* kp = new Koopas(0, 170, 3);
+			Koopas* kp = new Koopas(0, 170, 3,1);
 			kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
 			kp->SetState(KOOPAS_STATE_WALKING_RIGHT);
 			kp->vx = 0.04f;
@@ -723,7 +723,7 @@ void IntroScene::Update(DWORD dt)
 	if (GetTickCount() - time_start > 27000)
 	{
 		if (addition == 3) {
-			Koopas* kp = new Koopas(0, 170, 3);
+			Koopas* kp = new Koopas(0, 170, 3,1);
 			kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
 			kp->SetState(KOOPAS_STATE_WALKING_RIGHT);
 			kp->vx = 0.04f;
@@ -735,7 +735,7 @@ void IntroScene::Update(DWORD dt)
 	if (GetTickCount() - time_start > 28000)
 	{
 		if (addition == 2) {
-			Koopas* kp = new Koopas(0, 170, 3);
+			Koopas* kp = new Koopas(0, 170, 3, 1);
 			kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
 			kp->SetState(KOOPAS_STATE_WALKING_RIGHT);
 			kp->vx = 0.04f;
@@ -747,7 +747,7 @@ void IntroScene::Update(DWORD dt)
 	if (GetTickCount() - time_start > 33000)
 	{
 		if (addition == 1) {
-			Koopas* kp = new Koopas(0, 170, 3);
+			Koopas* kp = new Koopas(0, 170, 3,1);
 			kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
 			kp->SetState(KOOPAS_STATE_WALKING_RIGHT);
 			kp->vx = 0.08f;
