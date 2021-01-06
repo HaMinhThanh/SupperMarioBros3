@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Brick.cpp" />
+    <ClCompile Include="BrickBreak.cpp" />
     <ClCompile Include="BrickColor.cpp" />
     <ClCompile Include="BrickGold.cpp" />
     <ClCompile Include="BrickGreen.cpp" />
@@ -186,6 +187,7 @@
   <ItemGroup>
     <ClInclude Include="Animations.h" />
     <ClInclude Include="Brick.h" />
+    <ClInclude Include="BrickBreak.h" />
     <ClInclude Include="BrickColor.h" />
     <ClInclude Include="BrickGold.h" />
     <ClInclude Include="BrickGreen.h" />

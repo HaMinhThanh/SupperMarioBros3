@@ -40,6 +40,9 @@
     <Filter Include="Framework\HUD">
       <UniqueIdentifier>{aa3aa857-3611-4ae8-acd0-845f8176e3ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\Effect">
+      <UniqueIdentifier>{898348e8-8edc-431e-bb66-e2ed6e86f3f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sprites.cpp">
@@ -147,6 +150,9 @@
     <ClCompile Include="HidenWall.cpp">
       <Filter>Objects\BackGround</Filter>
     </ClCompile>
+    <ClCompile Include="BrickBreak.cpp">
+      <Filter>Objects\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprites.h">
@@ -250,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="HidenWall.h">
       <Filter>Objects\BackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="BrickBreak.h">
+      <Filter>Objects\Effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

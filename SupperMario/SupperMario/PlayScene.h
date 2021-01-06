@@ -43,8 +43,10 @@ public:
 	vector<LPGAMEOBJECT> Enemy;	
 	vector<LPGAMEOBJECT> Weapon;
 	vector<LPGAMEOBJECT> Bicks;
+	vector<LPGAMEOBJECT> Effect;
 
 	vector<LPGAMEOBJECT> Nodes;
+
 	Node* currentNode = NULL;
 
 	std::map<int, bool> keys;

@@ -1,5 +1,2 @@
-﻿  Mushroom.cpp
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\Mushroom.cpp(11,19): warning C4353: nonstandard extension used: constant 0 as function expression.  Use '__noop' function intrinsic instead
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\Mushroom.cpp(66,41): warning C4305: 'initializing': truncation from 'int' to 'float'
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\Mushroom.cpp(73,21): warning C4018: '<': signed/unsigned mismatch
+﻿  BrickBreak.cpp
   SupperMario.vcxproj -> C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\Debug\SupperMario.exe

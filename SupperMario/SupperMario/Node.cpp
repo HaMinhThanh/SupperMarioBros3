@@ -1,10 +1,12 @@
 #include "Node.h"
 
-Node::Node(float x, float y, int l, int t, int r, int b)
+Node::Node(float x, float y, int l, int t, int r, int b, int tp)
 {
 	isFinish = false;
 
 	SetPosition(x, y);
+
+	type = tp;
 
 	if (l == 0)
 		this->left = false;

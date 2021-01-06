@@ -48,83 +48,92 @@ void Goomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	GameObject::Update(dt, coObjects);
 
-	if (state != GOOMBA_STATE_DIE)
-	{
-		vy += KOOPAS_GRAVITY * dt;
-	}	
-
-	vector<LPGAMEOBJECT> Bricks;
-	Bricks.clear();
-
-	for (UINT i = 0; i < coObjects->size(); i++)
-	{
-		if (dynamic_cast<Brick*>(coObjects->at(i))
-			|| dynamic_cast<BrickColor*>(coObjects->at(i))
-			|| dynamic_cast<BrickGold*>(coObjects->at(i))
-			|| dynamic_cast<BrickQuesion*>(coObjects->at(i)))
-		{
-			Bricks.push_back(coObjects->at(i));
-		}
-	}
-
-	vector<LPCOLLISIONEVENT>  coEvents;
-	vector<LPCOLLISIONEVENT>  coEventsResult;
-
-	coEvents.clear();
-
-	CalcPotentialCollisions(&Bricks, coEvents);
-
-	if (coEvents.size() == 0)
+	
+	if (Game::GetInstance()->GetCurrentSceneId() != 4)
 	{
 		x += dx;
 		y += dy;
 	}
-	
 	else
 	{
+		if (state != GOOMBA_STATE_DIE)
+	{
+		vy += KOOPAS_GRAVITY * dt;
+	}	
+	
+		vector<LPGAMEOBJECT> Bricks;
+		Bricks.clear();
 
-		float min_tx, min_ty, nx = 0, ny;
-		float rdx, rdy;
+		for (UINT i = 0; i < coObjects->size(); i++)
+		{
+			if (dynamic_cast<Brick*>(coObjects->at(i))
+				|| dynamic_cast<BrickColor*>(coObjects->at(i))
+				|| dynamic_cast<BrickGold*>(coObjects->at(i))
+				|| dynamic_cast<BrickQuesion*>(coObjects->at(i)))
+			{
+				Bricks.push_back(coObjects->at(i));
+			}
+		}
 
-		float max=0, min=999999999;
+		vector<LPCOLLISIONEVENT>  coEvents;
+		vector<LPCOLLISIONEVENT>  coEventsResult;
 
-		float l, t, r, b;
+		coEvents.clear();
+
+		CalcPotentialCollisions(&Bricks, coEvents);
+
+		if (coEvents.size() == 0)
+		{
+			x += dx;
+			y += dy;
+		}
+
+		else
+		{
+
+			float min_tx, min_ty, nx = 0, ny;
+			float rdx, rdy;
+
+			float max = 0, min = 999999999;
+
+			float l, t, r, b;
 
 
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+			FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		if (ny != 0)vy = 0;
+			if (ny != 0)vy = 0;
 
+			for (UINT i = 0; i < coEvents.size(); i++)
+			{
+				coEvents[i]->obj->GetBoundingBox(l, t, r, b);
+				if (r > max)
+				{
+					max = r;
+				}
+				if (l < min)
+				{
+					min = l;
+				}
+			}
+
+			if (x + 16 > max && vx > 0)
+			{
+				//x = max;
+				vx = -0.025f;
+			}
+			else if (x < min && vx < 0)
+			{
+				//x = min;
+				vx = 0.025f;
+			}
+
+			x += min_tx * dx;// +nx * 0.04f;
+			y += min_ty * dy + ny * 0.04f;
+
+		}
 		for (UINT i = 0; i < coEvents.size(); i++)
-		{
-			coEvents[i]->obj->GetBoundingBox(l, t, r, b);
-			if (r> max)
-			{
-				max = r;
-			}
-			if (l < min)
-			{
-				min = l;
-			}
-		}		
-
-		if (x + 16 > max && vx > 0)
-		{
-			//x = max;
-			vx = -0.025f;
-		}
-		else if (x < min && vx < 0)
-		{
-			//x = min;
-			vx = 0.025f;
-		}
-
-		x += min_tx * dx;// +nx * 0.04f;
-		y += min_ty * dy + ny * 0.04f;
-		
+			delete coEvents[i];
 	}
-	for (UINT i = 0; i < coEvents.size(); i++)
-		delete coEvents[i];
 
 	if (x >= maxX) 
 	{	

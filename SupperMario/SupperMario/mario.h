@@ -58,6 +58,7 @@
 #define MARIO_ANI_TAIL_FALLING_RIGHT		23
 #define MARIO_ANI_TAIL_FALLING_LEFT			24
 
+// Kick koopa
 #define MARIO_ANI_BIG_KICK_RIGHT			25
 #define MARIO_ANI_BIG_KICK_LEFT				26
 #define MARIO_ANI_SMALL_KICK_RIGHT			27
@@ -65,6 +66,7 @@
 #define MARIO_ANI_TAIL_KICK_RIGHT			29
 #define MARIO_ANI_TAIL_KICK_LEFT			30
 
+// Hold Koopa
 #define MARIO_ANI_IDLE_BIG_HOLD_RIGHT		31
 #define MARIO_ANI_IDLE_BIG_HOLD_LEFT		32
 #define MARIO_ANI_IDLE_TAIL_HOLD_RIGHT		33
@@ -74,25 +76,31 @@
 #define MARIO_ANI_WALKING_TAIL_HOLD_RIGHT	37
 #define MARIO_ANI_WALKING_TAIL_HOLD_LEFT	38
 
+// Swing
 #define MARIO_ANI_SWING_RIGHT				39
 #define MARIO_ANI_SWING_LEFT				40	
 
+// Fire level
 #define MARIO_ANI_IDLE_FIRE_RIGHT			41
 #define MARIO_ANI_IDLE_FIRE_LEFT			42
 #define MARIO_ANI_WALKING_FIRE_RIGHT		43
 #define MARIO_ANI_WALKING_FIRE_LEFT			44
 
+// Fly
 #define MARIO_ANI_FLY_RIGHT					45
 #define MARIO_ANI_FLY_LEFT					46
 #define MARIO_ANI_BE_FALL_RIGHT				47
 #define MARIO_ANI_BE_FALL_LEFT				48
 
+// Jumping
 #define MARIO_ANI_JUMPING_FIRE_RIGHT		49
 #define MARIO_ANI_JUMPING_FIRE_LEFT			50
 
+// Wagging
 #define MARIO_ANI_WAGGING_RIGHT				51
 #define MARIO_ANI_WAGGING_LEFT				52
 
+// Crouch
 #define MARIO_ANI_BIG_CROUCH_RIGHT			53
 #define MARIO_ANI_BIG_CROUCH_LEFT			54
 #define MARIO_ANI_TAIL_CROUCH_RIGHT			55
@@ -100,8 +108,17 @@
 
 #define MARIO_ANI_COLLISION_MUSHROOM		57
 
+// Speed up
 #define MARIO_ANI_SPEED_UP_RIGHT			58
 #define MARIO_ANI_SPEED_UP_LEFT				59
+
+// Mario Drift Ani
+#define MARIO_ANI_SMALL_DRIFT_RIGHT			60
+#define MARIO_ANI_SMALL_DRIFT_LEFT			61
+#define MARIO_ANI_BIG_DRIFT_RIGHT			62
+#define MARIO_ANI_BIG_DRIFT_LEFT			63
+#define MARIO_ANI_TAIL_DRIFT_RIGHT			64
+#define MARIO_ANI_TAIL_DRIFT_LEFT			65
 
 
 #define	MARIO_LEVEL_SMALL	1
@@ -253,6 +270,8 @@ public:
 
 	void SetHodingItem(LPGAMEOBJECT item);
 
+	void CollisionWithEnemy(DWORD dt, vector<LPGAMEOBJECT>& coObjects);
+
 	bool allowMoveLeft;
 	bool allowMoveRight;
 
@@ -277,5 +296,12 @@ public:
 	bool isGoRight;
 
 	bool isNoWeight;
+	bool isCollision = false;
+
+	bool isDrift = false;
+	DWORD time_drift;
+	int drift;
+
+	void StartDrift() { isDrift = true; drift = 1; time_drift = GetTickCount(); }
 };
 

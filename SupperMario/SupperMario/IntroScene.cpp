@@ -370,6 +370,8 @@ void IntroScene::Update(DWORD dt)
 				mr->SetPosition(50, 0);
 				objects.push_back(mr);
 				addition -= 1;
+
+				mr1 = mr;
 			}
 
 			// Goomba
@@ -379,6 +381,7 @@ void IntroScene::Update(DWORD dt)
 				gb->vx = 0;
 				gb->SetAnimationSet(AnimationSets::GetInstance()->Get(4));
 				gb->SetPosition(100, 0);
+				//gb->vy = 0.02f;
 				objects.push_back(gb);
 				addition -= 1;
 
@@ -406,7 +409,15 @@ void IntroScene::Update(DWORD dt)
 				st->SetPosition(280, 0);
 				objects.push_back(st);
 				addition -= 1;
+				
+				mr2 = st;
 			}
+		}
+		
+		if (GetTickCount() - time_start > 5200)
+		{
+			mr1->vx = -0.03f;
+			mr2->vx = 0.03f;
 		}
 
 		if (GetTickCount() - time_start > 5200)
@@ -446,7 +457,7 @@ void IntroScene::Update(DWORD dt)
 				koopasGreen->vx = -0.05f;
 
 				player1->StartCollisionWithMushroom();
-			}
+			}			
 		}
 
 		if (GetTickCount() - time_start > 6050 && GetTickCount() - time_start < 6500)
@@ -474,6 +485,7 @@ void IntroScene::Update(DWORD dt)
 
 				player1->isJumping = false;
 				player1->isWagging = true;
+				player1->vy = 0.0000001f;
 
 			}
 		}
@@ -510,8 +522,13 @@ void IntroScene::Update(DWORD dt)
 
 		if (GetTickCount() - time_start > 10300)
 		{
+			//player1->StartDrift();
 			player1->vx = 0;
 			player1->nx = 1;
+		}
+		if (GetTickCount() - time_start > 10300 && GetTickCount() - time_start < 10400)
+		{
+			player1->StartDrift();
 		}
 
 		if (GetTickCount() - time_start > 11000 && GetTickCount() - time_start < 12000)
@@ -689,12 +706,13 @@ void IntroScene::Update(DWORD dt)
 
 			if (GetTickCount() - time_start > 22100)
 			{
-				player1->vx = 0;
 				isHiden = true;
+				player1->vx = 0;
+				player1->nx = -1;				
 			}
 
 			if (GetTickCount() - time_start > 23000)
-			{
+			{				
 				player1->vx = 0.15f;
 			}
 		}
@@ -707,9 +725,7 @@ void IntroScene::Update(DWORD dt)
 
 	if (GetTickCount() - time_start > 26000)
 	{
-		if (addition == 4) {
-			HidenWall* arrow = new HidenWall(90, 157, 0, 40);
-			objects.push_back(arrow);
+		if (addition == 4) {		
 
 			Koopas* kp = new Koopas(0, 170, 3,1);
 			kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
@@ -723,6 +739,9 @@ void IntroScene::Update(DWORD dt)
 	if (GetTickCount() - time_start > 27000)
 	{
 		if (addition == 3) {
+			HidenWall* arrow = new HidenWall(90, 157, 0, 40);
+			objects.push_back(arrow);
+
 			Koopas* kp = new Koopas(0, 170, 3,1);
 			kp->SetAnimationSet(AnimationSets::GetInstance()->Get(31));
 			kp->SetState(KOOPAS_STATE_WALKING_RIGHT);

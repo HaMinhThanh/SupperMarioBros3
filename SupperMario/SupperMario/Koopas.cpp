@@ -3,7 +3,12 @@
 #include "BrickColor.h"
 #include "BrickQuesion.h"
 #include "BrickGold.h"
+
 #include "mario.h"
+#include "Goomba.h"
+#include "ParaGoomba.h"
+#include "Venus.h"
+#include "PlayScene.h"
 
 Koopas::Koopas(float x, float y, int lvl, int t)
 {
@@ -130,6 +135,47 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
+
+			if (nx != 0 && ny == 0)
+			{
+				nx = -nx;
+				vx = -vx;
+			}
+
+			if (dynamic_cast<BrickColor*>(e->obj))
+			{
+				BrickColor* b = dynamic_cast<BrickColor*>(e->obj);
+
+				nx = 0;
+
+				if (e->ny == 1)
+				{
+					ny = 0;
+				}
+			}
+			else if (dynamic_cast<BrickQuesion*>(e->obj))
+			{
+
+			}
+			else if (dynamic_cast<BrickGold*>(e->obj))
+			{
+				/*if (nx != 0 )
+				{
+					dynamic_cast<BrickGold*>(e->obj)->isFinish = true;
+
+					
+
+					if (vx > 0)
+						SetState(KOOPAS_STATE_WALKING_LEFT);
+					else if (vx < 0)
+						SetState(KOOPAS_STATE_WALKING_RIGHT);
+				}*/
+			}
+		}
+
 		x += min_tx * dx;// +nx * 0.04f;
 		y += min_ty * dy + ny * 0.04f;
 
@@ -180,15 +226,6 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					min = l;
 				}
-			}
-		}
-
-		for (UINT i = 0; i < coEventsResult.size(); i++)
-		{
-			if (nx != 0 && ny == 0)
-			{
-				nx = -nx;
-				vx = -vx;
 			}
 		}
 

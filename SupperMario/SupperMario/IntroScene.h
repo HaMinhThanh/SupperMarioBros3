@@ -23,6 +23,8 @@ protected:
 	Koopas* koopasBlack;
 	Goomba* goomba;
 	Leaf* leaf;	
+	Mushroom* mr1;
+	Mushroom* mr2;
 
 	vector<LPGAMEOBJECT> objects;
 	vector<LPGAMEOBJECT> background;

@@ -25,17 +25,10 @@ void Button::Render()
 
 void Button::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	if (isFinish = false)
+	if (isFinish == false)
 	{
 		left = x;
 		top = y;
-		right = left + BUTTON_BBOX_WIDTH;
-		bottom = top + BUTTON_BBOX_HEIGHT;
-	}
-	else
-	{
-		left = x;
-		top = y + BUTTON_BBOX_WIDTH / 4;
 		right = left + BUTTON_BBOX_WIDTH;
 		bottom = top + BUTTON_BBOX_HEIGHT;
 	}
