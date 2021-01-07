@@ -569,11 +569,12 @@ void PlayScene::Update(DWORD dt)
 	{
 		Items[i]->Update(dt, &coObjects);
 	}
-
-	for (int i = 0; i < Nodes.size(); i++)
-	{
-		Nodes[i]->Update(dt, &coObjects);
-	}
+	if (Game::GetInstance()->GetCurrentSceneId() == 3)
+		for (int i = 0; i < Nodes.size(); i++)
+		{
+			Nodes[i]->Update(dt, &coObjects);
+		}
+	checkCollisionWithEnemy();
 
 	for (size_t i = 0; i < coObjects.size(); i++)
 	{
@@ -629,7 +630,7 @@ void PlayScene::Update(DWORD dt)
 
 	HUD->Update(dt);
 
-	//checkCollisionWithEnemy();
+	
 	checkCollisionWithBrick();
 	checkCollisionWithItem();
 	checkCollisionEnemyWithBrick();
@@ -683,11 +684,11 @@ void PlayScene::Render()
 	{
 		Weapon[i]->Render();
 	}
-
-	for (int i = 0; i < Nodes.size(); i++)
-	{
-		Nodes[i]->Render();
-	}
+	if (Game::GetInstance()->GetCurrentSceneId() == 3)
+		for (int i = 0; i < Nodes.size(); i++)
+		{
+			Nodes[i]->Render();
+		}
 
 	for (int i = 0; i < Effect.size(); i++)
 	{
@@ -738,10 +739,14 @@ void PlayScene::Unload()
 	Enemy.clear();
 	BackGround.clear();
 	Weapon.clear();
+	Nodes.clear();
 	Effect.clear();
 
 	mario = NULL;
-	delete mario;
+	delete mario;	
+
+	HUD = NULL;
+	delete HUD;
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
@@ -1076,13 +1081,13 @@ void PlayScene::checkCollisionWithEnemy()
 				goomba->SetState(GOOMBA_STATE_DIE);
 			}
 
-			if (mario->isCollisionWithItem(goomba) && (r < goomba->y))
+			/*if (mario->isCollisionWithItem(goomba) && (r < goomba->y))
 			{
 				mario->score += 100;
 
 				goomba->SetState(GOOMBA_STATE_DIE);
 				mario->vy = -MARIO_JUMP_DEFLECT_SPEED;
-			}
+			}*/
 
 			if (e->t > 0 && e->t <= 1) {
 
@@ -1139,9 +1144,12 @@ void PlayScene::checkCollisionWithEnemy()
 
 
 			if (mario->isAllowHold && dynamic_cast<Koopas*>(obj)->GetState() == KOOPAS_STATE_IDLE
-				&& mario->isCollisionWithItem(dynamic_cast<Koopas*>(obj)))
+				&& mario->isCollisionWithItem(dynamic_cast<Koopas*>(obj))
+				&& dynamic_cast<Koopas*>(obj)->level< KOOPAS_LEVEL_NORMAL)
 			{
 				mario->isHoldingItem = true;
+
+				dynamic_cast<Koopas*>(obj)->isWaiting = 0;
 
 				if (mario->isHoldingItem)
 				{
@@ -1169,7 +1177,7 @@ void PlayScene::checkCollisionWithEnemy()
 				}
 			}
 
-			if (mario->isCollisionWithItem(dynamic_cast<Koopas*>(obj)) && (r <= dynamic_cast<Koopas*>(obj)->y))
+			/*if (mario->isCollisionWithItem(dynamic_cast<Koopas*>(obj)) && (r <= dynamic_cast<Koopas*>(obj)->y))
 			{
 				mario->score += 100;
 				mario->vy = -MARIO_JUMP_DEFLECT_SPEED;
@@ -1199,7 +1207,7 @@ void PlayScene::checkCollisionWithEnemy()
 						dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_LEFT);
 					}
 				}
-			}
+			}*/
 
 			if (e->t > 0 && e->t <= 1) {
 
@@ -1276,7 +1284,7 @@ void PlayScene::checkCollisionWithEnemy()
 				para->SetLevel(PARAGOOMBA_LEVEL_DIE);
 			}
 
-			if (mario->isCollisionWithItem(para) && mario->y < para->y + 16)
+			/*if (mario->isCollisionWithItem(para) && mario->y < para->y + 16)
 			{
 				mario->score += 100;
 				if (para->level != PARAGOOMBA_LEVEL_DIE)
@@ -1289,7 +1297,7 @@ void PlayScene::checkCollisionWithEnemy()
 					mario->vy = -MARIO_JUMP_DEFLECT_SPEED;
 					para->vy = 0;
 				}
-			}
+			}*/
 
 			if (e->t > 0 && e->t <= 1) {
 
@@ -1307,6 +1315,10 @@ void PlayScene::checkCollisionWithEnemy()
 						mario->vy = -MARIO_JUMP_DEFLECT_SPEED;
 					}
 
+				}
+				else if (e->ny > 0)
+				{
+					
 				}
 				else if (e->nx != 0)
 				{
@@ -1620,7 +1632,10 @@ void PlayScene::checkCollisionEnemyWithBrick()
 					else if (dynamic_cast<BrickGold*>(Objects[i]) )
 					{
 						BrickGold* bg = dynamic_cast<BrickGold*>(Objects[i]);
-						dynamic_cast<BrickGold*>(Objects[i])->isFinish = true;
+
+						if (bg->item == 0)
+							dynamic_cast<BrickGold*>(Objects[i])->isFinish = true;
+
 						BrickBreak* bb = new BrickBreak(bg->x, bg->y);						
 						bb->StartRender();
 						Effect.push_back(bb);

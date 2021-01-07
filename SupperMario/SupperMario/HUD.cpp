@@ -37,16 +37,20 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	Mario* mario = Mario::GetInstance(0, 0);
 
-	if (mario->numItem == 1) {
+	if (mario->numItem == 1) 
+	{
 		it1 = mario->GetItem();
 	}
-	else if (mario->numItem == 2) {
+	else if (mario->numItem == 2) 
+	{
 		it2 = mario->GetItem();
 	}
-	else if (mario->numItem == 3) {
+	else if (mario->numItem == 3) 
+	{
 		it3 = mario->GetItem();
 	}
-	else if (mario->numItem > 3) {
+	else if (mario->numItem > 3) 
+	{
 		it1 = it2 = it3 = -1;
 		mario->numItem -= 3;
 	}

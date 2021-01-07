@@ -72,17 +72,17 @@ void BrickBreak::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			x3 = x - 15;
 			x4 = x + 15;
 
-			y1 = y - 20;
-			y2 = y - 20;
+			y1 = y - 22;
+			y2 = y - 22;
 			y3 = y - 7;
 			y4 = y - 7;
 		}
 		else if (GetTickCount() - time_render > 250 && GetTickCount() - time_render <= 300)
 		{
-			x1 = x - 23;
-			x2 = x + 23;
-			x3 = x - 23;
-			x4 = x + 23;
+			x1 = x - 20;
+			x2 = x + 20;
+			x3 = x - 20;
+			x4 = x + 20;
 
 			y1 = y - 25;
 			y2 = y - 25;
@@ -91,10 +91,10 @@ void BrickBreak::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		else if (GetTickCount() - time_render > 350 && GetTickCount() - time_render <= 400)
 		{
-			x1 = x - 30;
-			x2 = x + 30;
-			x3 = x - 30;
-			x4 = x + 30;
+			x1 = x - 25;
+			x2 = x + 25;
+			x3 = x - 25;
+			x4 = x + 25;
 
 			y1 = y - 30;
 			y2 = y - 30;

@@ -49,11 +49,14 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (state == MARIO_STATE_DIE)
 	{
-		live--;
-		if (live >= 0) {
+		live -= 1;
+
+		if (live >= 0) 
+		{
 			Reset();
 		}
-		else {
+		else 
+		{
 			return;
 		}
 	}
@@ -129,7 +132,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (isAllowSwing)
 	{
-		isAllowHold = false;
+		//isAllowHold = false;
 		isAllowMoment = false;
 	}
 
@@ -333,7 +336,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			collision_y = false;
 	}
 
-	CollisionWithEnemy(dt, Enemies);
+	//CollisionWithEnemy(dt, Enemies);
 
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 
@@ -820,362 +823,358 @@ void Mario::SetHodingItem(LPGAMEOBJECT item)
 {
 	if (vx > 0 || nx > 0) {
 		item->x = x + MARIO_BIG_BBOX_WIDTH - 3;
-		item->y = y + 8;
+		item->y = y + 6;
 	}
 	else {
 		item->x = x - 8;
-		item->y = y + 8;
+		item->y = y + 6;
 	}
 }
 
-void Mario::CollisionWithEnemy(DWORD dt, vector<LPGAMEOBJECT>& coObjects)
-{
-	float l, t, r, b;
-
-	GetBoundingBox(l, t, r, b);
-
-	if (GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
-	{
-		untouchable_start = 0;
-		untouchable = false;
-	}
-
-	for (UINT i = 0; i < coObjects.size(); i++)
-	{
-		GameObject* obj = dynamic_cast<GameObject*> (coObjects[i]);
-
-		//for (INT i = 0; i < Weapon.size(); i++)
-		//{
-		//	if ((Weapon[i])->GetFinish() == false) {
-
-		//		//FireBall *f= dynamic_cast<FireBall*> (Weapon[i]);
-
-		//		//if ( f->GetFinish()==false) {
-
-		//		LPCOLLISIONEVENT e = obj->SweptAABBEx(Weapon[i]);
-
-		//		if (e->t > 0 && e->t <= 1) {
-		//			isCollision = true;
-		//		}
-		//		//}
-		//	}
-		//}
-
-		if (dynamic_cast<Goomba*>(obj)) // if obj is Goomba 
-		{
-			Goomba* goomba = dynamic_cast<Goomba*>(obj);
-			LPCOLLISIONEVENT e = SweptAABBEx(goomba);
-
-			if (isCollision) {
-				goomba->SetState(GOOMBA_STATE_DIE);
-				isCollision = false;
-			}
-
-			if (isAllowSwing && isCollisionWithItem(goomba)) {
-				goomba->SetState(GOOMBA_STATE_DIE);
-			}
-
-			if (isCollisionWithItem(goomba) && (r < goomba->y))
-			{
-				score += 100;
-
-				goomba->SetState(GOOMBA_STATE_DIE);
-				vy = -MARIO_JUMP_DEFLECT_SPEED;
-			}
-
-			if (e->t > 0 && e->t <= 1) {
-
-				// jump on top >> kill Goomba and deflect a bit 
-				if (e->ny < 0)
-				{
-					score += 100;
-
-					goomba->SetState(GOOMBA_STATE_DIE);
-					vy = -MARIO_JUMP_DEFLECT_SPEED;
-
-				}
-				else if (e->nx != 0)
-				{
-					if (untouchable == 0)
-					{
-						if (goomba->GetState() != GOOMBA_STATE_DIE)
-						{
-							if (level > MARIO_LEVEL_SMALL)
-							{
-								level--;
-								StartUntouchable();
-							}
-							else
-								SetState(MARIO_STATE_DIE);
-						}
-					}
-				}
-				GameObject::Update(dt);
-
-				x += dx;
-				y += dy;
-			}			
-		}
-		else if (dynamic_cast<Koopas*>(obj)) // if e->obj is Koopa 
-		{
-			/*Koopas* koopas = NULL;
-			koopas = dynamic_cast<Koopas*>(obj);*/
-
-			LPCOLLISIONEVENT e = SweptAABBEx(dynamic_cast<Koopas*>(obj));
-
-			if (isCollision)
-			{
-				dynamic_cast<Koopas*>(obj)->level = KOOPAS_LEVEL_DIE_DOWN;
-				dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_IDLE);
-				isCollision = false;
-			}
-
-			if (isAllowSwing && isCollisionWithItem(dynamic_cast<Koopas*>(obj)))
-			{
-				score += 100;
-
-				dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_IDLE);
-				dynamic_cast<Koopas*>(obj)->level = KOOPAS_LEVEL_DIE_UP;
-			}
-
-
-
-			if (isAllowHold && dynamic_cast<Koopas*>(obj)->GetState() == KOOPAS_STATE_IDLE
-				&& isCollisionWithItem(dynamic_cast<Koopas*>(obj)))
-			{
-				isHoldingItem = true;
-
-				if (isHoldingItem)
-				{
-					SetHodingItem(dynamic_cast<Koopas*>(obj));
-
-				}
-			}
-			else  if (dynamic_cast<Koopas*>(obj)->GetState() == KOOPAS_STATE_IDLE
-				&& isAllowHold == false
-				&& isAllowSwing == false
-				&& isCollisionWithItem(dynamic_cast<Koopas*>(obj)))
-			{
-				if (kicking == 0)
-				{
-					StartKick();
-				}
-
-				if (vx > 0 || nx > 0)
-				{
-					dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_RIGHT);
-				}
-				else
-				{
-					dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_LEFT);
-				}
-			}
-
-			if (isCollisionWithItem(dynamic_cast<Koopas*>(obj)) && (r <= dynamic_cast<Koopas*>(obj)->y))
-			{
-				score += 100;
-				vy = -MARIO_JUMP_DEFLECT_SPEED;
-
-				if (dynamic_cast<Koopas*>(obj)->GetState() != KOOPAS_STATE_IDLE)
-				{
-					if (dynamic_cast<Koopas*>(obj)->level == KOOPAS_LEVEL_WING)
-					{
-						dynamic_cast<Koopas*>(obj)->level = KOOPAS_LEVEL_NORMAL;
-					}
-					else if (dynamic_cast<Koopas*>(obj)->level == KOOPAS_LEVEL_NORMAL)
-					{
-						dynamic_cast<Koopas*>(obj)->level = KOOPAS_LEVEL_DIE_DOWN;
-
-						dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_IDLE);
-					}
-
-				}
-				else
-				{
-					if (dynamic_cast<Koopas*>(obj)->x >= x)
-					{
-						dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_RIGHT);
-					}
-					else
-					{
-						dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_LEFT);
-					}
-				}
-			}
-
-			if (e->t > 0 && e->t <= 1) {
-
-				// jump on top >> kill Goomba and deflect a bit 
-				if (e->ny < 0)
-				{
-					score += 100;
-					vy = -MARIO_JUMP_DEFLECT_SPEED;
-
-					if (dynamic_cast<Koopas*>(obj)->GetState() != KOOPAS_STATE_IDLE)
-					{
-						if (dynamic_cast<Koopas*>(obj)->level == KOOPAS_LEVEL_WING)
-						{
-							dynamic_cast<Koopas*>(obj)->level = KOOPAS_LEVEL_NORMAL;
-						}
-						else if (dynamic_cast<Koopas*>(obj)->level == KOOPAS_LEVEL_NORMAL)
-						{
-							dynamic_cast<Koopas*>(obj)->level = KOOPAS_LEVEL_DIE_DOWN;
-						}
-
-						dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_IDLE);
-
-					}
-					else
-					{
-						if (dynamic_cast<Koopas*>(obj)->x >= x)
-						{
-							dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_RIGHT);
-						}
-						else
-						{
-							dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_LEFT);
-						}
-					}
-
-				}
-				else if (e->nx != 0)
-				{
-					if (untouchable == 0)
-					{
-						if (dynamic_cast<Koopas*>(obj)->GetState() != KOOPAS_STATE_IDLE)
-						{
-							if (level > MARIO_LEVEL_SMALL)
-							{
-								level--;
-								StartUntouchable();
-							}
-							else
-							{
-								SetState(MARIO_STATE_DIE);
-							}
-						}
-					}
-				}
-			}
-		}
-		else if (dynamic_cast<ParaGoomba*>(obj)) // if e->obj is Para Goomba
-		{
-			ParaGoomba* para = dynamic_cast<ParaGoomba*>(obj);
-
-			LPCOLLISIONEVENT e = SweptAABBEx(para);
-
-			if (isCollision) {
-				score += 100;
-
-				para->SetLevel(PARAGOOMBA_LEVEL_DIE);
-				isCollision = false;
-			}
-
-			if (isAllowSwing && isCollisionWithItem(para)) {
-				score += 100;
-
-				para->SetLevel(PARAGOOMBA_LEVEL_DIE);
-			}
-
-			if (isCollisionWithItem(para) && y < para->y + 16)
-			{
-				score += 100;
-				if (para->level != PARAGOOMBA_LEVEL_DIE)
-				{
-					if (para->level == PARAGOOMBA_LEVEL_WING)
-						para->SetLevel(PARAGOOMBA_LEVEL_NORMAL);
-					else if (para->level == PARAGOOMBA_LEVEL_NORMAL)
-						para->SetLevel(PARAGOOMBA_LEVEL_DIE);
-
-					vy = -MARIO_JUMP_DEFLECT_SPEED;
-					para->vy = 0;
-				}
-			}
-
-			if (e->t > 0 && e->t <= 1) {
-
-				// jump on top >> kill ParaGoomba and deflect a bit 
-				if (e->ny < 0)
-				{
-					score += 100;
-					if (para->level != PARAGOOMBA_LEVEL_DIE)
-					{
-						if (para->level == PARAGOOMBA_LEVEL_NORMAL)
-							para->SetLevel(PARAGOOMBA_LEVEL_DIE);
-						else if (para->level == PARAGOOMBA_LEVEL_WING)
-							para->SetLevel(PARAGOOMBA_LEVEL_NORMAL);
-
-						vy = -MARIO_JUMP_DEFLECT_SPEED;
-					}
-
-				}
-				else if (e->nx != 0)
-				{
-					if (untouchable == 0)
-					{
-						if (para->level != PARAGOOMBA_LEVEL_DIE)
-						{
-							if (level > MARIO_LEVEL_SMALL)
-							{
-								level--;
-								StartUntouchable();
-							}
-							else
-								SetState(MARIO_STATE_DIE);
-						}
-					}
-				}
-			}
-		}
-		else if (dynamic_cast<Venus*>(obj))
-		{
-			Venus* venus = dynamic_cast<Venus*>(obj);
-			LPCOLLISIONEVENT e = SweptAABBEx(venus);
-
-			if (GetX() == venus->GetX() && GetY() == venus->GetY())
-			{
-				venus->SetState(VENUS_STATE_TOP);
-			}
-			else if (GetX() < venus->GetX())
-			{
-				if (GetY() >= venus->GetY())
-					venus->SetState(VENUS_STATE_BOT_LEFT);
-				else
-					venus->SetState(VENUS_STATE_TOP_LEFT);
-			}
-			else if (GetX() > venus->GetX())
-			{
-				if (GetY() >= venus->GetY())
-					venus->SetState(VENUS_STATE_BOT_RIGHT);
-				else
-					venus->SetState(VENUS_STATE_TOP_RIGHT);
-			}
-
-
-			if (isCollision) {
-				venus->SetState(VENUS_STATE_DIE);
-				isCollision = false;
-			}
-
-			if (e->t > 0 && e->t <= 1) {
-
-				if (untouchable == 0)
-				{
-					if (venus->GetState() != VENUS_STATE_DIE)
-					{
-						if (level > MARIO_LEVEL_SMALL)
-						{
-							level--;
-							StartUntouchable();
-						}
-						else
-							SetState(MARIO_STATE_DIE);
-					}
-				}
-			}
-		}		
-	}
-}
+//void Mario::CollisionWithEnemy(DWORD dt, vector<LPGAMEOBJECT>& coObjects)
+//{
+//	float l, t, r, b;
+//
+//	GetBoundingBox(l, t, r, b);
+//
+//	if (GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
+//	{
+//		untouchable_start = 0;
+//		untouchable = false;
+//	}
+//
+//	for (UINT i = 0; i < coObjects.size(); i++)
+//	{
+//		GameObject* obj = dynamic_cast<GameObject*> (coObjects[i]);
+//
+//		//for (INT i = 0; i < Weapon.size(); i++)
+//		//{
+//		//	if ((Weapon[i])->GetFinish() == false) {
+//
+//		//		//FireBall *f= dynamic_cast<FireBall*> (Weapon[i]);
+//
+//		//		//if ( f->GetFinish()==false) {
+//
+//		//		LPCOLLISIONEVENT e = obj->SweptAABBEx(Weapon[i]);
+//
+//		//		if (e->t > 0 && e->t <= 1) {
+//		//			isCollision = true;
+//		//		}
+//		//		//}
+//		//	}
+//		//}
+//
+//		if (dynamic_cast<Goomba*>(obj)) // if obj is Goomba 
+//		{
+//			Goomba* goomba = dynamic_cast<Goomba*>(obj);
+//			LPCOLLISIONEVENT e = SweptAABBEx(goomba);
+//
+//			if (isCollision) {
+//				goomba->SetState(GOOMBA_STATE_DIE);
+//				isCollision = false;
+//			}
+//
+//			if (isAllowSwing && isCollisionWithItem(goomba)) {
+//				goomba->SetState(GOOMBA_STATE_DIE);
+//			}
+//
+//			if (isCollisionWithItem(goomba) && (r < goomba->y))
+//			{
+//				score += 100;
+//
+//				goomba->SetState(GOOMBA_STATE_DIE);
+//				vy = -MARIO_JUMP_DEFLECT_SPEED;
+//			}
+//
+//			if (e->t > 0 && e->t <= 1) {
+//
+//				// jump on top >> kill Goomba and deflect a bit 
+//				if (e->ny < 0)
+//				{
+//					score += 100;
+//
+//					goomba->SetState(GOOMBA_STATE_DIE);
+//					vy = -MARIO_JUMP_DEFLECT_SPEED;
+//
+//				}
+//				else if (e->nx != 0)
+//				{
+//					if (untouchable == 0)
+//					{
+//						if (goomba->GetState() != GOOMBA_STATE_DIE)
+//						{
+//							if (level > MARIO_LEVEL_SMALL)
+//							{
+//								level--;
+//								StartUntouchable();
+//							}
+//							else
+//								SetState(MARIO_STATE_DIE);
+//						}
+//					}
+//				}
+//			}			
+//		}
+//		else if (dynamic_cast<Koopas*>(obj)) // if e->obj is Koopa 
+//		{
+//			/*Koopas* koopas = NULL;
+//			koopas = dynamic_cast<Koopas*>(obj);*/
+//
+//			LPCOLLISIONEVENT e = SweptAABBEx(dynamic_cast<Koopas*>(obj));
+//
+//			if (isCollision)
+//			{
+//				dynamic_cast<Koopas*>(obj)->level = KOOPAS_LEVEL_DIE_DOWN;
+//				dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_IDLE);
+//				isCollision = false;
+//			}
+//
+//			if (isAllowSwing && isCollisionWithItem(dynamic_cast<Koopas*>(obj)))
+//			{
+//				score += 100;
+//
+//				dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_IDLE);
+//				dynamic_cast<Koopas*>(obj)->level = KOOPAS_LEVEL_DIE_UP;
+//			}
+//
+//
+//
+//			if (isAllowHold && dynamic_cast<Koopas*>(obj)->GetState() == KOOPAS_STATE_IDLE
+//				&& isCollisionWithItem(dynamic_cast<Koopas*>(obj)))
+//			{
+//				isHoldingItem = true;
+//
+//				if (isHoldingItem)
+//				{
+//					SetHodingItem(dynamic_cast<Koopas*>(obj));
+//
+//				}
+//			}
+//			else  if (dynamic_cast<Koopas*>(obj)->GetState() == KOOPAS_STATE_IDLE
+//				&& isAllowHold == false
+//				&& isAllowSwing == false
+//				&& isCollisionWithItem(dynamic_cast<Koopas*>(obj)))
+//			{
+//				if (kicking == 0)
+//				{
+//					StartKick();
+//				}
+//
+//				if (vx > 0 || nx > 0)
+//				{
+//					dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_RIGHT);
+//				}
+//				else
+//				{
+//					dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_LEFT);
+//				}
+//			}
+//
+//			if (isCollisionWithItem(dynamic_cast<Koopas*>(obj)) && (r <= dynamic_cast<Koopas*>(obj)->y))
+//			{
+//				score += 100;
+//				vy = -MARIO_JUMP_DEFLECT_SPEED;
+//
+//				if (dynamic_cast<Koopas*>(obj)->GetState() != KOOPAS_STATE_IDLE)
+//				{
+//					if (dynamic_cast<Koopas*>(obj)->level == KOOPAS_LEVEL_WING)
+//					{
+//						dynamic_cast<Koopas*>(obj)->level = KOOPAS_LEVEL_NORMAL;
+//					}
+//					else if (dynamic_cast<Koopas*>(obj)->level == KOOPAS_LEVEL_NORMAL)
+//					{
+//						dynamic_cast<Koopas*>(obj)->level = KOOPAS_LEVEL_DIE_DOWN;
+//
+//						dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_IDLE);
+//					}
+//
+//				}
+//				else
+//				{
+//					if (dynamic_cast<Koopas*>(obj)->x >= x)
+//					{
+//						dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_RIGHT);
+//					}
+//					else
+//					{
+//						dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_LEFT);
+//					}
+//				}
+//			}
+//
+//			if (e->t > 0 && e->t <= 1) {
+//
+//				// jump on top >> kill Goomba and deflect a bit 
+//				if (e->ny < 0)
+//				{
+//					score += 100;
+//					vy = -MARIO_JUMP_DEFLECT_SPEED;
+//
+//					if (dynamic_cast<Koopas*>(obj)->GetState() != KOOPAS_STATE_IDLE)
+//					{
+//						if (dynamic_cast<Koopas*>(obj)->level == KOOPAS_LEVEL_WING)
+//						{
+//							dynamic_cast<Koopas*>(obj)->level = KOOPAS_LEVEL_NORMAL;
+//						}
+//						else if (dynamic_cast<Koopas*>(obj)->level == KOOPAS_LEVEL_NORMAL)
+//						{
+//							dynamic_cast<Koopas*>(obj)->level = KOOPAS_LEVEL_DIE_DOWN;
+//						}
+//
+//						dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_IDLE);
+//
+//					}
+//					else
+//					{
+//						if (dynamic_cast<Koopas*>(obj)->x >= x)
+//						{
+//							dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_RIGHT);
+//						}
+//						else
+//						{
+//							dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_LEFT);
+//						}
+//					}
+//
+//				}
+//				else if (e->nx != 0)
+//				{
+//					if (untouchable == 0)
+//					{
+//						if (dynamic_cast<Koopas*>(obj)->GetState() != KOOPAS_STATE_IDLE)
+//						{
+//							if (level > MARIO_LEVEL_SMALL)
+//							{
+//								level--;
+//								StartUntouchable();
+//							}
+//							else
+//							{
+//								SetState(MARIO_STATE_DIE);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//		else if (dynamic_cast<ParaGoomba*>(obj)) // if e->obj is Para Goomba
+//		{
+//			ParaGoomba* para = dynamic_cast<ParaGoomba*>(obj);
+//
+//			LPCOLLISIONEVENT e = SweptAABBEx(para);
+//
+//			if (isCollision) {
+//				score += 100;
+//
+//				para->SetLevel(PARAGOOMBA_LEVEL_DIE);
+//				isCollision = false;
+//			}
+//
+//			if (isAllowSwing && isCollisionWithItem(para)) {
+//				score += 100;
+//
+//				para->SetLevel(PARAGOOMBA_LEVEL_DIE);
+//			}
+//
+//			if (isCollisionWithItem(para) && y < para->y + 16)
+//			{
+//				score += 100;
+//				if (para->level != PARAGOOMBA_LEVEL_DIE)
+//				{
+//					if (para->level == PARAGOOMBA_LEVEL_WING)
+//						para->SetLevel(PARAGOOMBA_LEVEL_NORMAL);
+//					else if (para->level == PARAGOOMBA_LEVEL_NORMAL)
+//						para->SetLevel(PARAGOOMBA_LEVEL_DIE);
+//
+//					vy = -MARIO_JUMP_DEFLECT_SPEED;
+//					para->vy = 0;
+//				}
+//			}
+//
+//			if (e->t > 0 && e->t <= 1) {
+//
+//				// jump on top >> kill ParaGoomba and deflect a bit 
+//				if (e->ny < 0)
+//				{
+//					score += 100;
+//					if (para->level != PARAGOOMBA_LEVEL_DIE)
+//					{
+//						if (para->level == PARAGOOMBA_LEVEL_NORMAL)
+//							para->SetLevel(PARAGOOMBA_LEVEL_DIE);
+//						else if (para->level == PARAGOOMBA_LEVEL_WING)
+//							para->SetLevel(PARAGOOMBA_LEVEL_NORMAL);
+//
+//						vy = -MARIO_JUMP_DEFLECT_SPEED;
+//					}
+//
+//				}
+//				else if (e->nx != 0)
+//				{
+//					if (untouchable == 0)
+//					{
+//						if (para->level != PARAGOOMBA_LEVEL_DIE)
+//						{
+//							if (level > MARIO_LEVEL_SMALL)
+//							{
+//								level--;
+//								StartUntouchable();
+//							}
+//							else
+//								SetState(MARIO_STATE_DIE);
+//						}
+//					}
+//				}
+//			}
+//		}
+//		else if (dynamic_cast<Venus*>(obj))
+//		{
+//			Venus* venus = dynamic_cast<Venus*>(obj);
+//			LPCOLLISIONEVENT e = SweptAABBEx(venus);
+//
+//			if (GetX() == venus->GetX() && GetY() == venus->GetY())
+//			{
+//				venus->SetState(VENUS_STATE_TOP);
+//			}
+//			else if (GetX() < venus->GetX())
+//			{
+//				if (GetY() >= venus->GetY())
+//					venus->SetState(VENUS_STATE_BOT_LEFT);
+//				else
+//					venus->SetState(VENUS_STATE_TOP_LEFT);
+//			}
+//			else if (GetX() > venus->GetX())
+//			{
+//				if (GetY() >= venus->GetY())
+//					venus->SetState(VENUS_STATE_BOT_RIGHT);
+//				else
+//					venus->SetState(VENUS_STATE_TOP_RIGHT);
+//			}
+//
+//
+//			if (isCollision) {
+//				venus->SetState(VENUS_STATE_DIE);
+//				isCollision = false;
+//			}
+//
+//			if (e->t > 0 && e->t <= 1) {
+//
+//				if (untouchable == 0)
+//				{
+//					if (venus->GetState() != VENUS_STATE_DIE)
+//					{
+//						if (level > MARIO_LEVEL_SMALL)
+//						{
+//							level--;
+//							StartUntouchable();
+//						}
+//						else
+//							SetState(MARIO_STATE_DIE);
+//					}
+//				}
+//			}
+//		}		
+//	}
+//}
 
 void Mario::LoadItem(int itm)
 {

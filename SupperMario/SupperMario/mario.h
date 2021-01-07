@@ -270,8 +270,6 @@ public:
 
 	void SetHodingItem(LPGAMEOBJECT item);
 
-	void CollisionWithEnemy(DWORD dt, vector<LPGAMEOBJECT>& coObjects);
-
 	bool allowMoveLeft;
 	bool allowMoveRight;
 

@@ -24,6 +24,10 @@ Koopas::Koopas(float x, float y, int lvl, int t)
 
 	jumping = 0;
 	time_jumping = 0;
+
+	isWaiting = 0;
+	isWaiting_start = 0;
+
 }
 
 void Koopas::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -41,40 +45,57 @@ void Koopas::GetBoundingBox(float& left, float& top, float& right, float& bottom
 void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 
-	//if (turnToNormal) {
-	//	y -= 11;
-	//	level = KOOPAS_LEVEL_NORMAL;
-	//	SetState(KOOPAS_STATE_WALKING_LEFT);
-	//	turnToNormal = false;
-	//}
+	if (turnToNormal) {
+		y -= 11;
+		level = KOOPAS_LEVEL_NORMAL;
+		SetState(KOOPAS_STATE_WALKING_LEFT);
+		turnToNormal = false;
+	}
 
-	//if (GetTickCount() - isWaiting_start > KOOPAS_WAIT_TO_NORMAL_TIME)
-	//{
-	//	isWaiting_start = 0;
-	//	isWaiting = 0;
-	//	isWait = false;	
-	//	turnToNormal = true;
-	//}
-	//else if (GetTickCount() - isWaiting_start > KOOPAS_WAIT_TO_NORMAL_TIME / 2)
-	//{
-	//	isWait = true;
-	//}
+	if (level < KOOPAS_LEVEL_NORMAL && Game::GetInstance()->GetCurrentSceneId()==1)
+	{
+		if (isWaiting == 0)
+		{
+			StartWaitToNormal();
+		}
 
-	//if (vx !=0) {
-	//	isWait = false;
-	//	isWaiting_start = 0;
-	//	isWaiting = 0;
-	//}
+		if (isWaiting == 1)
+		{
+			if (GetTickCount() - isWaiting_start > 2500 && GetTickCount() - isWaiting_start <= 5000)
+			{
+				isWait = true;
+			}
+			else if (GetTickCount() - isWaiting_start > 5000)
+			{
+				isWaiting_start = 0;
+				isWaiting = 0;
+				isWait = false;
+				turnToNormal = true;
+			}
+		}
+		else
+		{
+			isWaiting_start = 0;
+			isWaiting = 0;
+			isWait = false;
+			turnToNormal = false;
+		}
 
-	//if (level == KOOPAS_LEVEL_WING) {
-	//	vy = -0.3;
-	//}
-
+		if (vx != 0)
+		{
+			isWait = false;
+			isWaiting_start = 0;
+			isWaiting = 0;
+		}
+	}
+	else
+	{
+		isWaiting = 0;
+	}
 
 	if (isFinish)
 	{
-		vy = 0.2f;
-		vx = 0.05f;
+		
 	}
 
 	if (jumping == 1)
@@ -93,7 +114,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	GameObject::Update(dt, coObjects);
 
-	vy += KOOPAS_GRAVITY * dt;	
+	vy += KOOPAS_GRAVITY * dt;
 
 	vector<LPGAMEOBJECT> Bricks;
 	Bricks.clear();
@@ -156,23 +177,16 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					ny = 0;
 				}
 			}
-			else if (dynamic_cast<BrickQuesion*>(e->obj))
+			else if (dynamic_cast<BrickGold*>(e->obj) ||(dynamic_cast<BrickQuesion*>(e->obj)))
 			{
-
-			}
-			else if (dynamic_cast<BrickGold*>(e->obj))
-			{
-				/*if (nx != 0 )
+				if (e->nx != 0 && level < KOOPAS_LEVEL_NORMAL)
 				{
-					dynamic_cast<BrickGold*>(e->obj)->isFinish = true;
-
-					
-
 					if (vx > 0)
 						SetState(KOOPAS_STATE_WALKING_LEFT);
 					else if (vx < 0)
 						SetState(KOOPAS_STATE_WALKING_RIGHT);
-				}*/
+				}
+
 			}
 		}
 
@@ -240,7 +254,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		if (level >= KOOPAS_LEVEL_NORMAL)
 		{
-			if (r1 - 10 > max && vx > 0 )
+			if (r1 - 10 > max && vx > 0)
 			{
 				//x = max;
 				SetState(KOOPAS_STATE_WALKING_LEFT);
@@ -265,7 +279,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	for (UINT i = 0; i < coEvents.size(); i++)
 		delete coEvents[i];
 
-	if (y > 1000 && level== KOOPAS_LEVEL_WING)
+	if (y > 1000 && level == KOOPAS_LEVEL_WING)
 	{
 		SetPosition(backupX, backupY);
 	}
