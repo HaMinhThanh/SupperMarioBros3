@@ -44,7 +44,8 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (dynamic_cast<Brick*>(coObjects->at(i)) 
 			|| dynamic_cast<BrickColor*>(coObjects->at(i))
 			|| dynamic_cast<BrickGold*>(coObjects->at(i)) 			
-			|| dynamic_cast<BrickGreen*>(coObjects->at(i)))
+			|| dynamic_cast<BrickGreen*>(coObjects->at(i))
+			|| dynamic_cast<BrickQuesion*>(coObjects->at(i)))
 			Bricks.push_back(coObjects->at(i));
 
 	vector<LPCOLLISIONEVENT>  coEvents;
@@ -67,7 +68,7 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		x += min_tx * dx +nx * 0.04f;
+		x += min_tx * dx;// nx * 0.04f;
 		y += min_ty * dy + ny * 0.04f;
 
 		for (int i = 0; i < coEventsResult.size(); i++)

@@ -104,6 +104,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			jumping = 0;
 			time_jumping = 0;
+			vy = -0.0005f;
 		}
 	}
 
@@ -190,6 +191,9 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 		}
 
+		if (rdx != 0 && rdx != dx)
+			x += nx * abs(rdx);
+		
 		x += min_tx * dx;// +nx * 0.04f;
 		y += min_ty * dy + ny * 0.04f;
 
@@ -281,7 +285,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (y > 1000 && level == KOOPAS_LEVEL_WING)
 	{
-		SetPosition(backupX, backupY);
+		SetPosition(1424, 250);
 	}
 }
 

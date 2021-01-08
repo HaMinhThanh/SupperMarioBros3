@@ -51,11 +51,11 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		live -= 1;
 
-		if (live >= 0) 
+		if (live >= 0)
 		{
 			Reset();
 		}
-		else 
+		else
 		{
 			return;
 		}
@@ -132,7 +132,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (isAllowSwing)
 	{
-		//isAllowHold = false;
+		isAllowHold = false;
 		isAllowMoment = false;
 	}
 
@@ -158,6 +158,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			|| dynamic_cast<BrickGold*>(coObjects->at(i))
 			|| dynamic_cast<BrickQuesion*>(coObjects->at(i))
 			|| dynamic_cast<BrickGreen*>(coObjects->at(i)))
+			//|| dynamic_cast<Koopas*>(coObjects->at(i)))
 		{
 			Bricks.push_back(coObjects->at(i));
 		}
@@ -168,14 +169,14 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			Enemies.push_back(coObjects->at(i));
 		}
-	}	
+	}
 
 	GameObject::Update(dt);
 
 	if (Game::GetInstance()->GetCurrentSceneId() != 3)
 		vy += MARIO_GRAVITY * dt;
 
-	
+
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -312,14 +313,115 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 			}
 		}
+		for (int i = 0; i < coEvents.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEvents[i];
+
+			if (dynamic_cast<Koopas*>(e->obj))
+			{
+				if (isAllowSwing && isCollisionWithItem(dynamic_cast<Koopas*>(e->obj)))
+				{
+					score += 100;
+
+					dynamic_cast<Koopas*>(e->obj)->SetState(KOOPAS_STATE_IDLE);
+					dynamic_cast<Koopas*>(e->obj)->level = KOOPAS_LEVEL_DIE_UP;
+				}
+
+				if (isAllowHold && dynamic_cast<Koopas*>(e->obj)->GetState() == KOOPAS_STATE_IDLE
+					&& isCollisionWithItem(dynamic_cast<Koopas*>(e->obj)))
+				{
+					isHoldingItem = true;
+
+					if (isHoldingItem)
+					{
+						SetHodingItem(dynamic_cast<Koopas*>(e->obj));
+
+					}
+				}
+				else  if (dynamic_cast<Koopas*>(e->obj)->GetState() == KOOPAS_STATE_IDLE
+					&& isAllowHold == false
+					&& isAllowSwing == false
+					&& isCollisionWithItem(dynamic_cast<Koopas*>(e->obj)))
+				{
+					if (kicking == 0)
+					{
+						StartKick();
+					}
+
+					if (vx > 0 || nx > 0)
+					{
+						dynamic_cast<Koopas*>(e->obj)->SetState(KOOPAS_STATE_WALKING_RIGHT);
+					}
+					else
+					{
+						dynamic_cast<Koopas*>(e->obj)->SetState(KOOPAS_STATE_WALKING_LEFT);
+					}
+				}
+
+				if (e->t > 0 && e->t <= 1) {
+
+					// jump on top >> kill Goomba and deflect a bit 
+					if (e->ny < 0)
+					{
+						score += 100;
+						vy = -MARIO_JUMP_DEFLECT_SPEED;
+
+						if (dynamic_cast<Koopas*>(e->obj)->GetState() != KOOPAS_STATE_IDLE)
+						{
+							if (dynamic_cast<Koopas*>(e->obj)->level == KOOPAS_LEVEL_WING)
+							{
+								dynamic_cast<Koopas*>(e->obj)->level = KOOPAS_LEVEL_NORMAL;
+							}
+							else if (dynamic_cast<Koopas*>(e->obj)->level == KOOPAS_LEVEL_NORMAL)
+							{
+								dynamic_cast<Koopas*>(e->obj)->level = KOOPAS_LEVEL_DIE_DOWN;
+							}
+
+							dynamic_cast<Koopas*>(e->obj)->SetState(KOOPAS_STATE_IDLE);
+
+						}
+						else
+						{
+							if (dynamic_cast<Koopas*>(e->obj)->x >= x)
+							{
+								dynamic_cast<Koopas*>(e->obj)->SetState(KOOPAS_STATE_WALKING_RIGHT);
+							}
+							else
+							{
+								dynamic_cast<Koopas*>(e->obj)->SetState(KOOPAS_STATE_WALKING_LEFT);
+							}
+						}
+
+					}
+					else if (e->nx != 0)
+					{
+						if (untouchable == 0)
+						{
+							if (dynamic_cast<Koopas*>(e->obj)->GetState() != KOOPAS_STATE_IDLE)
+							{
+								if (level > MARIO_LEVEL_SMALL)
+								{
+									level--;
+									StartUntouchable();
+								}
+								else
+								{
+									SetState(MARIO_STATE_DIE);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 
 		if (rdx != 0 && rdx != dx)
-			x += nx * abs(rdx);		
+			x += nx * abs(rdx);
 
 		x += min_tx * dx + nx * 0.04f;
-		y += min_ty * dy + ny * 0.04f;		
+		y += min_ty * dy + ny * 0.04f;
 
-		if (nx != 0 )
+		if (nx != 0)
 		{
 			vx = 0;
 			collision_x = true;
@@ -341,6 +443,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 
 }
+
 
 void Mario::Render()
 {
@@ -642,7 +745,7 @@ void Mario::changeAni()
 					SetAni(MARIO_ANI_BIG_WALKING_RIGHT);
 				else SetAni(MARIO_ANI_BIG_WALKING_LEFT);
 			}
-			else if (vy < 0) 
+			else if (vy < 0)
 			{
 				if (vx > 0 || nx > 0)
 				{
@@ -650,7 +753,7 @@ void Mario::changeAni()
 				}
 				else SetAni(MARIO_ANI_BIG_JUMPING_LEFT);
 			}
-			else if (vy > 0 ) {
+			else if (vy > 0) {
 
 				if (vx > 0 || nx > 0)
 				{
@@ -821,13 +924,15 @@ bool Mario::isCollisionWithItem(LPGAMEOBJECT item)
 
 void Mario::SetHodingItem(LPGAMEOBJECT item)
 {
-	if (vx > 0 || nx > 0) {
+	if (vx > 0 || nx > 0) 
+	{
 		item->x = x + MARIO_BIG_BBOX_WIDTH - 3;
-		item->y = y + 6;
+		item->y = y+8;
 	}
-	else {
+	else 
+	{
 		item->x = x - 8;
-		item->y = y + 6;
+		item->y = y+8;
 	}
 }
 
