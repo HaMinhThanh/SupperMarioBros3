@@ -120,6 +120,30 @@
 #define MARIO_ANI_TAIL_DRIFT_RIGHT			64
 #define MARIO_ANI_TAIL_DRIFT_LEFT			65
 
+// Mario speed up Small && Big
+#define MARIO_ANI_SPEED_UP_SMALL_RIGHT		66
+#define MARIO_ANI_SPEED_UP_SMALL_LEFT		67
+#define MARIO_ANI_SPEED_UP_BIG_RIGHT		68
+#define MARIO_ANI_SPEED_UP_BIG_LEFT			69
+
+// Mario fly Small && Big
+#define MARIO_ANI_FLY_SMALL_RIGHT			71	
+#define MARIO_ANI_FLY_SMALL_LEFT			73
+#define MARIO_ANI_BE_FALL_SMALL_RIGHT		70	
+#define MARIO_ANI_BE_FALL_SMALL_LEFT		72
+#define MARIO_ANI_FLY_BIG_RIGHT				75
+#define MARIO_ANI_FLY_BIG_LEFT				77
+#define MARIO_ANI_BE_FALL_BIG_RIGHT			74
+#define MARIO_ANI_BE_FALL_BIG_LEFT			76
+
+// Prepare speed up
+#define MARIO_ANI_PREPARE_SPEED_UP_BIG_RIGHT	78			
+#define MARIO_ANI_PREPARE_SPEED_UP_BIG_LEFT		79
+#define MARIO_ANI_PREPARE_SPEED_UP_SMALL_RIGHT	80
+#define MARIO_ANI_PREPARE_SPEED_UP_SMALL_LEFT	81
+#define MARIO_ANI_PREPARE_SPEED_UP_TAIL_RIGHT	82
+#define MARIO_ANI_PREPARE_SPEED_UP_TAIL_LEFT	83
+
 
 #define	MARIO_LEVEL_SMALL	1
 #define	MARIO_LEVEL_BIG		2
@@ -145,7 +169,7 @@
 
 #define MARIO_UNTOUCHABLE_TIME	2000
 #define MARIO_FLY_TIME			4000	
-#define MARIO_MOMENTUM_TIME		2000
+#define MARIO_MOMENTUM_TIME		2500
 #define MARIO_KICKING_TIME		200
 #define MARIO_SWING_TIME		300
 
@@ -193,12 +217,21 @@ public:
 	// 
 	bool isCrouch;
 	int isTurnBack = 0;
+	int backupLevel;
 
 	bool isCollisionWithMushroom;
 
 	//
+	bool isPrepareSpeedUp;
 	bool isSpeedUp;
 	bool isComeUp = false;
+
+	// jump max
+	bool isMaxJumping;
+	int maxjumping;
+	DWORD time_maxjumping;
+
+	void StartJumpingMax() { maxjumping = 1; time_maxjumping = GetTickCount(); }
 
 public:
 

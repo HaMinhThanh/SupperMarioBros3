@@ -1,3 +1,5 @@
+#include "Game.h"
+
 #include "Mushroom.h"
 #include "Brick.h"
 #include "BrickQuesion.h"
@@ -34,8 +36,14 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	GameObject::Update(dt, coObjects);
-
-	vy += MUSHROOM_GRAVITY * dt;
+	if (Game::GetInstance()->GetCurrentSceneId() == 1)
+	{
+		vy += 0.0001f * dt;
+	}
+	else
+	{
+		vy += MUSHROOM_GRAVITY * dt;
+	}	
 
 	vector<LPGAMEOBJECT> Bricks;
 	Bricks.clear();

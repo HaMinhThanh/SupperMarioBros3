@@ -24,12 +24,18 @@ Mario* Mario::GetInstance(float x, float y)
 Mario::Mario(float x, float y) :GameObject()
 {
 	level = MARIO_LEVEL_SMALL;
+	backupLevel = level;
 	untouchable = 0;
 	momentable = 0;
 	flyable = 0;
 	kicking = 0;
 	swing = 0;
 	drift = 0;
+	maxjumping = 0;
+	time_maxjumping = 0;
+
+	isSpeedUp = false;
+	isPrepareSpeedUp = false;
 
 	SetState(MARIO_STATE_IDLE);
 
@@ -148,6 +154,32 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vx = 0;
 	}
 
+	if (maxjumping == 1)
+	{
+		if (GetTickCount() - time_maxjumping > 100 && GetTickCount() - time_maxjumping < 200)
+		{
+			vy = -0.15f;			
+		}
+		else if (GetTickCount() - time_maxjumping >= 200)
+		{
+			vy = -0.24f;
+			maxjumping = 0;
+			time_maxjumping = 0;
+		}
+	}
+	else
+	{
+		maxjumping = 0;
+		time_maxjumping = 0;
+	}
+
+	if (vy == 0)
+	{
+		isMaxJumping = true;
+	}
+		
+	
+
 	vector<LPGAMEOBJECT> Bricks;
 	vector<LPGAMEOBJECT> Enemies;
 
@@ -203,14 +235,20 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			isMomentum = false;
 			metter = 7;
 
-			if (level == MARIO_LEVEL_TAIL && isMomentum == false)
-				StartFlyable();
+			backupLevel = level;
+
+			StartFlyable();
 
 			isSpeedUp = false;
 		}
-		else if (GetTickCount() - momentable_start > 1000)
+		else if (GetTickCount() - momentable_start > 800)
 		{
 			isSpeedUp = true;
+			isPrepareSpeedUp = false;
+		}
+		else if (GetTickCount() - momentable_start > 200)
+		{
+			isPrepareSpeedUp = true;
 		}
 
 	}
@@ -220,6 +258,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			metter -= 1;
 
 		isSpeedUp = false;
+		isPrepareSpeedUp = false;
 	}
 
 
@@ -232,7 +271,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			flyable = 0;
 			isMomentum = true;
 
-			level = MARIO_LEVEL_TAIL;
+			level = backupLevel;
 
 		}
 
@@ -421,7 +460,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x += min_tx * dx + nx * 0.04f;
 		y += min_ty * dy + ny * 0.04f;
 
-		if (nx != 0)
+		if (nx != 0 )
 		{
 			vx = 0;
 			collision_x = true;
@@ -432,7 +471,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (ny != 0 && nx == 0)
 		{
 			vy = 0;
-			collision_y = true;
+			collision_y = true;			
 		}
 		else
 			collision_y = false;
@@ -547,12 +586,55 @@ void Mario::Render()
 	{
 		SetAni(MARIO_ANI_COLLISION_MUSHROOM);
 	}
+	else if (isPrepareSpeedUp)
+	{
+		if (level == MARIO_LEVEL_SMALL)
+		{
+			if (vx > 0 || nx > 0)
+				SetAni(MARIO_ANI_PREPARE_SPEED_UP_SMALL_RIGHT);
+			else
+				SetAni(MARIO_ANI_PREPARE_SPEED_UP_SMALL_LEFT);
+		}
+		else if (level == MARIO_LEVEL_BIG)
+		{
+			if (vx > 0 || nx > 0)
+				SetAni(MARIO_ANI_PREPARE_SPEED_UP_BIG_RIGHT);
+			else
+				SetAni(MARIO_ANI_PREPARE_SPEED_UP_BIG_LEFT);
+		}
+		else if (level == MARIO_LEVEL_TAIL)
+		{
+			if (vx > 0 || nx > 0)
+				SetAni(MARIO_ANI_PREPARE_SPEED_UP_TAIL_RIGHT);
+			else
+				SetAni(MARIO_ANI_PREPARE_SPEED_UP_TAIL_LEFT);
+
+		}
+	}
 	else if (isSpeedUp)
 	{
-		if (vx > 0 || nx > 0)
-			SetAni(MARIO_ANI_SPEED_UP_RIGHT);
-		else
-			SetAni(MARIO_ANI_SPEED_UP_LEFT);
+		if (level == MARIO_LEVEL_SMALL)
+		{
+			if (vx > 0 || nx > 0)
+				SetAni(MARIO_ANI_SPEED_UP_SMALL_RIGHT);
+			else
+				SetAni(MARIO_ANI_SPEED_UP_SMALL_LEFT);
+		}
+		else if (level == MARIO_LEVEL_BIG)
+		{
+			if (vx > 0 || nx > 0)
+				SetAni(MARIO_ANI_SPEED_UP_BIG_RIGHT);
+			else
+				SetAni(MARIO_ANI_SPEED_UP_BIG_LEFT);
+		}
+		else if (level == MARIO_LEVEL_TAIL)
+		{
+			if (vx > 0 || nx > 0)
+				SetAni(MARIO_ANI_SPEED_UP_RIGHT);
+			else
+				SetAni(MARIO_ANI_SPEED_UP_LEFT);
+
+		}
 	}
 	else if (isDrift)
 	{
@@ -598,29 +680,32 @@ void Mario::SetState(int  state)
 	switch (state)
 	{
 	case MARIO_STATE_WALKING_RIGHT:
-
-		if (isSpeedUp)
-			vx = MARIO_WALKING_MAX_SPEED;
+		if (isPrepareSpeedUp)
+			vx = 0.15f;
+		else if (isSpeedUp)
+			vx = 0.2f;
 		else
 			vx = MARIO_WALKING_SPEED;
 
 		isTurnLeft = false;
 		//isTurnRight = true;
 
-		if (momentable == 0 && level == MARIO_LEVEL_TAIL && isTurnLeft == false && isAllowMoment)
+		if (momentable == 0 && isTurnLeft == false && isAllowMoment)
 			StartMomentum();
 		nx = 1;
 		break;
 	case MARIO_STATE_WALKING_LEFT:
 
-		if (isSpeedUp)
-			vx = -MARIO_WALKING_MAX_SPEED;
+		if (isPrepareSpeedUp)
+			vx = -0.15f;
+		else if (isSpeedUp)
+			vx = -0.2f;
 		else
 			vx = -MARIO_WALKING_SPEED;
 		//isTurnLeft = true;
 		isTurnRight = false;
 
-		if (momentable == 0 && level == MARIO_LEVEL_TAIL && isTurnRight == false && isAllowMoment)
+		if (momentable == 0  && isTurnRight == false && isAllowMoment)
 			StartMomentum();
 
 		nx = -1;
@@ -629,8 +714,9 @@ void Mario::SetState(int  state)
 		if (isFlying)
 			vy = -MARIO_GRAVITY_TAIL;
 		else
-			vy = -MARIO_JUMP_SPEED_Y;
+			vy = -0.25f;
 		break;
+	
 	case MARIO_STATE_IDLE:
 		isMomentum = false;
 		//momentable = 0;
@@ -673,12 +759,11 @@ void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 			right = x + MARIO_SMALL_BBOX_WIDTH;
 			bottom = y + MARIO_SMALL_BBOX_HEIGHT;
 		}
-		else if (level == MARIO_LEVEL_TAIL || level == MARIO_LEVEL_FLY)
+		else if (level == MARIO_LEVEL_TAIL )
 		{
 			if (isAllowSwing)
 			{
 				right = x + MARIO_TAIL_SWING_BBOX_WIDTH;
-
 			}
 			else
 			{
@@ -692,6 +777,24 @@ void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 			}
 			else
 			{
+				bottom = y + MARIO_TAIL_BBOX_HEIGHT;
+			}
+		}
+		else if (level == MARIO_LEVEL_FLY)
+		{
+			if (backupLevel == MARIO_LEVEL_SMALL)
+			{
+				right = x + MARIO_SMALL_BBOX_WIDTH;
+				bottom = y + MARIO_SMALL_BBOX_HEIGHT;
+			}
+			else if (backupLevel == MARIO_LEVEL_BIG)
+			{
+				right = x + MARIO_BIG_BBOX_WIDTH;
+				bottom = y + MARIO_BIG_BBOX_HEIGHT;
+			}
+			else
+			{
+				right = x + MARIO_TAIL_BBOX_WIDTH;
 				bottom = y + MARIO_TAIL_BBOX_HEIGHT;
 			}
 		}
@@ -811,7 +914,8 @@ void Mario::changeAni()
 		}
 		else if (level == MARIO_LEVEL_TAIL)
 		{
-			if (vy >= 0) {
+			if (vy >= 0) 
+			{
 				if (vx == 0)
 				{
 					if (nx > 0) SetAni(MARIO_ANI_TAIL_IDLE_RIGHT);
@@ -821,7 +925,8 @@ void Mario::changeAni()
 					SetAni(MARIO_ANI_TAIL_WALKING_RIGHT);
 				else SetAni(MARIO_ANI_TAIL_WALKING_LEFT);
 			}
-			else if (vy < 0) {
+			else if (vy < 0) 
+			{
 				if (vx == 0)
 				{
 					if (nx > 0) SetAni(MARIO_ANI_TAIL_JUMPING_RIGHT);
@@ -831,19 +936,11 @@ void Mario::changeAni()
 					SetAni(MARIO_ANI_TAIL_JUMPING_RIGHT);
 				else SetAni(MARIO_ANI_TAIL_JUMPING_LEFT);
 			}
-
-			else if (vy > 0 && collision_y == false)
-			{
-				if (vx > 0 || nx > 0)
-				{
-					SetAni(MARIO_ANI_TAIL_FALLING_RIGHT);
-				}
-				else SetAni(MARIO_ANI_TAIL_FALLING_LEFT);
-			}
 		}
 		if (level == MARIO_LEVEL_FIRE)
 		{
-			if (vy >= 0) {
+			if (vy >= 0) 
+			{
 				if (vx == 0)
 				{
 					if (nx > 0) SetAni(MARIO_ANI_IDLE_FIRE_RIGHT);
@@ -854,7 +951,8 @@ void Mario::changeAni()
 				else SetAni(MARIO_ANI_WALKING_FIRE_LEFT);
 			}
 
-			else if (vy < 0) {
+			else if (vy < 0) 
+			{
 				if (vx > 0 || nx > 0)
 				{
 					SetAni(MARIO_ANI_JUMPING_FIRE_RIGHT);
@@ -874,22 +972,80 @@ void Mario::changeAni()
 		}
 		else if (level == MARIO_LEVEL_FLY)
 		{
-			if (vy >= 0) {
-				if (vx > 0)
+			if (backupLevel == MARIO_LEVEL_TAIL)
+			{
+				if (vy >= 0)
 				{
-					SetAni(MARIO_ANI_BE_FALL_RIGHT);
-
+					if (vx > 0)
+					{
+						SetAni(MARIO_ANI_BE_FALL_RIGHT);
+					}
+					else
+					{
+						SetAni(MARIO_ANI_BE_FALL_LEFT);
+					}
 				}
-				else SetAni(MARIO_ANI_BE_FALL_LEFT);
+				else if (vy < 0)
+				{
+					if (vx > 0 || nx > 0)
+					{
+						SetAni(MARIO_ANI_FLY_RIGHT);
+					}
+					else
+					{
+						SetAni(MARIO_ANI_FLY_LEFT);
+					}
+				}
 			}
-			else if (vy < 0) {
-				if (vx > 0 || nx > 0)
+			else if (backupLevel == MARIO_LEVEL_SMALL)
+			{
+				if (vy >= 0)
 				{
-					SetAni(MARIO_ANI_FLY_RIGHT);
+					if (vx > 0)
+					{
+						SetAni(MARIO_ANI_BE_FALL_SMALL_RIGHT);
+					}
+					else
+					{
+						SetAni(MARIO_ANI_BE_FALL_SMALL_LEFT);
+					}
 				}
-				else
-					SetAni(MARIO_ANI_FLY_LEFT);
-
+				else if (vy < 0)
+				{
+					if (vx > 0 || nx > 0)
+					{
+						SetAni(MARIO_ANI_FLY_SMALL_RIGHT);
+					}
+					else
+					{
+						SetAni(MARIO_ANI_FLY_SMALL_LEFT);
+					}
+				}
+			}
+			else if (backupLevel == MARIO_LEVEL_BIG)
+			{
+				if (vy >= 0)
+				{
+					if (vx > 0)
+					{
+						SetAni(MARIO_ANI_BE_FALL_BIG_RIGHT);
+					}
+					else
+					{
+						SetAni(MARIO_ANI_BE_FALL_BIG_LEFT);
+					}
+				}
+				else if (vy < 0)
+				{
+					if (vx > 0 || nx > 0)
+					{
+						SetAni(MARIO_ANI_FLY_BIG_RIGHT);
+					}
+					else
+					{
+						SetAni(MARIO_ANI_FLY_BIG_LEFT);
+					}
+				}
 			}
 
 		}

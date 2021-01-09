@@ -855,6 +855,10 @@ void IntroScene::Update(DWORD dt)
 				SwitchScene();
 			}
 		}
+		else
+		{
+			Game::GetInstance()->SwitchScene(3);
+		}
 	}
 
 	if (isSwitch == 1)

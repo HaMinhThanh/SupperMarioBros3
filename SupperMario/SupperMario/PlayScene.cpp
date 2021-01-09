@@ -912,6 +912,19 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 			if (mario->vy == 0)
 				mario->SetState(MARIO_STATE_IDLE);
 		}
+
+		if (game->IsKeyDown(DIK_S) )
+		{
+			if (mario->isMaxJumping && mario->maxjumping==0)
+			{
+				mario->StartJumpingMax();
+				mario->isMaxJumping = false;
+			}
+		}
+		else
+		{
+			mario->maxjumping = 0;
+		}
 	}
 
 	if (game->IsKeyDown(DIK_A))
@@ -1008,22 +1021,24 @@ void PlayScene::checkCollisionWithItem()
 				{
 					if (dynamic_cast<Button*>(obj)->isFinish == false)
 					{
-						mario->vx = -0.2;
-					}
-					dynamic_cast<Button*>(obj)->isFinish = true;
+						mario->vy = -0.2;
 
-					for (int i = 0; i < Objects.size(); i++)
-					{
-						if (dynamic_cast<BrickGold*>(Objects[i]) && (dynamic_cast<BrickGold*>(Objects[i])->item == 0))
-							//|| dynamic_cast<BrickGold*>(Objects[i])->item==2)) {
+						dynamic_cast<Button*>(obj)->isFinish = true;
+
+						for (int i = 0; i < Objects.size(); i++)
 						{
-							Objects[i]->isFinish = true;
+							if (dynamic_cast<BrickGold*>(Objects[i]) 
+								&& (dynamic_cast<BrickGold*>(Objects[i])->item == 0) 
+								&& dynamic_cast<BrickGold*>(Objects[i])->isFinish== false)
+							{
+								Coin* coin = new Coin();
+								coin->SetPosition(Objects[i]->x, Objects[i]->y);
+								coin->isNoCollision = false;
+								coin->SetAnimationSet(AnimationSets::GetInstance()->Get(32));
+								Items.push_back(coin);
 
-							Coin* coin = new Coin();
-							coin->SetPosition(obj->x, obj->y);
-							coin->isNoCollision = false;
-							coin->SetAnimationSet(AnimationSets::GetInstance()->Get(32));
-							Items.push_back(coin);
+								Objects[i]->isFinish = true;
+							}
 						}
 					}
 				}
@@ -1179,15 +1194,53 @@ void PlayScene::checkCollisionWithEnemy()
 					dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_LEFT);
 				}
 			}
+
 			else if (e->t > 0 && e->t <= 1)
 			{
-				if (e->nx != 0)
+				if (e->ny < 0)
+				{
+					mario->score += 100;
+					mario->vy = -MARIO_JUMP_DEFLECT_SPEED;
+
+					if (dynamic_cast<Koopas*>(obj)->GetState() == KOOPAS_STATE_IDLE)
+					{
+
+						if (dynamic_cast<Koopas*>(obj)->x >= mario->x)
+						{
+							dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_RIGHT);
+						}
+						else
+						{
+							dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_LEFT);
+						}
+					}
+					else if (dynamic_cast<Koopas*>(obj)->GetState() != KOOPAS_STATE_IDLE)
+					{
+						if (dynamic_cast<Koopas*>(obj)->level == KOOPAS_LEVEL_WING)
+						{
+							dynamic_cast<Koopas*>(obj)->level = KOOPAS_LEVEL_NORMAL;
+
+							dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_LEFT);
+						}
+						else if (dynamic_cast<Koopas*>(obj)->level == KOOPAS_LEVEL_NORMAL)
+						{
+							dynamic_cast<Koopas*>(obj)->level = KOOPAS_LEVEL_DIE_DOWN;
+
+							dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_IDLE);
+						}
+						else
+						{
+							dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_IDLE);
+						}
+					}
+				}
+				else if (e->nx != 0)
 				{
 					mario->noCollision = true;
 
 					if (mario->untouchable == 0)
 					{
-						if (dynamic_cast<Koopas*>(obj)->GetState() != KOOPAS_STATE_IDLE && mario->isAllowHold== false)
+						if (dynamic_cast<Koopas*>(obj)->GetState() != KOOPAS_STATE_IDLE && mario->isAllowHold == false)
 						{
 							if (mario->level > MARIO_LEVEL_SMALL)
 							{
@@ -1228,9 +1281,13 @@ void PlayScene::checkCollisionWithEnemy()
 
 						dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_IDLE);
 					}
+					else
+					{
+						dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_IDLE);
+					}
 
 				}
-				else
+				/*else
 				{
 					if (dynamic_cast<Koopas*>(obj)->x >= mario->x)
 					{
@@ -1240,25 +1297,7 @@ void PlayScene::checkCollisionWithEnemy()
 					{
 						dynamic_cast<Koopas*>(obj)->SetState(KOOPAS_STATE_WALKING_LEFT);
 					}
-				}
-			}
-			else if(mario->isCollisionWithItem(dynamic_cast<Koopas*>(obj)))
-			{
-				if (mario->untouchable == 0)
-				{
-					if (dynamic_cast<Koopas*>(obj)->GetState() != KOOPAS_STATE_IDLE)
-					{
-						if (mario->level > MARIO_LEVEL_SMALL)
-						{
-							mario->level--;
-							mario->StartUntouchable();
-						}
-						else
-						{
-							mario->SetState(MARIO_STATE_DIE);
-						}
-					}
-				}
+				}*/
 			}
 
 			//if (e->t > 0 && e->t <= 1)
@@ -1355,15 +1394,15 @@ void PlayScene::checkCollisionWithEnemy()
 			if (e->t > 0 && e->t <= 1) {
 
 				// jump on top >> kill ParaGoomba and deflect a bit 
-				if (e->ny != 0)
+				if (e->ny < 0)
 				{
 					mario->score += 100;
 					if (para->level != PARAGOOMBA_LEVEL_DIE)
 					{
 						if (para->level == PARAGOOMBA_LEVEL_NORMAL)
 							para->SetLevel(PARAGOOMBA_LEVEL_DIE);
-						else if (para->level == PARAGOOMBA_LEVEL_WING)
-							para->SetLevel(PARAGOOMBA_LEVEL_NORMAL);
+						/*else if (para->level == PARAGOOMBA_LEVEL_WING)
+							para->SetLevel(PARAGOOMBA_LEVEL_NORMAL);*/
 
 						mario->vy = -MARIO_JUMP_DEFLECT_SPEED;
 					}
@@ -1385,6 +1424,13 @@ void PlayScene::checkCollisionWithEnemy()
 						}
 					}
 				}
+			}
+			else if (mario->isCollisionWithItem(para))
+			{
+				if (para->level == PARAGOOMBA_LEVEL_WING)
+					para->SetLevel(PARAGOOMBA_LEVEL_NORMAL);
+
+				mario->vy = -MARIO_JUMP_DEFLECT_SPEED;
 			}
 		}
 		else if (dynamic_cast<Venus*>(obj))
@@ -1540,8 +1586,10 @@ void PlayScene::checkCollisionWithBrick()
 					bq->isFinish = true;
 					bq->isMovingDown = true;
 
-					if (bq->item == 0) {
-						if (mario->level >= MARIO_LEVEL_BIG) {
+					if (bq->item == 0) 
+					{
+						if (mario->level >= MARIO_LEVEL_BIG) 
+						{
 							Leaf* leaf = new Leaf();
 							leaf->SetPosition(obj->x, obj->y - 36);
 
@@ -1551,9 +1599,10 @@ void PlayScene::checkCollisionWithBrick()
 							leaf->SetAnimationSet(ani_set);
 							Items.push_back(leaf);
 						}
-						else if (mario->level < MARIO_LEVEL_BIG) {
+						else if (mario->level < MARIO_LEVEL_BIG) 
+						{
 							Mushroom* mr = new Mushroom();
-							mr->SetPosition(obj->x, obj->y - 36);
+							mr->SetPosition(obj->x, obj->y - 17);
 
 							AnimationSets* animation_sets = AnimationSets::GetInstance();
 							LPANIMATION_SET ani_set = animation_sets->Get(37);
@@ -1563,7 +1612,8 @@ void PlayScene::checkCollisionWithBrick()
 						}
 
 					}
-					else if (bq->item == 1) {
+					else if (bq->item == 1) 
+					{
 						mario->score += 100;
 
 						Coin* coin = new Coin();
@@ -1683,16 +1733,18 @@ void PlayScene::checkCollisionEnemyWithBrick()
 							Items.push_back(coin);
 						}
 					}
-					else if (dynamic_cast<BrickGold*>(Objects[i]))
+					else if (dynamic_cast<BrickGold*>(Objects[i]) && dynamic_cast<BrickGold*>(Objects[i])->isFinish== false)
 					{
-						BrickGold* bg = dynamic_cast<BrickGold*>(Objects[i]);
-
+						BrickGold* bg = dynamic_cast<BrickGold*>(Objects[i]);				
+							
 						if (bg->item == 0)
-							dynamic_cast<BrickGold*>(Objects[i])->isFinish = true;
+						{
+							dynamic_cast<BrickGold*>(Objects[i])->isFinish = true;							
 
-						BrickBreak* bb = new BrickBreak(bg->x, bg->y);
-						bb->StartRender();
-						Effect.push_back(bb);
+							BrickBreak* bb = new BrickBreak(bg->x, bg->y);
+							bb->StartRender();
+							Effect.push_back(bb);
+						}
 					}
 
 				}

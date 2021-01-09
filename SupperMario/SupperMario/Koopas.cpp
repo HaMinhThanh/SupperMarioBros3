@@ -161,11 +161,11 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			if (nx != 0 && ny == 0)
+			/*if (nx != 0 && ny == 0)
 			{
 				nx = -nx;
 				vx = -vx;
-			}
+			}*/
 
 			if (dynamic_cast<BrickColor*>(e->obj))
 			{

@@ -78,6 +78,7 @@ void ParaGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				time_jumping = 0;
 				jumping = 0;
+				vy = -0.005f;
 			}
 		}
 
@@ -90,13 +91,13 @@ void ParaGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		if (momentable == 1)
 		{
-			vy = -0.03f;
+			vy = 0;
 		}
 
 
 		if (jumping == 1)
 		{
-			vy = -0.05f;
+			vy = -0.07f;
 		}
 
 		if (isWalking)
@@ -120,7 +121,7 @@ void ParaGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (state != GOOMBA_STATE_DIE)
 	{
-		vy += KOOPAS_GRAVITY * dt;
+		vy += 0.0001f * dt;
 	}
 
 	vector<LPGAMEOBJECT> Bricks;
