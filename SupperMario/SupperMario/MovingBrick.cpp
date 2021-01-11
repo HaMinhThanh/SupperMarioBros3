@@ -34,7 +34,7 @@ void MovingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		else if (GetTickCount() - time_falling > MOVINGBRICK_TIME_PREPARE_FALLING)
 		{
-			vy = 0.001f;			
+			vy = 0.05f;		
 		}
 	}
 

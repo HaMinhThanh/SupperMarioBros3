@@ -1,6 +1,2 @@
-﻿  mario.cpp
-  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(187,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(357,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\mario.cpp(1449,2): warning C4060: switch statement contains no 'case' or 'default' labels
+﻿  MovingBrick.cpp
   SupperMario.vcxproj -> C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\Debug\SupperMario.exe

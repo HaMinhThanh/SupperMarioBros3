@@ -883,7 +883,7 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 	//disable control key when Mario die 
 	if (mario->GetState() == MARIO_STATE_DIE) return;
 
-	if (game->GetCurrentSceneId() != 3) 
+	if (game->GetCurrentSceneId() != 3)
 	{
 		if (game->IsKeyDown(DIK_RIGHT))
 		{
@@ -915,9 +915,9 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 				mario->SetState(MARIO_STATE_IDLE);
 		}
 
-		if (game->IsKeyDown(DIK_S) )
+		if (game->IsKeyDown(DIK_S))
 		{
-			if (mario->isMaxJumping && mario->maxjumping==0)
+			if (mario->isMaxJumping && mario->maxjumping == 0)
 			{
 				mario->StartJumpingMax();
 				mario->isMaxJumping = false;
@@ -1029,9 +1029,9 @@ void PlayScene::checkCollisionWithItem()
 
 						for (int i = 0; i < Objects.size(); i++)
 						{
-							if (dynamic_cast<BrickGold*>(Objects[i]) 
-								&& (dynamic_cast<BrickGold*>(Objects[i])->item == 0) 
-								&& dynamic_cast<BrickGold*>(Objects[i])->isFinish== false)
+							if (dynamic_cast<BrickGold*>(Objects[i])
+								&& (dynamic_cast<BrickGold*>(Objects[i])->item == 0)
+								&& dynamic_cast<BrickGold*>(Objects[i])->isFinish == false)
 							{
 								Coin* coin = new Coin();
 								coin->SetPosition(Objects[i]->x, Objects[i]->y);
@@ -1541,7 +1541,7 @@ void PlayScene::checkCollisionWithBrick()
 				if (obj->GetFinish() == false && (mario->isAllowSwing == true || e->ny > 0))
 				{
 
-					obj->isFinish = true;					
+					obj->isFinish = true;
 
 					if (bg->item == 0)
 					{
@@ -1606,9 +1606,9 @@ void PlayScene::checkCollisionWithBrick()
 					bq->isFinish = true;
 					bq->isMovingDown = true;
 
-					if (bq->item == 0) 
+					if (bq->item == 0)
 					{
-						if (mario->level >= MARIO_LEVEL_BIG) 
+						if (mario->level >= MARIO_LEVEL_BIG)
 						{
 							Leaf* leaf = new Leaf();
 							leaf->SetPosition(obj->x, obj->y - 36);
@@ -1619,7 +1619,7 @@ void PlayScene::checkCollisionWithBrick()
 							leaf->SetAnimationSet(ani_set);
 							Items.push_back(leaf);
 						}
-						else if (mario->level < MARIO_LEVEL_BIG) 
+						else if (mario->level < MARIO_LEVEL_BIG)
 						{
 							Mushroom* mr = new Mushroom();
 							mr->SetPosition(obj->x, obj->y - 17);
@@ -1632,7 +1632,7 @@ void PlayScene::checkCollisionWithBrick()
 						}
 
 					}
-					else if (bq->item == 1) 
+					else if (bq->item == 1)
 					{
 						mario->score += 100;
 
@@ -1649,7 +1649,17 @@ void PlayScene::checkCollisionWithBrick()
 				}
 			}
 		}
+		else if (dynamic_cast<MovingBrick*>(obj))
+		{
+			LPCOLLISIONEVENT e = mario->SweptAABBEx(obj);
 
+			if (e->t > 0 && e->t <= 1)
+			{
+				MovingBrick* mb = dynamic_cast<MovingBrick*>(obj);
+
+				mb->isFalling = true;
+			}
+		}
 		else if (dynamic_cast<Portal*>(obj))
 		{
 
@@ -1753,13 +1763,13 @@ void PlayScene::checkCollisionEnemyWithBrick()
 							Items.push_back(coin);
 						}
 					}
-					else if (dynamic_cast<BrickGold*>(Objects[i]) && dynamic_cast<BrickGold*>(Objects[i])->isFinish== false)
+					else if (dynamic_cast<BrickGold*>(Objects[i]) && dynamic_cast<BrickGold*>(Objects[i])->isFinish == false)
 					{
-						BrickGold* bg = dynamic_cast<BrickGold*>(Objects[i]);				
-							
+						BrickGold* bg = dynamic_cast<BrickGold*>(Objects[i]);
+
 						if (bg->item == 0)
 						{
-							dynamic_cast<BrickGold*>(Objects[i])->isFinish = true;							
+							dynamic_cast<BrickGold*>(Objects[i])->isFinish = true;
 
 							BrickBreak* bb = new BrickBreak(bg->x, bg->y);
 							bb->StartRender();
