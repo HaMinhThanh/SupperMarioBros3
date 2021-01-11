@@ -882,7 +882,8 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 	//disable control key when Mario die 
 	if (mario->GetState() == MARIO_STATE_DIE) return;
 
-	if (game->GetCurrentSceneId() != 3) {
+	if (game->GetCurrentSceneId() != 3) 
+	{
 		if (game->IsKeyDown(DIK_RIGHT))
 		{
 			if (mario->vx < 0 && mario->vy == 0)
@@ -1539,12 +1540,7 @@ void PlayScene::checkCollisionWithBrick()
 				if (obj->GetFinish() == false && (mario->isAllowSwing == true || e->ny > 0))
 				{
 
-					obj->isFinish = true;
-
-					BrickBreak* bb = new BrickBreak(Objects[i]->x, Objects[i]->y);
-
-					bb->isRender = true;
-					Effect.push_back(bb);
+					obj->isFinish = true;					
 
 					if (bg->item == 0)
 					{
@@ -1555,6 +1551,10 @@ void PlayScene::checkCollisionWithBrick()
 						coin->isNoCollision = false;
 						coin->SetAnimationSet(AnimationSets::GetInstance()->Get(32));
 						Items.push_back(coin);
+
+						BrickBreak* bb = new BrickBreak(Objects[i]->x, Objects[i]->y);
+						bb->isRender = true;
+						Effect.push_back(bb);
 					}
 					else if (bg->item == 1)
 					{
@@ -1569,6 +1569,25 @@ void PlayScene::checkCollisionWithBrick()
 						bt->SetPosition(obj->x, obj->y - 16);
 						bt->SetAnimationSet(AnimationSets::GetInstance()->Get(39));
 						Items.push_back(bt);
+					}
+					else if (bg->item == 3)
+					{
+						Leaf* leaf = new Leaf();
+						leaf->SetPosition(obj->x, obj->y - 36);
+						leaf->SetAnimationSet(AnimationSets::GetInstance()->Get(36));
+						Items.push_back(leaf);
+					}
+					else if (bg->item == 4)
+					{
+						Coin* coin = new Coin();
+						coin->SetPosition(obj->x, obj->y - 16);
+						coin->isNoCollision = true;
+						coin->SetAnimationSet(AnimationSets::GetInstance()->Get(32));
+						Items.push_back(coin);
+					}
+					else
+					{
+						obj->isFinish = false;
 					}
 				}
 			}
@@ -1984,7 +2003,7 @@ void PlayScene::checkEndScene()
 
 			mario->isAutoGo = false;
 
-			Game::GetInstance()->SwitchScene(3);
+			Game::GetInstance()->SwitchScene(5);
 
 
 		}

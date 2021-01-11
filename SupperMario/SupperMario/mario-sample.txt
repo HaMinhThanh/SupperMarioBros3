@@ -6,4 +6,5 @@ start	4
 2	map1_1b.txt
 3	map_worldmap.txt
 4	map_intro.txt
+5	map1_4.txt
 	

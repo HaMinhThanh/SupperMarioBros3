@@ -52,7 +52,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		turnToNormal = false;
 	}
 
-	if (level < KOOPAS_LEVEL_NORMAL && Game::GetInstance()->GetCurrentSceneId()==1)
+	if (level < KOOPAS_LEVEL_NORMAL && Game::GetInstance()->GetCurrentSceneId() != 3)
 	{
 		if (isWaiting == 0)
 		{

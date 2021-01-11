@@ -10,8 +10,9 @@ BrickGold::BrickGold(float x, float y, int itm)
 
 void BrickGold::Render()
 {
-	if (isFinish) {
-		if (item == 1 || item == 2)
+	if (isFinish) 
+	{ 
+		if (item >= 1 && item <= 4)
 			animation_set->at(1)->Render(x, y);
 		return;
 	}
@@ -20,7 +21,7 @@ void BrickGold::Render()
 
 void BrickGold::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	if (isFinish == false || item == 1 || item == 2)
+	if (isFinish == false || item != 0)
 	{
 		left = x;
 		top = y;

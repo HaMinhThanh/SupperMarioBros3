@@ -153,6 +153,9 @@
     <ClCompile Include="BrickBreak.cpp">
       <Filter>Objects\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="MovingBrick.cpp">
+      <Filter>Objects\Brick</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprites.h">
@@ -259,6 +262,9 @@
     </ClInclude>
     <ClInclude Include="BrickBreak.h">
       <Filter>Objects\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="MovingBrick.h">
+      <Filter>Objects\Brick</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
