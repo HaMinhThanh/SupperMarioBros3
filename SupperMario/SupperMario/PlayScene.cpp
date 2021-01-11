@@ -11,6 +11,7 @@
 #include "BrickGold.h"
 #include "BrickGreen.h"
 #include "BrickQuesion.h"
+#include "MovingBrick.h"
 
 #include "Koopas.h"
 #include "Goomba.h"
@@ -33,27 +34,28 @@
 
 using namespace std;
 
-#define SCENE_SECTION_UNKNOWN -1
-#define SCENE_SECTION_TEXTURES 2
-#define SCENE_SECTION_SPRITES 3
-#define SCENE_SECTION_ANIMATIONS 4
+#define SCENE_SECTION_UNKNOWN			-1
+#define SCENE_SECTION_TEXTURES			2
+#define SCENE_SECTION_SPRITES			3
+#define SCENE_SECTION_ANIMATIONS		4
 #define SCENE_SECTION_ANIMATION_SETS	5
-#define SCENE_SECTION_ITEMS	6
-#define SCENE_SECTION_OBJECTS	7
-#define SCENE_SECTION_ENEMY 8
-#define SCENE_SECTION_BACKGROUND 9
+#define SCENE_SECTION_ITEMS				6
+#define SCENE_SECTION_OBJECTS			7
+#define SCENE_SECTION_ENEMY				8
+#define SCENE_SECTION_BACKGROUND		9
 
-// OBJECT
-#define OBJECT_TYPE_MARIO	0
-#define OBJECT_TYPE_BRICK	1
+// Player and Brick
+#define OBJECT_TYPE_MARIO			0
+#define OBJECT_TYPE_BRICK			1
 #define OBJECT_TYPE_BRICKQUESION	2
-#define OBJECT_TYPE_BRICKGOLD	3
-#define OBJECT_TYPE_BRICKGREEN	4
-#define OBJECT_TYPE_COLORBLOCK	5
-#define OBJECT_TYPE_PORTAL		50
+#define OBJECT_TYPE_BRICKGOLD		3
+#define OBJECT_TYPE_BRICKGREEN		4
+#define OBJECT_TYPE_COLORBLOCK		5
+#define OBJECT_TYPE_MOVINGBRICK		6
+#define OBJECT_TYPE_PORTAL			50
 
 // back ground
-#define OBJECT_TYPE_BACKGROUND	1
+#define OBJECT_TYPE_BACKGROUND		1
 
 // ITEMS
 #define ITEM_TYPE_COIN		1
@@ -63,9 +65,9 @@ using namespace std;
 #define ITEM_TYPE_BUTTON	5	
 
 // ENEMY
-#define ENEMY_TYPE_GOOMBA 1
-#define ENEMY_TYPE_KOOPAS 2
-#define ENEMY_TYPE_VENUS 3
+#define ENEMY_TYPE_GOOMBA		1
+#define ENEMY_TYPE_KOOPAS		2
+#define ENEMY_TYPE_VENUS		3
 #define ENEMY_TYPE_PARAKOOPAS	4
 #define ENEMY_TYPE_PARAGOOMBA	5	
 
@@ -267,15 +269,14 @@ void PlayScene::ParseSection_Objects(string line)
 	case OBJECT_TYPE_BRICK:
 
 		obj = new Brick();
-
 		break;
 
 	case OBJECT_TYPE_BRICKQUESION:
 
 		item = atoi(tokens[4].c_str());
 		obj = new BrickQuesion(x, y, item);
-
 		break;
+
 	case OBJECT_TYPE_BRICKGOLD:
 	{
 		item = atoi(tokens[4].c_str());
@@ -284,13 +285,9 @@ void PlayScene::ParseSection_Objects(string line)
 	break;
 
 	case OBJECT_TYPE_BRICKGREEN:
-	{
 
 		obj = new BrickGreen();
-
 		break;
-	}
-	break;
 
 	case OBJECT_TYPE_COLORBLOCK:
 
@@ -298,9 +295,13 @@ void PlayScene::ParseSection_Objects(string line)
 		h = atof(tokens[5].c_str());
 
 		obj = new BrickColor();
-
 		obj->SetBoundBbox(w, h);
 
+		break;
+
+	case OBJECT_TYPE_MOVINGBRICK:
+
+		obj = new MovingBrick();
 		break;
 
 	case OBJECT_TYPE_NODES:
@@ -310,10 +311,9 @@ void PlayScene::ParseSection_Objects(string line)
 		int r = atof(tokens[6].c_str());
 		int b = atof(tokens[7].c_str());
 		int tp = atof(tokens[8].c_str());
+
 		obj = new Node(x, y, l, t, r, b, tp);
 		isNode = true;
-
-		//mario->isNoWeight = true;
 	}
 	break;
 
@@ -332,6 +332,7 @@ void PlayScene::ParseSection_Objects(string line)
 		float r = atof(tokens[4].c_str());
 		float b = atof(tokens[5].c_str());
 		int scene_id = atoi(tokens[6].c_str());
+
 		obj = new Portal(x, y, r, b, scene_id);
 	}
 

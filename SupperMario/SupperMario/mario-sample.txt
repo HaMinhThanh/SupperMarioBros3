@@ -1,10 +1,11 @@
 [SETTINGS]
-start	4
+start	5
 #scene list
 [SCENES]
 1	map1_1a.txt
 2	map1_1b.txt
 3	map_worldmap.txt
 4	map_intro.txt
-5	map1_4.txt
+5	map1_4a.txt
+6	map1_4b.txt
 	

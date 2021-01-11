@@ -10,6 +10,7 @@
 #include "PlayScene.h"
 #include "ParaGoomba.h"
 #include "BrickGreen.h"
+#include "MovingBrick.h"
 
 Mario* Mario::instance = NULL;
 
@@ -189,7 +190,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			|| dynamic_cast<BrickColor*>(coObjects->at(i))
 			|| dynamic_cast<BrickGold*>(coObjects->at(i))
 			|| dynamic_cast<BrickQuesion*>(coObjects->at(i))
-			|| dynamic_cast<BrickGreen*>(coObjects->at(i)))
+			|| dynamic_cast<BrickGreen*>(coObjects->at(i))
+			|| dynamic_cast<MovingBrick*>(coObjects->at(i)))
 			//|| dynamic_cast<Koopas*>(coObjects->at(i)))
 		{
 			Bricks.push_back(coObjects->at(i));

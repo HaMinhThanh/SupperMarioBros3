@@ -422,7 +422,7 @@
 
 [ITEMS]
 # type	x	y	ani_set_id	extra_settings per object type
-#coin
+# coin
 1	208	102	32
 1	224	118	32
 1	240	118	32

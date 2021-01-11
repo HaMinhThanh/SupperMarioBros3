@@ -43,28 +43,28 @@
     <Filter Include="Objects\Effect">
       <UniqueIdentifier>{898348e8-8edc-431e-bb66-e2ed6e86f3f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\WorldMap">
+      <UniqueIdentifier>{a1ea86e7-8994-48ac-9b0c-45fa42f0780b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Portal">
+      <UniqueIdentifier>{006b6b21-5ebb-4632-a5e7-1e0fbe900281}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Textures&amp;Sprites">
+      <UniqueIdentifier>{9b97c71e-28e2-48eb-b19f-6626486a8ec3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\KeyEventHandler">
+      <UniqueIdentifier>{1eac2000-e79a-42da-8afd-77323556dd43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Utils">
+      <UniqueIdentifier>{93c9419e-f501-4af3-81bd-2c643704262d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Camera">
+      <UniqueIdentifier>{df018604-0e1f-4f4f-bdc6-9c3af4755623}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sprites.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Textures.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Animations.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyEventHandler.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Framework</Filter>
@@ -117,9 +117,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Portal.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
     <ClCompile Include="HUD.cpp">
       <Filter>Framework\HUD</Filter>
     </ClCompile>
@@ -138,12 +135,6 @@
     <ClCompile Include="Button.cpp">
       <Filter>Objects\Item</Filter>
     </ClCompile>
-    <ClCompile Include="Node.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="person.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
     <ClCompile Include="BrickGreen.cpp">
       <Filter>Objects\Brick</Filter>
     </ClCompile>
@@ -156,28 +147,37 @@
     <ClCompile Include="MovingBrick.cpp">
       <Filter>Objects\Brick</Filter>
     </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Objects\WorldMap</Filter>
+    </ClCompile>
+    <ClCompile Include="person.cpp">
+      <Filter>Objects\WorldMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Portal.cpp">
+      <Filter>Objects\Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprites.cpp">
+      <Filter>Framework\Textures&amp;Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="Textures.cpp">
+      <Filter>Framework\Textures&amp;Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="Animations.cpp">
+      <Filter>Framework\Textures&amp;Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyEventHandler.cpp">
+      <Filter>Framework\KeyEventHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Framework\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Framework\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Sprites.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Textures.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Animations.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyEventHandler.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Framework</Filter>
@@ -227,9 +227,6 @@
     <ClInclude Include="Fire.h">
       <Filter>Objects\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Portal.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
     <ClInclude Include="HUD.h">
       <Filter>Framework\HUD</Filter>
     </ClInclude>
@@ -248,12 +245,6 @@
     <ClInclude Include="Button.h">
       <Filter>Objects\Item</Filter>
     </ClInclude>
-    <ClInclude Include="Node.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="person.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
     <ClInclude Include="BrickGreen.h">
       <Filter>Objects\Brick</Filter>
     </ClInclude>
@@ -265,6 +256,33 @@
     </ClInclude>
     <ClInclude Include="MovingBrick.h">
       <Filter>Objects\Brick</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Objects\WorldMap</Filter>
+    </ClInclude>
+    <ClInclude Include="person.h">
+      <Filter>Objects\WorldMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Portal.h">
+      <Filter>Objects\Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprites.h">
+      <Filter>Framework\Textures&amp;Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="Textures.h">
+      <Filter>Framework\Textures&amp;Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="Animations.h">
+      <Filter>Framework\Textures&amp;Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyEventHandler.h">
+      <Filter>Framework\KeyEventHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Framework\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Framework\Camera</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
