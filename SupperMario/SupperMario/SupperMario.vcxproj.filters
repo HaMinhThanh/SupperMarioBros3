@@ -61,6 +61,9 @@
     <Filter Include="Framework\Camera">
       <UniqueIdentifier>{df018604-0e1f-4f4f-bdc6-9c3af4755623}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\Enemy\Weapon">
+      <UniqueIdentifier>{f4d36cf1-9cef-48b6-9ac4-3bf1ec0d8956}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameObject.cpp">
@@ -110,9 +113,6 @@
     </ClCompile>
     <ClCompile Include="mario.cpp">
       <Filter>Objects\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Fire.cpp">
-      <Filter>Objects\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
@@ -174,6 +174,15 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Framework\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="BoomerangBro.cpp">
+      <Filter>Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Boomerang.cpp">
+      <Filter>Objects\Enemy\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Fire.cpp">
+      <Filter>Objects\Enemy\Weapon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject.h">
@@ -223,9 +232,6 @@
     </ClInclude>
     <ClInclude Include="mario.h">
       <Filter>Objects\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Fire.h">
-      <Filter>Objects\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="HUD.h">
       <Filter>Framework\HUD</Filter>
@@ -283,6 +289,15 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Framework\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="BoomerangBro.h">
+      <Filter>Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Boomerang.h">
+      <Filter>Objects\Enemy\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Fire.h">
+      <Filter>Objects\Enemy\Weapon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

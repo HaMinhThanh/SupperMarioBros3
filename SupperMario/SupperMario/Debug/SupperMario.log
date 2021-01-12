@@ -1,2 +1,70 @@
-﻿  MovingBrick.cpp
+﻿  Boomerang.cpp
+  BoomerangBro.cpp
+  PlayScene.cpp
+  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(142,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(166,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(195,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(196,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(243,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(244,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(297,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(298,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(312,9): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(313,9): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(314,9): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(315,9): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(316,10): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(325,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(326,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(335,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(336,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(235,6): warning C4101: 'ani': unreferenced local variable
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(379,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(380,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(429,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(430,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(447,14): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(448,14): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(461,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(461,21): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(574,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(579,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(596,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(624,14): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(629,40): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(662,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(674,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(677,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(680,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(683,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(686,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(694,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(699,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(716,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(719,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(722,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(725,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(728,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(731,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(736,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1032,23): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1036,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1083,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1704,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1713,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1794,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1811,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1829,34): warning C4305: 'initializing': truncation from 'int' to 'float'
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1842,24): warning C4018: '<': signed/unsigned mismatch
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1832,10): warning C4101: 'l1': unreferenced local variable
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1831,19): warning C4101: 'b': unreferenced local variable
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1832,18): warning C4101: 'r1': unreferenced local variable
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1832,14): warning C4101: 't1': unreferenced local variable
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1831,10): warning C4101: 'l': unreferenced local variable
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1831,13): warning C4101: 't': unreferenced local variable
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1831,16): warning C4101: 'r': unreferenced local variable
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1832,22): warning C4101: 'b1': unreferenced local variable
+C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\SupperMario\PlayScene.cpp(1917,20): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
   SupperMario.vcxproj -> C:\Users\minht\OneDrive\Desktop\SupperMarioBros3\SupperMario\Debug\SupperMario.exe

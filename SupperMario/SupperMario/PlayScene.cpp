@@ -17,6 +17,8 @@
 #include "Goomba.h"
 #include "Venus.h"
 #include "ParaGoomba.h"
+#include "BoomerangBro.h"
+#include "Boomerang.h"
 
 #include "Leaf.h"
 #include "Coin.h"
@@ -69,7 +71,8 @@ using namespace std;
 #define ENEMY_TYPE_KOOPAS		2
 #define ENEMY_TYPE_VENUS		3
 #define ENEMY_TYPE_PARAKOOPAS	4
-#define ENEMY_TYPE_PARAGOOMBA	5	
+#define ENEMY_TYPE_PARAGOOMBA	5
+#define ENEMY_TYPE_BOOMERANGBRO 6
 
 #define OBJECT_TYPE_NODES	40
 #define OBJECT_TYPE_PERSON	41
@@ -459,6 +462,9 @@ void PlayScene::ParseSection_Enemy(string line)
 		break;
 	case ENEMY_TYPE_PARAGOOMBA:
 		enemy = new ParaGoomba();
+		break;
+	case ENEMY_TYPE_BOOMERANGBRO:
+		enemy = new BoomerangBro();
 		break;
 	default:
 		//DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
