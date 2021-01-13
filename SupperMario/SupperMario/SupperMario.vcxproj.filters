@@ -64,6 +64,12 @@
     <Filter Include="Objects\Enemy\Weapon">
       <UniqueIdentifier>{f4d36cf1-9cef-48b6-9ac4-3bf1ec0d8956}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Grid">
+      <UniqueIdentifier>{70b05466-9841-4149-ac30-4863adba95e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Map">
+      <UniqueIdentifier>{86cbd4af-2e27-4a6d-a9ea-a05ddf72b85a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameObject.cpp">
@@ -183,6 +189,12 @@
     <ClCompile Include="Fire.cpp">
       <Filter>Objects\Enemy\Weapon</Filter>
     </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Framework\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Framework\Map</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject.h">
@@ -298,6 +310,12 @@
     </ClInclude>
     <ClInclude Include="Fire.h">
       <Filter>Objects\Enemy\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Framework\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Framework\Map</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

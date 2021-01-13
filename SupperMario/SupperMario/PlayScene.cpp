@@ -1675,7 +1675,7 @@ void PlayScene::checkCollisionWithBrick()
 			{
 				Portal* p = dynamic_cast<Portal*>(obj);
 
-				if (p->GetSceneId() == 2)
+				if (p->GetSceneId() == 2 || p->GetSceneId() == 6)
 				{
 					if (Game::GetInstance()->IsKeyDown(DIK_DOWN))
 					{

@@ -21,6 +21,7 @@ public:
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	void SetState(int state);
 
-
+	Boomerang* boomr1;
+	Boomerang* boomr2;
 };
 

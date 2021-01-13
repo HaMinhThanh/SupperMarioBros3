@@ -3,6 +3,9 @@
 BoomerangBro::BoomerangBro()
 {
 	isFinish = false;
+
+	boomr1 = new Boomerang();
+	boomr2 = new Boomerang();
 }
 
 BoomerangBro::~BoomerangBro()
