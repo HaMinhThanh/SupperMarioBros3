@@ -34,9 +34,12 @@ Mario::Mario(float x, float y) :GameObject()
 	drift = 0;
 	maxjumping = 0;
 	time_maxjumping = 0;
+	waitToReset = 0;
+	time_to_reset = 0;
 
 	isSpeedUp = false;
 	isPrepareSpeedUp = false;
+	isPowerUp = false;
 
 	SetState(MARIO_STATE_IDLE);
 
@@ -54,18 +57,14 @@ Mario::Mario(float x, float y) :GameObject()
 
 void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (state == MARIO_STATE_DIE)
+	if (state == MARIO_STATE_DIE )
 	{
-		live -= 1;
-
-		if (live >= 0)
+		if (waitToReset == 0)
 		{
-			Reset();
+			live -= 1;
+			StartReset();
 		}
-		else
-		{
-			return;
-		}
+		
 	}
 	if (isTurnToBig) {
 		y -= MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT;
@@ -159,7 +158,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		if (GetTickCount() - time_maxjumping > 100 && GetTickCount() - time_maxjumping < 200)
 		{
-			vy = -0.15f;			
+			vy = -0.15f;
 		}
 		else if (GetTickCount() - time_maxjumping >= 200)
 		{
@@ -178,8 +177,22 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		isMaxJumping = true;
 	}
-		
-	
+
+	if (isPowerUp)
+	{
+		//vy = -MARIO_JUMP_MAX_SPEED;
+	}
+
+	if (waitToReset == 1)
+	{
+		if (GetTickCount() - time_to_reset > 2000)
+		{
+			waitToReset = 0;
+			time_to_reset = 0;
+
+			Reset();
+		}
+	}
 
 	vector<LPGAMEOBJECT> Bricks;
 	vector<LPGAMEOBJECT> Enemies;
@@ -239,7 +252,18 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 			backupLevel = level;
 
-			StartFlyable();
+			if (level == MARIO_LEVEL_SMALL)
+			{
+				isPowerUp = true;
+			}
+			else if (level == MARIO_LEVEL_BIG)
+			{
+				isPowerUp = true;
+			}
+			else if (level == MARIO_LEVEL_TAIL)
+			{
+				StartFlyable();
+			}
 
 			isSpeedUp = false;
 		}
@@ -271,9 +295,10 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			isFlying = false;
 			flyable = 0;
+			flyable_start = 0;
 			isMomentum = true;
 
-			level = backupLevel;
+			level = MARIO_LEVEL_TAIL;
 
 		}
 
@@ -462,18 +487,23 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x += min_tx * dx + nx * 0.04f;
 		y += min_ty * dy + ny * 0.04f;
 
-		if (nx != 0 )
+		if (nx != 0)
 		{
 			vx = 0;
 			collision_x = true;
+
+			//isPowerUp = false;
 		}
 		else
 			collision_x = false;
 
+		if (nx != 0 && ny == 0)
+			isPowerUp = false;
+
 		if (ny != 0 && nx == 0)
 		{
 			vy = 0;
-			collision_y = true;			
+			collision_y = true;
 		}
 		else
 			collision_y = false;
@@ -663,6 +693,23 @@ void Mario::Render()
 
 		}
 	}
+	else if (isPowerUp)
+	{
+		if (level == MARIO_LEVEL_SMALL)
+		{
+			if (vx > 0 || nx > 0)
+				SetAni(MARIO_ANI_FLY_SMALL_RIGHT);
+			else
+				SetAni(MARIO_ANI_FLY_SMALL_LEFT);
+		}
+		else if (level == MARIO_LEVEL_BIG)
+		{
+			if (vx > 0 || nx > 0)
+				SetAni(MARIO_ANI_FLY_BIG_RIGHT);
+			else
+				SetAni(MARIO_ANI_FLY_BIG_LEFT);
+		}
+	}
 
 	int alpha = 255;
 	if (untouchable) alpha = 128;
@@ -684,7 +731,7 @@ void Mario::SetState(int  state)
 	case MARIO_STATE_WALKING_RIGHT:
 		if (isPrepareSpeedUp)
 			vx = 0.15f;
-		else if (isSpeedUp)
+		else if (isSpeedUp|| isPowerUp)
 			vx = 0.2f;
 		else
 			vx = MARIO_WALKING_SPEED;
@@ -700,25 +747,31 @@ void Mario::SetState(int  state)
 
 		if (isPrepareSpeedUp)
 			vx = -0.15f;
-		else if (isSpeedUp)
+		else if (isSpeedUp || isPowerUp)
 			vx = -0.2f;
 		else
 			vx = -MARIO_WALKING_SPEED;
 		//isTurnLeft = true;
 		isTurnRight = false;
 
-		if (momentable == 0  && isTurnRight == false && isAllowMoment)
+		if (momentable == 0 && isTurnRight == false && isAllowMoment)
 			StartMomentum();
 
 		nx = -1;
 		break;
 	case MARIO_STATE_JUMP:
 		if (isFlying)
+		{
 			vy = -MARIO_GRAVITY_TAIL;
-		else
+		}
+		else if (isPowerUp)
+		{
+			vy = -MARIO_JUMP_MAX_SPEED;
+		}
+		else 
 			vy = -0.25f;
 		break;
-	
+
 	case MARIO_STATE_IDLE:
 		isMomentum = false;
 		//momentable = 0;
@@ -761,7 +814,7 @@ void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 			right = x + MARIO_SMALL_BBOX_WIDTH;
 			bottom = y + MARIO_SMALL_BBOX_HEIGHT;
 		}
-		else if (level == MARIO_LEVEL_TAIL )
+		else if (level == MARIO_LEVEL_TAIL)
 		{
 			if (isAllowSwing)
 			{
@@ -916,7 +969,7 @@ void Mario::changeAni()
 		}
 		else if (level == MARIO_LEVEL_TAIL)
 		{
-			if (vy >= 0) 
+			if (vy >= 0)
 			{
 				if (vx == 0)
 				{
@@ -927,7 +980,7 @@ void Mario::changeAni()
 					SetAni(MARIO_ANI_TAIL_WALKING_RIGHT);
 				else SetAni(MARIO_ANI_TAIL_WALKING_LEFT);
 			}
-			else if (vy < 0) 
+			else if (vy < 0)
 			{
 				if (vx == 0)
 				{
@@ -941,7 +994,7 @@ void Mario::changeAni()
 		}
 		if (level == MARIO_LEVEL_FIRE)
 		{
-			if (vy >= 0) 
+			if (vy >= 0)
 			{
 				if (vx == 0)
 				{
@@ -953,7 +1006,7 @@ void Mario::changeAni()
 				else SetAni(MARIO_ANI_WALKING_FIRE_LEFT);
 			}
 
-			else if (vy < 0) 
+			else if (vy < 0)
 			{
 				if (vx > 0 || nx > 0)
 				{
@@ -1082,15 +1135,15 @@ bool Mario::isCollisionWithItem(LPGAMEOBJECT item)
 
 void Mario::SetHodingItem(LPGAMEOBJECT item)
 {
-	if (vx > 0 || nx > 0) 
+	if (vx > 0 || nx > 0)
 	{
 		item->x = x + MARIO_BIG_BBOX_WIDTH - 3;
-		item->y = y+8;
+		item->y = y + 8;
 	}
-	else 
+	else
 	{
 		item->x = x - 8;
-		item->y = y+8;
+		item->y = y + 8;
 	}
 }
 

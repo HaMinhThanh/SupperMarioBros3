@@ -11,6 +11,7 @@
 
 //0.1f
 #define MARIO_JUMP_SPEED_Y		0.32f
+#define MARIO_JUMP_MAX_SPEED	0.5f;
 #define MARIO_JUMP_DEFLECT_SPEED 0.1f
 #define MARIO_GRAVITY			0.0008f
 #define MARIO_GRAVITY_TAIL		0.25f
@@ -169,7 +170,7 @@
 
 #define MARIO_UNTOUCHABLE_TIME	2000
 #define MARIO_FLY_TIME			4000	
-#define MARIO_MOMENTUM_TIME		2500
+#define MARIO_MOMENTUM_TIME		2000
 #define MARIO_KICKING_TIME		200
 #define MARIO_SWING_TIME		300
 
@@ -198,6 +199,9 @@ public:
 
 	int collisWithMushroom = 0;
 	DWORD collisWithMushroom_start;
+
+	int waitToReset;
+	DWORD time_to_reset;
 
 	float start_x;
 	float start_y;
@@ -255,6 +259,7 @@ public:
 	bool isFlying;
 	bool isWagging;
 	bool isJumping;
+	bool isPowerUp;
 
 	bool noCollision;
 	bool collision_x;
@@ -285,6 +290,7 @@ public:
 	void StartKick() { isAllowKick = true; kicking = 1; kicking_start = GetTickCount(); }
 	void StartSwing() { isDecreaseX = true; swing = 1; swing_start = GetTickCount(); }
 	void StartCollisionWithMushroom() { isCollisionWithMushroom = true; collisWithMushroom = 1; collisWithMushroom_start = GetTickCount(); }
+	void StartReset() { waitToReset = 1; time_to_reset = GetTickCount(); }
 
 	void Reset();
 
