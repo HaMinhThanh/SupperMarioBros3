@@ -2448,3 +2448,7 @@
 
 # Para Goomba
 5	1080	350	3
+
+[CAMERA]
+# XLeft	XRight
+0	2848

@@ -59,6 +59,7 @@ public:
 	void ParseSection_Items(string line);
 	void ParseSection_Enemy(string line);
 	void ParseSection_BackGround(string line);
+	void ParseSection_Camera(string line);
 
 	D3DCOLOR *background;
 
@@ -84,6 +85,9 @@ public:
 	bool isNoWeight = false;
 
 	Mario* GetPlayer() { return mario; }
+	Node* GetNode() { return currentNode; }
+
+	int xLeft, xRight;
 
 	bool isCollision = false;
 	//bool isNotDie;

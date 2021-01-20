@@ -1,4 +1,5 @@
 ﻿#include "Grid.h"
+#include "Define.h"
 
 #define SCREEN_HEIGHT	272
 #define SCREEN_WIDTH	336 

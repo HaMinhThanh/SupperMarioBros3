@@ -202,6 +202,7 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Coin.h" />
+    <ClInclude Include="Define.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="Fire.h" />
     <ClInclude Include="FireBall.h" />

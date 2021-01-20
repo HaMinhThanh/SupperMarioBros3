@@ -45,6 +45,7 @@ using namespace std;
 #define SCENE_SECTION_OBJECTS			7
 #define SCENE_SECTION_ENEMY				8
 #define SCENE_SECTION_BACKGROUND		9
+#define SCENE_SECTION_CAMERA			10
 
 // Player and Brick
 #define OBJECT_TYPE_MARIO			0
@@ -223,6 +224,14 @@ void PlayScene::ParseSection_BackGround(string line)
 	}
 }
 
+void PlayScene::ParseSection_Camera(string line)
+{
+	vector<string> tokens = split(line);
+	if (tokens.size() < 2)return;	// skip invalid lines
+	xLeft = atoi(tokens[0].c_str());
+	xRight = atoi(tokens[1].c_str());
+}
+
 /*
 	Parse a line in section [OBJECTS]
 */
@@ -314,8 +323,9 @@ void PlayScene::ParseSection_Objects(string line)
 		int r = atof(tokens[6].c_str());
 		int b = atof(tokens[7].c_str());
 		int tp = atof(tokens[8].c_str());
+		int id = atof(tokens[9].c_str());
 
-		obj = new Node(x, y, l, t, r, b, tp);
+		obj = new Node(x, y, l, t, r, b, tp, id);
 		isNode = true;
 	}
 	break;
@@ -483,6 +493,8 @@ void PlayScene::ParseSection_Enemy(string line)
 
 void PlayScene::Load()
 {
+	xLeft = xRight = -1;
+
 	HUD = HUD::GetInstance();
 
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
@@ -524,6 +536,10 @@ void PlayScene::Load()
 		if (line == "[ENEMY]") {
 			section = SCENE_SECTION_ENEMY; continue;
 		}
+		if (line == "[CAMERA]")
+		{
+			section = SCENE_SECTION_CAMERA; continue;
+		}
 
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
 
@@ -540,6 +556,7 @@ void PlayScene::Load()
 		case SCENE_SECTION_OBJECTS: ParseSection_Objects(line); break;
 		case SCENE_SECTION_ENEMY: ParseSection_Enemy(line); break;
 		case SCENE_SECTION_BACKGROUND: ParseSection_BackGround(line); break;
+		case SCENE_SECTION_CAMERA: ParseSection_Camera(line); break;
 		}
 	}
 
@@ -618,10 +635,12 @@ void PlayScene::Update(DWORD dt)
 	}
 	else
 	{
-		if (cx <= 0)
+		/*if (cx <= 0)
 			cx = 0;
 		else if (cx + game->GetScreenWidth() >= 2816)
-			cx = 2816 - game->GetScreenWidth();
+			cx = 2816 - game->GetScreenWidth();*/
+
+		if (cx < xLeft) cx = xLeft; if (cx > xRight - 336) cx = xRight- 336;
 
 		if (mario->level == MARIO_LEVEL_FLY || mario->level == MARIO_LEVEL_TAIL) {
 			if (cy <= 0) cy = 0;
@@ -700,7 +719,6 @@ void PlayScene::Render()
 	{
 		Effect[i]->Render();
 	}
-	Sprites* sprite = Sprites::GetInstance();
 
 	mario->Render();
 
@@ -749,7 +767,7 @@ void PlayScene::Unload()
 	Effect.clear();
 
 	mario = NULL;
-	delete mario;
+	//delete mario;
 
 	HUD = NULL;
 	delete HUD;
@@ -830,6 +848,9 @@ void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_P:
 		mario->isComeUp = true;
 		break;
+	case DIK_F:
+		if (mario->level == MARIO_LEVEL_FIRE)
+			mario->isUseFire = true;
 	}
 
 	if (Game::GetInstance()->GetCurrentSceneId() == 3)
@@ -949,7 +970,7 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 
 	if (game->IsKeyDown(DIK_S) && game->GetCurrentSceneId() == 3)
 	{
-		Game::GetInstance()->SwitchScene(1);
+		mario->SwitchMap();
 	}
 
 	if (game->IsKeyDown(DIK_DOWN) && game->GetCurrentSceneId() != 3)
@@ -1012,6 +1033,10 @@ void PlayScene::checkCollisionWithItem()
 					if (mario->level == MARIO_LEVEL_SMALL) {
 						mario->isTurnToBig = true;
 						mario->level = MARIO_LEVEL_BIG;
+					}
+					else if (mario->level > MARIO_LEVEL_BIG)
+					{
+						mario->live += 1;
 					}
 
 					mario->score += 1000;
@@ -1875,9 +1900,9 @@ void PlayScene::checkMarioWorldMap()
 
 	//mario->vx = 0.1f;
 
-	if (currentNode == NULL)
+	if (mario->currentNode == NULL)
 	{
-		currentNode = new Node(15, 32, 0, 0, 1, 0, 0);
+		mario->currentNode = new Node(15, 32, 0, 0, 1, 0, 0, 0);
 		//Nodes.push_back(currentNode);
 
 		DebugOut(L"currentNode == NULL\n");
@@ -1886,19 +1911,19 @@ void PlayScene::checkMarioWorldMap()
 	{
 		//DebugOut(L"currentNode->x = %d\n", currentNode->x);
 
-		if (currentNode->bottom && mario->isGoDown)
+		if (mario->currentNode->bottom && mario->isGoDown)
 		{
 			mario->vy = 0.1f;
 		}
-		else if (currentNode->top && mario->isGoUp)
+		else if (mario->currentNode->top && mario->isGoUp)
 		{
 			mario->vy = -0.1f;
 		}
-		else if (currentNode->right && mario->isGoRight)
+		else if (mario->currentNode->right && mario->isGoRight)
 		{
 			mario->vx = 0.1f;
 		}
-		else if (currentNode->left && mario->isGoLeft)
+		else if (mario->currentNode->left && mario->isGoLeft)
 		{
 			mario->vx = (float)-0.1;
 		}
@@ -1927,7 +1952,7 @@ void PlayScene::checkMarioWorldMap()
 			if (e->t > 0 && e->t <= 1) /*&& currentNode->x != bg->x && currentNode->y != bg->y) */
 			{
 
-				currentNode->SetDirectNode(node->x, node->y, node->left, node->top, node->right, node->bottom);
+				mario->currentNode->SetDirectNode(node->x, node->y, node->left, node->top, node->right, node->bottom, node->SceneId);
 
 				mario->vx = 0;
 				mario->vy = 0;
@@ -1941,7 +1966,7 @@ void PlayScene::checkMarioWorldMap()
 
 				if (node->type == 1)
 				{
-					HidenWall* hd = new HidenWall(node->x, node->y, 0, 37);
+					HidenWall* hd = new HidenWall(node->x, node->y, 0, 72);
 					BackGround.push_back(hd);
 
 					node->type = 0;
@@ -2020,10 +2045,7 @@ void PlayScene::checkEndScene()
 
 			mario->isAutoGo = false;
 
-			Game::GetInstance()->SwitchScene(5);
-
-
+			Game::GetInstance()->SwitchScene(3);
 		}
-
 	}
 }

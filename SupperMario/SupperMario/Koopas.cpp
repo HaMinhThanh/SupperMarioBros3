@@ -45,14 +45,14 @@ void Koopas::GetBoundingBox(float& left, float& top, float& right, float& bottom
 void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 
-	if (turnToNormal) {
+	if (turnToNormal && Game::GetInstance()->GetCurrentSceneId() != 4) {
 		y -= 11;
 		level = KOOPAS_LEVEL_NORMAL;
 		SetState(KOOPAS_STATE_WALKING_LEFT);
 		turnToNormal = false;
 	}
 
-	if (level < KOOPAS_LEVEL_NORMAL && Game::GetInstance()->GetCurrentSceneId() != 3)
+	if (level < KOOPAS_LEVEL_NORMAL && Game::GetInstance()->GetCurrentSceneId() != 4)
 	{
 		if (isWaiting == 0)
 		{
@@ -187,7 +187,6 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					else if (vx < 0)
 						SetState(KOOPAS_STATE_WALKING_RIGHT);
 				}
-
 			}
 		}
 
@@ -372,7 +371,6 @@ void Koopas::SetState(int state)
 
 		vx = 0;
 
-		//StartWaitToNormal();
 		break;
 	}
 }

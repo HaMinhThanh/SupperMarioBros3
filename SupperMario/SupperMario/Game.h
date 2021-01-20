@@ -6,6 +6,8 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 
+#include "Define.h"
+
 #define DIRECTINOUT_VERSION 0X0800
 #include <dinput.h>
 

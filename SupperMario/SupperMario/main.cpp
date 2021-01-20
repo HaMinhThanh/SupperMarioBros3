@@ -340,7 +340,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreInstance, LPSTR lpCmdLine,
 	game = Game::GetInstance();
 	game->Init(hWnd);
 
-	//LoadResources();
+	LoadResources();
 
 	game->InitKeyBoard();
 

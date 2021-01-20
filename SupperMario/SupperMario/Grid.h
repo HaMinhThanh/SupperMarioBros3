@@ -3,9 +3,10 @@
 #include "Game.h"
 #include "GameObject.h"
 #include "Utils.h"
+#include "Define.h"
 
-#define GRID_ROW_MAX		1
-#define GRID_COLUMN_MAX		6
+#define GRID_ROW_MAX		2
+#define GRID_COLUMN_MAX		9
 
 #define GRID_CELL_WIDTH		336//SCREEN_WIDTH
 #define GRID_CELL_HEIGHT	272//SCREEN_HEIGHT

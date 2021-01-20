@@ -5,6 +5,7 @@
 #include "Camera.h"
 
 #include "BrickColor.h"
+#include "Node.h"
 
 #define MARIO_WALKING_SPEED		0.1f 
 #define MARIO_WALKING_MAX_SPEED	0.15f
@@ -340,5 +341,9 @@ public:
 	int drift;
 
 	void StartDrift() { isDrift = true; drift = 1; time_drift = GetTickCount(); }
+
+	Node* currentNode;
+	Node* GetCurentNode() { return currentNode; }
+	void SwitchMap();
 };
 

@@ -3,6 +3,7 @@
 #include "Textures.h"
 #include "Sprites.h"
 #include"Utils.h"
+#include "Define.h"
 
 #define MAP_CELL_SIZE	16
 

@@ -1,6 +1,6 @@
 #include "Node.h"
 
-Node::Node(float x, float y, int l, int t, int r, int b, int tp)
+Node::Node(float x, float y, int l, int t, int r, int b, int tp, int id)
 {
 	isFinish = false;
 
@@ -27,6 +27,8 @@ Node::Node(float x, float y, int l, int t, int r, int b, int tp)
 		this->bottom = false;
 	else
 		this->bottom = true;
+
+	SceneId = id;
 }
 
 Node::~Node()
@@ -53,9 +55,11 @@ void Node::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 	bottom = y + 10;
 }
 
-void Node::SetDirectNode(float x, float y, int l, int t, int r, int b)
+void Node::SetDirectNode(float x, float y, int l, int t, int r, int b, int id)
 {
 	SetPosition(x, y);
+
+	SceneId = id;
 
 	if (l == 0)
 		this->left = false;

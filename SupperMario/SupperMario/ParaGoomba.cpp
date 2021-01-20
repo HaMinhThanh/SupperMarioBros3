@@ -57,7 +57,8 @@ void ParaGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				time_walking = 0;
 				walking = 0;
 
-				isMomentable = true;
+				//isMomentable = true;
+				isJumping = true;
 			}
 		}
 
@@ -78,41 +79,39 @@ void ParaGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				time_jumping = 0;
 				jumping = 0;
-				vy = -0.005f;
 			}
 		}
-
 
 		if (walking == 1)
 		{
 			vy = 0;
 		}
 
-
 		if (momentable == 1)
 		{
 			vy = 0;
 		}
 
-
 		if (jumping == 1)
 		{
-			vy = -0.07f;
+			vy = -0.05f;
 		}
 
 		if (isWalking)
 		{
-			StartWalking();
+			if (walking == 0)
+				StartWalking();
 			isWalking = false;
 		}
-		else if (isMomentable)
+		if (isMomentable)
 		{
 			StartMoment();
 			isMomentable = false;
 		}
-		else if (isJumping)
+		if (isJumping)
 		{
-			StartJumping();
+			if (jumping == 0)
+				StartJumping();
 			isJumping = false;
 		}
 	}
@@ -166,35 +165,39 @@ void ParaGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		if (ny != 0)
 		{
-			if (level == PARAGOOMBA_LEVEL_WING)
-				isWalking = true;
+			if (level == PARAGOOMBA_LEVEL_WING && ny < 0)
+			{
+				vy = 0;
+				if (walking == 0)
+					isWalking = true;
+			}				
 			else
 				vy = 0;
 		}
 
-		for (UINT i = 0; i < coEvents.size(); i++)
-		{
-			coEvents[i]->obj->GetBoundingBox(l, t, r, b);
-			if (r > max)
-			{
-				max = r;
-			}
-			if (l < min)
-			{
-				min = l;
-			}
-		}
+		//for (UINT i = 0; i < coEvents.size(); i++)
+		//{
+		//	coEvents[i]->obj->GetBoundingBox(l, t, r, b);
+		//	if (r > max)
+		//	{
+		//		max = r;
+		//	}
+		//	if (l < min)
+		//	{
+		//		min = l;
+		//	}
+		//}
 
-		if (x + 16 > max && vx > 0)
-		{
-			//x = max;
-			vx = -0.025f;
-		}
-		else if (x < min && vx < 0)
-		{
-			//x = min;
-			vx = 0.025f;
-		}
+		//if (x + 16 > max && vx > 0)
+		//{
+		//	//x = max;
+		//	vx = -0.025f;
+		//}
+		//else if (x < min && vx < 0)
+		//{
+		//	//x = min;
+		//	vx = 0.025f;
+		//}
 
 		x += min_tx * dx;// +nx * 0.04f;
 		y += min_ty * dy + ny * 0.04f;
