@@ -48,6 +48,7 @@ public:
 	float backupY;
 
 	bool isDie;
+	bool isCollising;
 
 	int ani_set;
 

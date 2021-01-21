@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "GameObject.h"
 #include "HUD.h"
+#include "Grid.h"
 
 #include "Brick.h"
 #include "BrickGold.h"
@@ -20,11 +21,8 @@
 
 #include "Coin.h"
 #include "Leaf.h"
-
 #include "FireBall.h"
-
 #include "Node.h"
-
 #include "Utils.h"
 
 #include <map>
@@ -36,6 +34,9 @@ public:
 	Mario* mario;
 
 	HUD* HUD;
+	Grid* grid;
+
+	vector<LPGAMEOBJECT> coObjects;	// quan li cac object trong cam
 
 	vector<LPGAMEOBJECT> BackGround;
 	vector<LPGAMEOBJECT> Objects;
@@ -44,8 +45,8 @@ public:
 	vector<LPGAMEOBJECT> Weapon;
 	vector<LPGAMEOBJECT> Bicks;
 	vector<LPGAMEOBJECT> Effect;
-
 	vector<LPGAMEOBJECT> Nodes;
+	vector<LPGAMEOBJECT> Coins;
 
 	Node* currentNode = NULL;
 
@@ -78,6 +79,7 @@ public:
 	void checkCollisionEnemyWithBrick();
 	void checkCollisionEnemyWithEnemy();
 	void checkEndScene();
+	void checkTurnGoldBrick();
 
 	void useFireBall();
 
@@ -88,6 +90,7 @@ public:
 	Node* GetNode() { return currentNode; }
 
 	int xLeft, xRight;
+	float xCam4 = 0;
 
 	bool isCollision = false;
 	//bool isNotDie;
@@ -97,7 +100,11 @@ public:
 	int endscene = 0;
 	int addtext = 3;
 
+	DWORD time_turngb = 0;
+	int turngb = 0;
+
 	void StartEndScene() { endscene = 1; time_endscene = GetTickCount(); }
+	void TurnGoldBrick() { turngb = 1; time_turngb = GetTickCount(); }
 	
 };
 

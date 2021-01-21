@@ -41,6 +41,10 @@ Mario::Mario(float x, float y) :GameObject()
 	isPrepareSpeedUp = false;
 	isPowerUp = false;
 
+	stop = 0;
+	time_stop = 0;
+	isCollising = false;
+
 	SetState(MARIO_STATE_IDLE);
 
 	start_x = x;
@@ -59,6 +63,22 @@ Mario::Mario(float x, float y) :GameObject()
 
 void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	float xCam, yCam;
+	Game::GetInstance()->GetCamPos(xCam, yCam);
+
+	if (Game::GetInstance()->GetCurrentSceneId() != 4)
+	{
+		if (x <= xCam)
+		{
+			x = xCam;
+		}
+
+		if (y > 500)
+		{
+			SetState(MARIO_STATE_DIE);
+		}
+	}
+
 	if (state == MARIO_STATE_DIE )
 	{
 		if (waitToReset == 0)
@@ -79,6 +99,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		
 	}
+
 	if (isTurnToBig) {
 		y -= MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT;
 		isTurnToBig = false;
@@ -204,6 +225,18 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			time_to_reset = 0;
 
 			Reset();
+			return;
+		}
+	}
+
+	if (stop == 1)
+	{
+		
+		if (GetTickCount() - time_stop > MARIO_TIME_TO_STOP)
+		{
+			stop = 0;
+			time_stop = 0;
+			SetState(MARIO_STATE_IDLE);
 		}
 	}
 
@@ -798,12 +831,26 @@ void Mario::SetState(int  state)
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
 		break;
+	case MARIO_STATE_STOP:
+		if (stop == 0) {
+			if (vx > 0)
+				vx = 0.025;
+			else if (vx < 0)
+				vx = -0.025;
+
+			StartStop();
+		}
+		break;
 	}
 
 }
 
 void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
+	if (GetState() == MARIO_STATE_DIE)
+	{
+		return;
+	}
 
 	left = x;
 	top = y;
@@ -877,10 +924,14 @@ void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 
 void Mario::Reset()
 {
-	SetState(MARIO_STATE_IDLE);
-	SetLevel(MARIO_LEVEL_BIG);
-	SetPosition(start_x, start_y);
-	SetSpeed(0, 0);
+	int id = Game::GetInstance()->GetCurrentSceneId();
+	Game::GetInstance()->SwitchScene(id);
+
+	Mario* mario = Mario::GetInstance(0, 0);
+	mario->SetState(MARIO_STATE_IDLE);
+	mario->SetLevel(MARIO_LEVEL_BIG);
+	mario->SetPosition(start_x, start_y);
+	mario->SetSpeed(0, 0);
 }
 
 int Mario::GetLevel()

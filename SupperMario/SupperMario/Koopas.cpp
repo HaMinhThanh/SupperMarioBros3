@@ -3,6 +3,7 @@
 #include "BrickColor.h"
 #include "BrickQuesion.h"
 #include "BrickGold.h"
+#include "BrickGreen.h"
 
 #include "mario.h"
 #include "Goomba.h"
@@ -16,6 +17,7 @@ Koopas::Koopas(float x, float y, int lvl, int t)
 	level = lvl;
 	type = t;
 	isWait = false;
+	isCollising = false;
 	//SetState(KOOPAS_STATE_WALKING_RIGHT);
 	vx = -0.025f;
 
@@ -114,8 +116,24 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	GameObject::Update(dt, coObjects);
+	
+	if (Game::GetInstance()->GetCurrentSceneId() == 5 && level == KOOPAS_LEVEL_WING)
+	{
+		vx = 0;
 
-	vy += KOOPAS_GRAVITY * dt;
+		if (y >= 384)
+		{
+			vy = -0.05;
+		}
+		else if (y <= backupY)
+		{
+			vy = 0.05;
+		}
+	}
+	else
+	{
+		vy += KOOPAS_GRAVITY * dt;
+	}	
 
 	vector<LPGAMEOBJECT> Bricks;
 	Bricks.clear();
@@ -126,6 +144,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			|| dynamic_cast<BrickColor*>(coObjects->at(i))
 			|| dynamic_cast<BrickGold*>(coObjects->at(i))
 			|| dynamic_cast<BrickQuesion*>(coObjects->at(i)))
+			//|| dynamic_cast<BrickGreen*>(coObjects->at(i)))
 		{
 			Bricks.push_back(coObjects->at(i));
 		}
@@ -188,6 +207,16 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						SetState(KOOPAS_STATE_WALKING_RIGHT);
 				}
 			}
+			/*else if (dynamic_cast<BrickGreen*>(e->obj))
+			{
+				if (e->nx != 0)
+				{
+					if (GetState() == KOOPAS_STATE_WALKING_RIGHT)
+						SetState(KOOPAS_STATE_WALKING_LEFT);
+					else
+						SetState(KOOPAS_STATE_WALKING_RIGHT);
+				}
+			}*/
 		}
 
 		if (rdx != 0 && rdx != dx)
@@ -257,12 +286,12 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		if (level >= KOOPAS_LEVEL_NORMAL)
 		{
-			if (r1 - 10 > max && vx > 0)
+			if (r1-5 > max && vx > 0)
 			{
 				//x = max;
 				SetState(KOOPAS_STATE_WALKING_LEFT);
 			}
-			else if (l1 + 10 < min && vx < 0)
+			else if (l1 + 5 < min && vx < 0)
 			{
 				//x = min;
 				SetState(KOOPAS_STATE_WALKING_RIGHT);
@@ -284,7 +313,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (y > 1000 && level == KOOPAS_LEVEL_WING)
 	{
-		SetPosition(1424, 250);
+		SetPosition(backupX, backupY);
 	}
 }
 

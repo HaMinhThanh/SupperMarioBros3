@@ -27,6 +27,7 @@
 #define MARIO_STATE_FALL			500
 #define MARIO_STATE_RUN				600
 #define MARIO_STATE_FLY				700	
+#define MARIO_STATE_STOP			800 
 
 #define MARIO_ANI_BIG_IDLE_RIGHT		0
 #define MARIO_ANI_BIG_IDLE_LEFT			1
@@ -174,6 +175,7 @@
 #define MARIO_MOMENTUM_TIME		2000
 #define MARIO_KICKING_TIME		200
 #define MARIO_SWING_TIME		300
+#define MARIO_TIME_TO_STOP		500
 
 
 class Mario: public GameObject
@@ -203,6 +205,9 @@ public:
 
 	int waitToReset;
 	DWORD time_to_reset;
+
+	int stop;
+	DWORD time_stop;
 
 	float start_x;
 	float start_y;
@@ -292,6 +297,7 @@ public:
 	void StartSwing() { isDecreaseX = true; swing = 1; swing_start = GetTickCount(); }
 	void StartCollisionWithMushroom() { isCollisionWithMushroom = true; collisWithMushroom = 1; collisWithMushroom_start = GetTickCount(); }
 	void StartReset() { waitToReset = 1; time_to_reset = GetTickCount(); }
+	void StartStop() { stop = 1; time_stop = GetTickCount(); }
 
 	void Reset();
 
@@ -326,6 +332,7 @@ public:
 	bool allowJump;
 
 	int currentAni;	
+	bool isCollising;
 
 	// world map
 	bool isGoUp;
@@ -344,6 +351,7 @@ public:
 
 	Node* currentNode;
 	Node* GetCurentNode() { return currentNode; }
+	void GetNodePos(float& x, float& y) { x = currentNode->x; y = currentNode->y; }
 	void SwitchMap();
 };
 

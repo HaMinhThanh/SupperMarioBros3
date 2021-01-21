@@ -31,28 +31,33 @@ void Grid::GetListObject(vector<LPGAMEOBJECT>& ListObj, float cam_x, float cam_y
 	int right = (int)(cam_x + SCREEN_WIDTH) / GRID_CELL_WIDTH;
 
 	for (int row = top; row < bottom; row++)
-	{
+	{		
 		for (int column = left - 1; column <= right; column++)
-		{
+		{			
 			if (row <= GRID_ROW_MAX && row >= 0 && column <= GRID_COLUMN_MAX && column >= 0)//
 			{
+				DebugOut(L"%d\n",cam_y);
 				for (UINT i = 0; i < cells[row][column].size(); i++)
 				{
-					if (cells[row][column].at(i)->isFinish == false)	// Loại trừ các obj đã destroy
-					{
-						//if (cells[row][column].at(i)->isOnCamera == false)	// bỏ qua nếu obj đã xuất hiện trên cam
-							// tránh trường hợp 1 cell grid có 2 obj xuất hiện
-							// xóa đk để hiểu rõ
-						{
-							ListObj.push_back(cells[row][column].at(i));
-							//cells[row][column].at(i)->isOnCamera = true;
-						}
-					}
-					else
-					{
-						delete cells[row][column].at(i);
-						cells[row][column].erase(cells[row][column].begin() + i);	// xóa những obj đã die ra khỏi Cell
-					}
+					DebugOut(L" ok");
+					ListObj.push_back(cells[row][column].at(i));
+					DebugOut(L"push to grid successed!!\n");
+					//if (cells[row][column].at(i)->isFinish == true)	// Loại trừ các obj đã destroy
+					//{
+					//	delete cells[row][column].at(i);
+					//	cells[row][column].erase(cells[row][column].begin() + i);	// xóa những obj đã die ra khỏi Cell
+
+					//	//if (cells[row][column].at(i)->isOnCamera == false)	// bỏ qua nếu obj đã xuất hiện trên cam
+					//		// tránh trường hợp 1 cell grid có 2 obj xuất hiện
+					//		// xóa đk để hiểu rõ						
+					//}
+					//else
+					//{
+					//	{
+					//		ListObj.push_back(cells[row][column].at(i));
+					//		//cells[row][column].at(i)->isOnCamera = true;
+					//	}
+					//}
 				}
 			}
 		}

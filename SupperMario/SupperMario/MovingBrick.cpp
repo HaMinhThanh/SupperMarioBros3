@@ -4,6 +4,7 @@
 MovingBrick::MovingBrick()
 {
 	isFinish = false;
+	isMoving = false;
 
 	vx = 0;
 	vy = 0;
@@ -36,6 +37,11 @@ void MovingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			vy = 0.05f;		
 		}
+	}
+
+	if (isMoving)
+	{
+		vx = -0.03f;
 	}
 
 	GameObject::Update(dt, coObjects);
