@@ -258,8 +258,8 @@ void PlayScene::ParseSection_Objects(string line)
 
 	int ani_set_id = atoi(tokens[3].c_str());
 
-	/*int grid_row = atoi(tokens[4].c_str());
-	int grid_column = atoi(tokens[5].c_str());*/
+	int grid_row = atoi(tokens[4].c_str());
+	int grid_column = atoi(tokens[5].c_str());
 
 	AnimationSets* animation_sets = AnimationSets::GetInstance();
 
@@ -288,13 +288,13 @@ void PlayScene::ParseSection_Objects(string line)
 
 	case OBJECT_TYPE_BRICKQUESION:
 
-		item = atoi(tokens[4].c_str());
+		item = atoi(tokens[6].c_str());
 		obj = new BrickQuesion(x, y, item);
 		break;
 
 	case OBJECT_TYPE_BRICKGOLD:
 	{
-		item = atoi(tokens[4].c_str());
+		item = atoi(tokens[6].c_str());
 		obj = new BrickGold(x, y, item);
 	}
 	break;
@@ -306,8 +306,8 @@ void PlayScene::ParseSection_Objects(string line)
 
 	case OBJECT_TYPE_COLORBLOCK:
 
-		w = atof(tokens[4].c_str());
-		h = atof(tokens[5].c_str());
+		w = atof(tokens[6].c_str());
+		h = atof(tokens[7].c_str());
 
 		obj = new BrickColor();
 		obj->SetBoundBbox(w, h);
@@ -335,8 +335,8 @@ void PlayScene::ParseSection_Objects(string line)
 
 	case OBJECT_TYPE_PERSON:
 	{
-		float max = atof(tokens[4].c_str());
-		float min = atof(tokens[5].c_str());
+		float max = atof(tokens[6].c_str());
+		float min = atof(tokens[7].c_str());
 
 		obj = new person(max, min);
 
@@ -345,9 +345,9 @@ void PlayScene::ParseSection_Objects(string line)
 
 	case OBJECT_TYPE_PORTAL:
 	{
-		float r = atof(tokens[4].c_str());
-		float b = atof(tokens[5].c_str());
-		int scene_id = atoi(tokens[6].c_str());
+		float r = atof(tokens[6].c_str());
+		float b = atof(tokens[7].c_str());
+		int scene_id = atoi(tokens[8].c_str());
 
 		obj = new Portal(x, y, r, b, scene_id);
 	}
@@ -377,7 +377,7 @@ void PlayScene::ParseSection_Objects(string line)
 	else
 	{
 		Objects.push_back(obj);
-		//grid->PushObjectToCell(obj, grid_row, grid_column);
+		grid->PushObjectToCell(obj, grid_row, grid_column);
 	}
 }
 
@@ -395,8 +395,8 @@ void PlayScene::ParseSection_Items(string line)
 
 	int ani_set_id = atoi(tokens[3].c_str());
 
-	/*int grid_row = atoi(tokens[4].c_str());
-	int grid_column = atoi(tokens[5].c_str());*/
+	int grid_row = atoi(tokens[4].c_str());
+	int grid_column = atoi(tokens[5].c_str());
 
 	AnimationSets* animation_sets = AnimationSets::GetInstance();
 
@@ -432,7 +432,7 @@ void PlayScene::ParseSection_Items(string line)
 
 	item->SetAnimationSet(ani_set);
 	Items.push_back(item);
-	//grid->PushObjectToCell(item, grid_row, grid_column);
+	grid->PushObjectToCell(item, grid_row, grid_column);
 }
 
 void PlayScene::ParseSection_Enemy(string line)
@@ -583,15 +583,27 @@ void PlayScene::Update(DWORD dt)
 	// TO-DO: This is a "dirty" way, need a more organized way 
 	float xCam, yCam;
 	Game::GetInstance()->GetCamPos(xCam, yCam);
-	//grid->GetListObject(coObjects, xCam, yCam);
+
+	grid->GetListObject(coObjectGrid, xCam, yCam);
 
 	vector<LPGAMEOBJECT> coObjects;
+
+	for (int i = 0; i < coObjectGrid.size(); i++)
+	{
+		coObjects.push_back(coObjectGrid[i]);
+	}
+
+	for (int i = 0; i < coObjectGrid.size(); i++)
+	{
+		coObjectGrid[i]->Update(dt, &coObjects);
+	}
+	/*vector<LPGAMEOBJECT> coObjects;
 
 
 	for (size_t i = 0; i < Objects.size(); i++)
 	{
 		coObjects.push_back(Objects[i]);
-	}
+	}*/
 
 	/*for (size_t i = 0; i < Enemy.size(); i++)
 	{
@@ -602,20 +614,20 @@ void PlayScene::Update(DWORD dt)
 	{
 		Enemy[i]->Update(dt, &coObjects);
 	}
-	for (int i = 0; i < Items.size(); i++)
+	/*for (int i = 0; i < Items.size(); i++)
 	{
 		Items[i]->Update(dt, &coObjects);
-	}
+	}*/
 	if (Game::GetInstance()->GetCurrentSceneId() == 3)
 		for (int i = 0; i < Nodes.size(); i++)
 		{
 			Nodes[i]->Update(dt, &coObjects);
 		}
 
-	for (size_t i = 0; i < Objects.size(); i++)
+	/*for (size_t i = 0; i < Objects.size(); i++)
 	{
 		Objects[i]->Update(dt, &coObjects);
-	}
+	}*/
 	useFireBall();
 	checkCollisionWithEnemy();
 
@@ -719,14 +731,14 @@ void PlayScene::Render()
 	for (int i = 0; i < venus.size(); i++)
 		venus[i]->Render();
 
-	for (int i = 0; i < Objects.size(); i++)
-		Objects[i]->Render();
+	for (int i = 0; i < coObjectGrid.size(); i++)
+		coObjectGrid[i]->Render();
 
 	for (int i = 0; i < enemies.size(); i++)
 		enemies[i]->Render();
 
-	for (int i = 0; i < Items.size(); i++)
-		Items[i]->Render();
+	/*for (int i = 0; i < Items.size(); i++)
+		Items[i]->Render();*/
 
 	for (size_t i = 0; i < Weapon.size(); i++)
 	{
@@ -783,7 +795,7 @@ void PlayScene::Unload()
 
 	//delete mario;
 
-	coObjects.clear();
+	coObjectGrid.clear();
 	Objects.clear();
 	Items.clear();
 	Enemy.clear();
@@ -1106,6 +1118,8 @@ void PlayScene::checkCollisionWithItem()
 								coin->isNoCollision = false;
 								coin->SetAnimationSet(AnimationSets::GetInstance()->Get(32));
 								Items.push_back(coin);
+								
+								grid->Insert(coin, Objects[i]->x, Objects[i]->y, 16, 16);
 								
 								Coins.push_back(coin);								
 
@@ -1623,6 +1637,7 @@ void PlayScene::checkCollisionWithBrick()
 						coin->isNoCollision = false;
 						coin->SetAnimationSet(AnimationSets::GetInstance()->Get(32));
 						Items.push_back(coin);
+						grid->Insert(coin, obj->x, obj->y, 16, 16);
 
 						BrickBreak* bb = new BrickBreak(Objects[i]->x, Objects[i]->y);
 						bb->isRender = true;
@@ -1634,6 +1649,7 @@ void PlayScene::checkCollisionWithBrick()
 						mr->SetPosition(obj->x, obj->y - 36);
 						mr->SetAnimationSet(AnimationSets::GetInstance()->Get(38));
 						Items.push_back(mr);
+						grid->Insert(mr, obj->x, obj->y, 16, 16);
 					}
 					else if (bg->item == 2)
 					{
@@ -1641,6 +1657,7 @@ void PlayScene::checkCollisionWithBrick()
 						bt->SetPosition(obj->x, obj->y - 16);
 						bt->SetAnimationSet(AnimationSets::GetInstance()->Get(39));
 						Items.push_back(bt);
+						grid->Insert(bt, obj->x, obj->y, 16, 16);
 					}
 					else if (bg->item == 3)
 					{
@@ -1648,6 +1665,7 @@ void PlayScene::checkCollisionWithBrick()
 						leaf->SetPosition(obj->x, obj->y - 36);
 						leaf->SetAnimationSet(AnimationSets::GetInstance()->Get(36));
 						Items.push_back(leaf);
+						grid->Insert(leaf, obj->x, obj->y, 16, 16);
 					}
 					else if (bg->item == 4)
 					{
@@ -1656,6 +1674,7 @@ void PlayScene::checkCollisionWithBrick()
 						coin->isNoCollision = true;
 						coin->SetAnimationSet(AnimationSets::GetInstance()->Get(32));
 						Items.push_back(coin);
+						grid->Insert(coin, obj->x, obj->y, 16, 16);
 					}
 					else
 					{
@@ -1689,6 +1708,7 @@ void PlayScene::checkCollisionWithBrick()
 
 							leaf->SetAnimationSet(ani_set);
 							Items.push_back(leaf);
+							grid->Insert(leaf, obj->x, obj->y, 16, 16);
 						}
 						else if (mario->level < MARIO_LEVEL_BIG)
 						{
@@ -1700,6 +1720,7 @@ void PlayScene::checkCollisionWithBrick()
 
 							mr->SetAnimationSet(ani_set);
 							Items.push_back(mr);
+							grid->Insert(mr, obj->x, obj->y, 16, 16);
 						}
 
 					}
@@ -1716,6 +1737,7 @@ void PlayScene::checkCollisionWithBrick()
 
 						coin->SetAnimationSet(AnimationSets::GetInstance()->Get(32));
 						Items.push_back(coin);
+						grid->Insert(coin, obj->x, obj->y, 16, 16);
 					}
 				}
 			}
@@ -1815,6 +1837,7 @@ void PlayScene::checkCollisionEnemyWithBrick()
 
 								leaf->SetAnimationSet(ani_set);
 								Items.push_back(leaf);
+								grid->Insert(leaf, obj->x, obj->y, 16, 16);
 							}
 							else if (mario->level < MARIO_LEVEL_BIG) {
 								Mushroom* mr = new Mushroom();
@@ -1825,6 +1848,7 @@ void PlayScene::checkCollisionEnemyWithBrick()
 
 								mr->SetAnimationSet(ani_set);
 								Items.push_back(mr);
+								grid->Insert(mr, obj->x, obj->y, 16, 16);
 							}
 
 						}
@@ -1840,6 +1864,7 @@ void PlayScene::checkCollisionEnemyWithBrick()
 
 							coin->SetAnimationSet(AnimationSets::GetInstance()->Get(32));
 							Items.push_back(coin);
+							grid->Insert(coin, obj->x, obj->y, 16, 16);
 						}
 					}
 					else if (dynamic_cast<BrickGold*>(Objects[i])) 
@@ -2114,7 +2139,7 @@ void PlayScene::checkTurnGoldBrick()
 {
 	if (turngb == 1)
 	{
-		if (GetTickCount() - time_turngb > 2000)
+		if (GetTickCount() - time_turngb > 4000)
 		{
 			for (int i = 0; i < Coins.size(); i++)
 			{

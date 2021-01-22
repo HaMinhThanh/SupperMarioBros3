@@ -834,9 +834,9 @@ void Mario::SetState(int  state)
 	case MARIO_STATE_STOP:
 		if (stop == 0) {
 			if (vx > 0)
-				vx = 0.025;
+				vx = 0.01;
 			else if (vx < 0)
-				vx = -0.025;
+				vx = -0.01;
 
 			StartStop();
 		}

@@ -30,18 +30,17 @@ void Grid::GetListObject(vector<LPGAMEOBJECT>& ListObj, float cam_x, float cam_y
 	int left = (int)(cam_x) / GRID_CELL_WIDTH;
 	int right = (int)(cam_x + SCREEN_WIDTH) / GRID_CELL_WIDTH;
 
-	for (int row = top; row < bottom; row++)
+	for (int row = top; row <= bottom; row++)
 	{		
-		for (int column = left - 1; column <= right; column++)
+		for (int column = left ; column <= right; column++)
 		{			
 			if (row <= GRID_ROW_MAX && row >= 0 && column <= GRID_COLUMN_MAX && column >= 0)//
 			{
-				DebugOut(L"%d\n",cam_y);
 				for (UINT i = 0; i < cells[row][column].size(); i++)
 				{
-					DebugOut(L" ok");
+					//DebugOut(L" ok");
 					ListObj.push_back(cells[row][column].at(i));
-					DebugOut(L"push to grid successed!!\n");
+					
 					//if (cells[row][column].at(i)->isFinish == true)	// Loại trừ các obj đã destroy
 					//{
 					//	delete cells[row][column].at(i);
@@ -85,6 +84,9 @@ void Grid::PushObjectToCell(LPGAMEOBJECT obj, int grid_row, int grid_column)
 		return;
 	//obj->isOnCamera = false;
 	cells[grid_row][grid_column].push_back(obj);
+
+	if (cells[grid_row][grid_column].size() > 0)
+		DebugOut(L"ok");
 }
 
 void Grid::ResetOnCamera(vector<LPGAMEOBJECT>& ListObj)

@@ -36,7 +36,7 @@ public:
 	HUD* HUD;
 	Grid* grid;
 
-	vector<LPGAMEOBJECT> coObjects;	// quan li cac object trong cam
+	vector<LPGAMEOBJECT> coObjectGrid;	// quan li cac object trong cam
 
 	vector<LPGAMEOBJECT> BackGround;
 	vector<LPGAMEOBJECT> Objects;
