@@ -609,10 +609,11 @@ void PlayScene::Update(DWORD dt)
 	{
 		coObjects.push_back(Enemy[i]);
 	}*/
+	GetEnemyOnScreen(CamEnemy);
 
-	for (int i = 0; i < Enemy.size(); i++)
+	for (int i = 0; i < CamEnemy.size(); i++)
 	{
-		Enemy[i]->Update(dt, &coObjects);
+		CamEnemy[i]->Update(dt, &coObjectGrid);
 	}
 	/*for (int i = 0; i < Items.size(); i++)
 	{
@@ -655,9 +656,14 @@ void PlayScene::Update(DWORD dt)
 	cx -= game->GetScreenWidth() / 2;
 	cy -= game->GetScreenHeight() / 2;
 
-	if (game->GetCurrentSceneId() == 3)
+	if (game->GetCurrentSceneId() == 3 )
 	{
 		cx = -20;
+		cy = -10;
+	}
+	else if (game->GetCurrentSceneId() == 2)
+	{
+		cx = 95;
 		cy = -10;
 	}
 	else if (game->GetCurrentSceneId() == 5)
@@ -684,6 +690,12 @@ void PlayScene::Update(DWORD dt)
 		else //if (cy + game->GetScreenHeight() >= 432)
 			cy = (float)(432 - game->GetScreenHeight() + 42);
 	}
+
+	/*if (Game::GetInstance()->GetCurrentSceneId() == 2)
+	{
+		cx = 0;
+		cy = 200;
+	}*/
 
 	Game::GetInstance()->SetCamPosition(cx, cy);
 
@@ -713,15 +725,15 @@ void PlayScene::Render()
 	vector<LPGAMEOBJECT> venus;
 	vector<LPGAMEOBJECT> enemies;	// enemy khong phai venus de vẽ venus sau gach
 
-	for (int i = 0; i < Enemy.size(); i++)
+	for (int i = 0; i < CamEnemy.size(); i++)
 	{
-		if (dynamic_cast<Venus*>(Enemy[i]))
+		if (dynamic_cast<Venus*>(CamEnemy[i]))
 		{
-			venus.push_back(Enemy[i]);
+			venus.push_back(CamEnemy[i]);
 		}
 		else
 		{
-			enemies.push_back(Enemy[i]);
+			enemies.push_back(CamEnemy[i]);
 		}
 	}
 
@@ -799,6 +811,7 @@ void PlayScene::Unload()
 	Objects.clear();
 	Items.clear();
 	Enemy.clear();
+	CamEnemy.clear();
 	BackGround.clear();
 	Weapon.clear();
 	Nodes.clear();
@@ -814,6 +827,23 @@ void PlayScene::Unload()
 	grid = NULL;
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
+}
+
+void PlayScene::GetEnemyOnScreen(vector<LPGAMEOBJECT>& listObject)
+{
+	float cam_x, cam_y;
+	Game::GetInstance()->GetCamPos(cam_x, cam_y);
+
+	listObject.clear();
+
+	for (UINT i = 0; i < Enemy.size(); i++)
+	{
+		if (Enemy.at(i)->x >= cam_x - 16 && Enemy.at(i)->x <= cam_x + SCREEN_WIDTH 
+			&& Enemy.at(i)->y <= cam_y + SCREEN_HEIGHT )
+		{
+			listObject.push_back(Enemy.at(i));
+		}
+	}
 }
 
 void PlayScenceKeyHandler::OnKeyDown(int KeyCode)
@@ -986,7 +1016,7 @@ void PlayScenceKeyHandler::KeyState(BYTE* states)
 		else
 		{
 			if (mario->vy == 0)
-				mario->SetState(MARIO_STATE_STOP);
+				mario->SetState(MARIO_STATE_IDLE);
 		}
 
 		if (game->IsKeyDown(DIK_S))
@@ -1678,7 +1708,10 @@ void PlayScene::checkCollisionWithBrick()
 					}
 					else
 					{
-						obj->isFinish = false;
+						//obj->isFinish = false;
+						BrickBreak* bb = new BrickBreak(Objects[i]->x, Objects[i]->y);
+						bb->isRender = true;
+						Effect.push_back(bb);
 					}
 				}
 			}
@@ -1807,17 +1840,20 @@ void PlayScene::checkCollisionEnemyWithBrick()
 			{
 				LPCOLLISIONEVENT e = koopa->SweptAABBEx(Objects[i]);
 				//if (e->t > 0 && e->t <= 1)
-				if (koopa->isCollisionWithObject(Objects[i]) && koopa->isCollising == false)
+				if (koopa->isCollisionWithObject(Objects[i]))
 				{
-					koopa->isCollising = true;
+					if (!koopa->isCollising)
+					{
+						koopa->isCollising = true;
 
-					if (koopa->GetState()== KOOPAS_STATE_WALKING_RIGHT)
-					{
-						koopa->SetState(KOOPAS_STATE_WALKING_LEFT);
-					}
-					else
-					{
-						koopa->SetState(KOOPAS_STATE_WALKING_RIGHT);
+						if (koopa->GetState() == KOOPAS_STATE_WALKING_RIGHT)
+						{
+							koopa->SetState(KOOPAS_STATE_WALKING_LEFT);
+						}
+						else
+						{
+							koopa->SetState(KOOPAS_STATE_WALKING_RIGHT);
+						}
 					}
 
 					if (dynamic_cast<BrickQuesion*>(Objects[i]) && dynamic_cast<BrickQuesion*>(Objects[i])->isFinish == false)
@@ -2130,7 +2166,7 @@ void PlayScene::checkEndScene()
 			mario->GetNodePos(x, y);
 
 			Game::GetInstance()->SwitchScene(3);
-			Mario::GetInstance(0, 0)->SetPosition(x, y);
+			//Mario::GetInstance(0, 0)->SetPosition(x, y);
 		}
 	}
 }

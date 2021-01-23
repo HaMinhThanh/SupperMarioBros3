@@ -286,12 +286,12 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		if (level >= KOOPAS_LEVEL_NORMAL)
 		{
-			if (r1-5 > max && vx > 0)
+			if (r1-10 > max && vx > 0)
 			{
 				//x = max;
 				SetState(KOOPAS_STATE_WALKING_LEFT);
 			}
-			else if (l1 + 5 < min && vx < 0)
+			else if (l1 + 10 < min && vx < 0)
 			{
 				//x = min;
 				SetState(KOOPAS_STATE_WALKING_RIGHT);

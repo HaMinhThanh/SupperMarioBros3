@@ -47,6 +47,7 @@ public:
 	vector<LPGAMEOBJECT> Effect;
 	vector<LPGAMEOBJECT> Nodes;
 	vector<LPGAMEOBJECT> Coins;
+	vector<LPGAMEOBJECT> CamEnemy;
 
 	Node* currentNode = NULL;
 
@@ -72,6 +73,8 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+
+	void GetEnemyOnScreen(vector<LPGAMEOBJECT>& listObject);
 
 	void checkCollisionWithItem();
 	void checkCollisionWithEnemy();

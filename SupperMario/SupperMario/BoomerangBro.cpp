@@ -18,6 +18,25 @@ void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	x += dx;
 	y += dy;
+
+	if (!boomr1->isBoom)
+	{
+		boomr1->SetPosition(x + 16, y - 10);
+		if (vx > 0 || nx > 0)
+		{
+
+			boomr1->direct = 1;
+			boomr1->isBoom = true;
+		}
+		else
+		{
+			boomr1->direct = -1;
+			boomr1->isBoom = true;
+		}
+	}	
+
+	boomr1->Update(dt, coObjects);
+	//boomr2->Update(dt, coObjects);
 }
 
 void BoomerangBro::Render()
@@ -29,6 +48,16 @@ void BoomerangBro::Render()
 	else
 	{
 		animation_set->at(1)->Render(x, y);
+	}
+
+	if (boomr1 != NULL)
+	{
+		boomr1->Render();
+	}
+
+	if (boomr2 != NULL)
+	{
+		boomr2->Render();
 	}
 }
 

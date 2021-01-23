@@ -351,7 +351,7 @@ public:
 
 	Node* currentNode;
 	Node* GetCurentNode() { return currentNode; }
-	void GetNodePos(float& x, float& y) { x = currentNode->x; y = currentNode->y; }
+	void GetNodePos(float& x, float& y);
 	void SwitchMap();
 };
 

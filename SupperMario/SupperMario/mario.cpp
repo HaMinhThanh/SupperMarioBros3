@@ -924,14 +924,15 @@ void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 
 void Mario::Reset()
 {
+	//Mario* mario = Mario::GetInstance(0, 0);
+	//currentNode->SetDirectNode(15, 32, 0, 0, 1, 0, 0);
+	SetState(MARIO_STATE_IDLE);
+	SetLevel(MARIO_LEVEL_BIG);
+	SetPosition(15,32);
+	SetSpeed(0, 0);
+
 	int id = Game::GetInstance()->GetCurrentSceneId();
 	Game::GetInstance()->SwitchScene(id);
-
-	Mario* mario = Mario::GetInstance(0, 0);
-	mario->SetState(MARIO_STATE_IDLE);
-	mario->SetLevel(MARIO_LEVEL_BIG);
-	mario->SetPosition(start_x, start_y);
-	mario->SetSpeed(0, 0);
 }
 
 int Mario::GetLevel()
@@ -1219,6 +1220,16 @@ void Mario::LoadItem(int itm)
 	{
 
 	}
+}
+
+void Mario::GetNodePos(float& x, float& y)
+{
+	if (currentNode == NULL)
+	{
+		currentNode = new Node(15, 32, 0, 0, 1, 0, 0, 0);
+	}
+	x = currentNode->x; 
+	y = currentNode->y; 
 }
 
 void Mario::SwitchMap()
